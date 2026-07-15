@@ -52,7 +52,7 @@
             <div class="flex-1 items-center justify-center mx-auto max-w-4xl px-1">
                 <h1 class="text-lg mb-4 font-medium">Was unsere Shop ddd sagen</h1>
 
-                {% paginate article.comments by 5 %}
+                {% paginate article.comments by 3 %}
                     {% for comment in article.comments %}
                         <div class="flex-1 border my-4 px-4 py-2 sm:px-6 sm:py-4 leading-relaxed">
                             <span class="comment-author">{{ comment.author }}</span> <span class="text-xs text-gray-400">{{ comment.created_at | date: format: 'default' }}</span>
