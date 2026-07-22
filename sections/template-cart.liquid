@@ -1,0 +1,169 @@
+{% if cart.item_count > 0 %}
+    <div class="p-4">
+        <div class="max-w-6xl flex flex-col my-10 mx-auto">
+            <div class="flex items-end justify-between my-5">
+                <h1 class="text-3xl">Dein Warenkorb</h1>
+                <a href="{{ routes.all_products_collection_url }}" class="text-blue-600 hover:text-blue-800 font-medium underline">Weitershoppen</a>
+            </div>
+        </div>
+
+        <div class="max-w-6xl flex flex-col my-10 mx-auto">
+            <form action="{{ routes.cart_url }}" method="POST" novalidate>
+                <table class="table-auto divide-y divide-gray-200 my-4 w-full">
+                    <thead>
+                        <th class="px-6 py-3 text-left text-md font-medium text-gray-500">Produkt</th>
+                        <th class="px-6 py-3 text-center text-md font-medium text-gray-500">Menge</th>
+                        <th class="px-6 py-3 text-center text-md font-medium text-gray-500">Gesamtpreis</th>
+                    </thead>
+
+                    <tbody>
+                        {% for item in cart.items %}
+                            <tr class="table-row">
+                                <td class="py-4 px-2 flex flex-col justify-center">
+                                    <a href="{{ item.url }}">
+                                        {% if item.image %}
+                                            <img src="{{ item.image | img_url: 'small' }}" alt="{{ item.title | escape }}" class="w-20 h-20 object-cover border">
+                                        {% else %}
+                                            {{ 'product-1' | placeholder_svg_tag: 'w-20 h-20 object-cover border' }}
+                                        {% endif %}
+                                    </a>
+                                </td>
+
+                                <td class="py-4 px-3 flex flex-col justify-center">
+                                    <a href="{{ item.url }}" class="my-1">{{ item.product.title | truncatewords }}</a>
+                                    <span class="text-sm text-gray-500 my-1">{{ item.variant.title }}</span>
+                                    <a href={{ routes.cart_change_url }}?line{{ forloop.index }} class="text-sm font-medium text-red-500 my-1">Entfernen</a>
+                                </td>
+
+                                <td class="py-4 px-3">
+                                    <input type="number" name="updates[]" value="{{ item.quantity }}" min="1" id="update_{{ forloop.index }}" class="w-20 border p-2 text-center rounded-md">
+                                </td>
+
+                                <td class="py-4 px-3 text-center">
+                                    {{ item.line_price | money}}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="flex flex-col md:flex-row items-center justify-between">
+                    <div class="w-full my-4">
+                        <div class="flex flex-col items-start">
+                            <label for="cart_notes" class="my-1">Deine Notizen</label>
+                            <textarea name="note" id="cart_notes" class="w-full md:max-w-lg resize-none border h-20 text-left"></textarea>
+                        </div>
+                    </div>
+                   
+                    <div class="w-full my-4 md:w-80">
+                        {% for block in section.blocks %}
+                            {% case block.type %}
+                                {% when 'subtotal' %}
+                                    <h3 class="text-xl text-center">Gesamtpreis: {{ cart.total_price | money }}</h3>
+                                {% when 'update_button' %}
+                                    <div class="my-4 w-full">
+                                        <button type="submit" name="update" class="p-3 border border-gray-600 text-gray-600 font-medium hover:bg-gray-600 hover:text-white rounded-md w-full">Aktualisieren</button>
+                                    </div>
+                                {% when 'checkout_button' %}
+                                    <div class="my-4 w-full" {{ block.shopify_attributes }}>
+                                        <button
+                                            type="submit"
+                                            name="checkout"
+                                            class="p-3 border font-medium rounded-md w-full"
+                                            style="
+                                                background-color: {{ block.settings.background_color }};
+                                                color: {{ block.settings.text_color }};
+                                                border-color: {{ block.settings.border_color }};
+                                                border-radius: {{ block.settings.border_radius }}px;
+                                            "
+                                        >
+                                            {{ block.settings.button_text }}
+                                        </button>
+                                    </div>
+
+                                {% else %}
+                                    
+                            {% endcase %}
+                        
+                        {% endfor %}
+                       
+                    </div> 
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+{% else %}
+    <div class="max-w-6xl h-60 my-4 mx-auto flex items-center justify-center">
+        <div class="text-center">
+            <h1 class="text-3xl my-4">Dein Warenkorb ist noch leer.</h1>
+
+            <div class="my-4 py-4">
+                <a href="{{ routes.all_products_collection_url }}" class="border-gray-600 text-white bg-gray-600 px-8 py-3">
+                    Weitershoppen
+                </a>
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+{% schema %}
+{
+    "name": "Template Cart",
+    "blocks": [
+        {
+            "type": "subtotal",
+            "name": "Subtotal",
+            "limit": 1
+        },
+        {
+            "type": "update_button",
+            "name": "Update Button",
+            "limit": 1
+        },
+        {
+            "type": "checkout_button",
+            "name": "Checkout Button",
+            "limit": 1,
+            "settings": [
+                {
+                    "type": "text",
+                    "id": "button_text",
+                    "label": "Button-Text",
+                    "default": "Zur Kasse"
+                },
+                {
+                    "type": "color",
+                    "id": "background_color",
+                    "label": "Hintergrundfarbe",
+                    "default": "#4b5563"
+                },
+                {
+                    "type": "color",
+                    "id": "text_color",
+                    "label": "Textfarbe",
+                    "default": "#ffffff"
+                },
+                {
+                    "type": "color",
+                    "id": "border_color",
+                    "label": "Rahmenfarbe",
+                    "default": "#4b5563"
+                 },
+                 {
+                    "type": "range",
+                    "id": "border_radius",
+                    "label": "Ecken abrunden",
+                    "min": 0,
+                    "max": 50,
+                    "step": 1,
+                    "unit": "px",
+                    "default": 6
+                }
+        ]
+
+        }
+    ]
+}
+{% endschema %} 

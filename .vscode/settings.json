@@ -1,0 +1,28 @@
+{
+  "files.associations": {
+    "*.liquid": "liquid"
+  },
+  "emmet.includeLanguages": {
+    "liquid": "html"
+  },
+  "emmet.triggerExpansionOnTab": true,
+  "emmet.showExpandedAbbreviation": "always",
+  "emmet.showAbbreviationSuggestions": true,
+  "editor.inlineSuggest.enabled": false,
+  "editor.suggest.preview": false,
+  "github.copilot.nextEditSuggestions.enabled": false,
+  "github.copilot.enable": {
+    "*": true,
+    "liquid": false
+  },
+  "[liquid]": {
+    "editor.quickSuggestions": {
+      "other": true,
+      "comments": false,
+      "strings": true
+    },
+    "editor.suggestOnTriggerCharacters": true,
+    "editor.snippetSuggestions": "top",
+    "editor.tabCompletion": "off"
+  }
+}
