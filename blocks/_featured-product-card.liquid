@@ -1,0 +1,183 @@
+{% doc %}
+  Rendert die gemeinsame Produktkartenvorlage einer Featured Collection.
+{% enddoc %}
+
+{% assign featured_product = closest.product %}
+
+{% capture product_image %}
+  {% content_for 'block',
+    type: '_product-card-image',
+    id: 'product-card-image',
+    closest.product: featured_product,
+    parent_block_id: block.id
+  %}
+{% endcapture %}
+
+{% capture product_title %}
+  {% content_for 'block',
+    type: 'product-title',
+    id: 'product-title',
+    closest.product: featured_product,
+    parent_block_id: block.id
+  %}
+{% endcapture %}
+
+{% capture product_text %}
+  {% content_for 'block',
+    type: 'product-text',
+    id: 'product-text',
+    closest.product: featured_product,
+    parent_block_id: block.id
+  %}
+{% endcapture %}
+
+{% capture product_price %}
+  {% content_for 'block',
+    type: 'product-price',
+    id: 'product-price',
+    closest.product: featured_product,
+    parent_block_id: block.id
+  %}
+{% endcapture %}
+
+<article
+  class="featured-product-card featured-product-card--border-{{ block.settings.border }}"
+  style="
+    --featured-card-gap: {{ block.settings.gap }}px;
+    --featured-card-background: {{ block.settings.background_color | default: 'transparent' }};
+    --featured-card-radius: {{ block.settings.border_radius }}px;
+    --featured-card-border-width: {{ block.settings.border_width }}px;
+    --featured-card-border-color: {{ block.settings.border_color | default: 'currentColor' }};
+    --featured-card-border-opacity: {{ block.settings.border_opacity }}%;
+    --featured-card-padding: {{ block.settings.padding }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {{ product_image }}
+  {{ product_title }}
+  {{ product_text }}
+  {{ product_price }}
+  {% content_for 'blocks', closest.product: featured_product %}
+</article>
+
+{% stylesheet %}
+  .featured-product-card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--featured-card-gap);
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--featured-card-background);
+    border-radius: var(--featured-card-radius);
+    padding: var(--featured-card-padding);
+  }
+
+  .featured-product-card--border-solid {
+    border:
+      var(--featured-card-border-width)
+      solid
+      color-mix(
+        in srgb,
+        var(--featured-card-border-color) var(--featured-card-border-opacity),
+        transparent
+      );
+  }
+
+  .featured-product-card > .shopify-block {
+    width: 100%;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Produktkarte",
+  "blocks": [
+    { "type": "heading" },
+    { "type": "text" },
+    { "type": "button" },
+    { "type": "image" },
+    { "type": "spacer" }
+  ],
+  "settings": [
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Vertikaler Abstand",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe"
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Innenabstand",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Ränder"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "Stil",
+      "options": [
+        { "value": "none", "label": "Keine" },
+        { "value": "solid", "label": "Einfarbig" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Stärke",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "label": "Deckkraft",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Farbe",
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}
