@@ -45,6 +45,9 @@
       {% endif %}
 
       :root {
+        --page-background-color: {{ settings.page_background_color | default: 'transparent' }};
+        --page-width: {{ settings.page_width | default: '1200px' }};
+
         --font-h1-family: {{ settings.h1_font.family }}, {{ settings.h1_font.fallback_families }};
         --font-h1-style: {{ settings.h1_font.style }};
         --font-h1-weight: {{ settings.h1_font.weight }};
@@ -65,11 +68,19 @@
       }
 
       body {
+        margin: 0;
+        background-color: var(--page-background-color);
         font-family: var(--font-paragraph-family);
         font-style: var(--font-paragraph-style);
         font-weight: var(--font-paragraph-weight);
         font-size: var(--font-paragraph-size);
         line-height: var(--font-paragraph-line-height);
+      }
+
+      .site-main {
+        width: 100%;
+        max-width: var(--page-width);
+        margin-inline: auto;
       }
 
       h1 {
@@ -111,7 +122,7 @@
   <body>
     {% section 'header' %}
 
-    <main role="main">
+    <main class="site-main" role="main">
       {{ content_for_layout }}
     </main>
   </body>

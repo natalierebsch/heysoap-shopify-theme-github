@@ -35,8 +35,13 @@
   }
 
   .carousel--width-page .carousel__inner {
-    max-width: 1200px;
+    max-width: var(--page-width, 1200px);
     padding-inline: 20px;
+  }
+
+  .carousel--width-full {
+    width: 100vw;
+    margin-inline: calc(50% - 50vw);
   }
 
   .carousel--width-full .carousel__inner {

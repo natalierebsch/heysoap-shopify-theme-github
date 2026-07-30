@@ -8,6 +8,36 @@
     "theme_support_url": "https://github.com/Shopify/themekit/issues"
   },
   {
+    "name": "Layout",
+    "settings": [
+      {
+        "type": "color",
+        "id": "page_background_color",
+        "label": "Seitenhintergrund"
+      },
+      {
+        "type": "select",
+        "id": "page_width",
+        "label": "Seitenbreite",
+        "options": [
+          {
+            "value": "900px",
+            "label": "Schmal"
+          },
+          {
+            "value": "1200px",
+            "label": "Normal"
+          },
+          {
+            "value": "1600px",
+            "label": "Breit"
+          }
+        ],
+        "default": "1200px"
+      }
+    ]
+  },
+  {
     "name": "Typography",
     "settings": [
       {
