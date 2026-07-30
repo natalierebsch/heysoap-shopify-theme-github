@@ -18,11 +18,55 @@
       {% content_for 'blocks' %}
     </div>
 
-    {% content_for 'block',
-      type: '_collection-carousel-content',
-      id: 'collection-carousel-content',
-      collections: section.settings.collection_list
-    %}
+    {% if section.settings.collection_list != blank %}
+      <div class="collection-carousel__stage">
+        <div class="collection-carousel__viewport">
+          <div class="collection-carousel__track" data-collection-carousel-track>
+            {% for collection in section.settings.collection_list %}
+              <div class="collection-carousel__slide">
+                {% content_for 'block',
+                  type: '_collection-card',
+                  id: 'collection-card',
+                  closest.collection: collection
+                %}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        {% if section.settings.navigation_symbol != 'none' %}
+          <button
+            class="collection-carousel__arrow collection-carousel__arrow--previous"
+            type="button"
+            data-collection-carousel-direction="-1"
+            aria-label="Vorherige Kollektionen"
+          >
+            {% if section.settings.navigation_symbol == 'chevrons' %}
+              &#10094;
+            {% else %}
+              &larr;
+            {% endif %}
+          </button>
+
+          <button
+            class="collection-carousel__arrow collection-carousel__arrow--next"
+            type="button"
+            data-collection-carousel-direction="1"
+            aria-label="Nächste Kollektionen"
+          >
+            {% if section.settings.navigation_symbol == 'chevrons' %}
+              &#10095;
+            {% else %}
+              &rarr;
+            {% endif %}
+          </button>
+        {% endif %}
+      </div>
+    {% else %}
+      <div class="collection-carousel__empty">
+        Wähle in den Section-Einstellungen mindestens eine Kollektion aus.
+      </div>
+    {% endif %}
   </div>
 </section>
 
