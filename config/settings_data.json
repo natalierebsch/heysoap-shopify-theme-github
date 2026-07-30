@@ -9,12 +9,15 @@
  */
 {
   "current": {
+    "h1_font": "poppins_n6",
+    "h2_font": "work_sans_n5",
+    "paragraph_font": "poppins_n4",
     "sections": {
       "header": {
         "type": "header",
         "settings": {
-          "background_color": "#FBCEC0",
-          "text_color": "#49302F",
+          "background_color": "#fbcec0",
+          "text_color": "#49302f",
           "mobile_menu_title": "Menü",
           "menu": "main-menu",
           "logo": "shopify://shop_images/hey_soap_finales_logo.png",
