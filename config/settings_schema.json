@@ -38,6 +38,43 @@
     ]
   },
   {
+    "name": "Farben",
+    "settings": [
+      {
+        "type": "color_scheme_group",
+        "id": "color_schemes",
+        "definition": [
+          {
+            "type": "color",
+            "id": "background",
+            "label": "Hintergrund",
+            "default": "#FFFFFF"
+          },
+          {
+            "type": "color",
+            "id": "text",
+            "label": "Text",
+            "default": "#121212"
+          }
+        ],
+        "role": {
+          "background": {
+            "solid": "background"
+          },
+          "text": "text",
+          "links": "text",
+          "icons": "text",
+          "primary_button": "text",
+          "on_primary_button": "background",
+          "primary_button_border": "text",
+          "secondary_button": "background",
+          "on_secondary_button": "text",
+          "secondary_button_border": "text"
+        }
+      }
+    ]
+  },
+  {
     "name": "Typography",
     "settings": [
       {

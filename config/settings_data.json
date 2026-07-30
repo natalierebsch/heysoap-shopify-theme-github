@@ -10,6 +10,26 @@
 {
   "current": {
     "page_background_color": "#FBE9E2",
+    "color_schemes": {
+      "scheme-1": {
+        "settings": {
+          "background": "#FFFFFF",
+          "text": "#121212"
+        }
+      },
+      "scheme-2": {
+        "settings": {
+          "background": "#FBE9E2",
+          "text": "#49302F"
+        }
+      },
+      "scheme-3": {
+        "settings": {
+          "background": "#49302F",
+          "text": "#FFFFFF"
+        }
+      }
+    },
     "h1_font": "poppins_n6",
     "h2_font": "work_sans_n5",
     "paragraph_font": "poppins_n4",
