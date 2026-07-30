@@ -1,8 +1,13 @@
 {% doc %}
   Rendert den Titel und den Kollektionslink einer Featured Collection.
+
+  @param {string} [heading_text] - Optionaler Titel anstelle des Kollektionsnamens.
+  @param {string} [heading_url] - Optionaler Link anstelle der Kollektions-URL.
 {% enddoc %}
 
 {% assign featured_collection = closest.collection %}
+{% assign featured_heading_text = heading_text | default: featured_collection.title %}
+{% assign featured_heading_url = heading_url | default: featured_collection.url %}
 
 <div
   class="featured-collection-heading featured-collection-heading--{{ block.settings.alignment }}"
@@ -13,13 +18,13 @@
   "
   {{ block.shopify_attributes }}
 >
-  {% if featured_collection != blank %}
+  {% if featured_heading_text != blank %}
     <h2 class="featured-collection-heading__title">
-      {{ featured_collection.title }}
+      {{ featured_heading_text }}
     </h2>
 
     {% if block.settings.show_button %}
-      <a class="featured-collection-heading__button" href="{{ featured_collection.url }}">
+      <a class="featured-collection-heading__button" href="{{ featured_heading_url }}">
         {{ block.settings.button_label }}
       </a>
     {% endif %}
