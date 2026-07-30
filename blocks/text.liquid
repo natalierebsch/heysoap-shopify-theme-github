@@ -1,6 +1,26 @@
+{% doc %}
+  Rendert einen konfigurierbaren Richtext-Block.
+
+  @example
+  {% content_for 'block', type: 'text', id: 'card-text' %}
+{% enddoc %}
+
 <div
-  class="text-block"
-  style="--text-alignment: {{ block.settings.alignment }};"
+  class="
+    text-block
+    text-block--width-{{ block.settings.width }}
+    text-block--max-width-{{ block.settings.max_width }}
+    text-block--preset-{{ block.settings.preset }}
+    text-block--background-{{ block.settings.show_background }}
+  "
+  style="
+    --text-color: {{ block.settings.text_color | default: 'inherit' }};
+    --text-background-color: {{ block.settings.background_color | default: 'transparent' }};
+    --text-padding-top: {{ block.settings.padding_top }}px;
+    --text-padding-bottom: {{ block.settings.padding_bottom }}px;
+    --text-padding-left: {{ block.settings.padding_left }}px;
+    --text-padding-right: {{ block.settings.padding_right }}px;
+  "
   {{ block.shopify_attributes }}
 >
   {{ block.settings.text }}
@@ -8,7 +28,67 @@
 
 {% stylesheet %}
   .text-block {
-    text-align: var(--text-alignment);
+    box-sizing: border-box;
+    color: var(--text-color);
+    font-family: var(--font-paragraph-family);
+    font-style: var(--font-paragraph-style);
+    font-weight: var(--font-paragraph-weight);
+    font-size: var(--font-paragraph-size);
+    line-height: var(--font-paragraph-line-height);
+    padding:
+      var(--text-padding-top)
+      var(--text-padding-right)
+      var(--text-padding-bottom)
+      var(--text-padding-left);
+  }
+
+  .text-block--width-fit {
+    width: fit-content;
+  }
+
+  .text-block--width-fill {
+    width: 100%;
+  }
+
+  .text-block--max-width-small {
+    max-width: 480px;
+  }
+
+  .text-block--max-width-normal {
+    max-width: 720px;
+  }
+
+  .text-block--max-width-wide {
+    max-width: 1000px;
+  }
+
+  .text-block--max-width-none {
+    max-width: none;
+  }
+
+  .text-block--preset-small,
+  .text-block--preset-small p {
+    font-size: calc(var(--font-paragraph-size) * 0.875);
+  }
+
+  .text-block--preset-standard,
+  .text-block--preset-standard p {
+    font-size: var(--font-paragraph-size);
+  }
+
+  .text-block--preset-large,
+  .text-block--preset-large p {
+    font-size: calc(var(--font-paragraph-size) * 1.25);
+  }
+
+  .text-block--background-true {
+    background-color: var(--text-background-color);
+  }
+
+  .text-block p,
+  .text-block li,
+  .text-block a {
+    color: inherit;
   }
 
   .text-block > *:first-child {
@@ -31,10 +111,138 @@
       "default": "<p>Gib hier deinen Text ein.</p>"
     },
     {
-      "type": "text_alignment",
-      "id": "alignment",
-      "label": "Ausrichtung",
-      "default": "left"
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Breite",
+      "options": [
+        {
+          "value": "fit",
+          "label": "Anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Füllen"
+        }
+      ],
+      "default": "fit"
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "Max. Breite",
+      "options": [
+        {
+          "value": "small",
+          "label": "Schmal"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "wide",
+          "label": "Breit"
+        },
+        {
+          "value": "none",
+          "label": "Keine Begrenzung"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "header",
+      "content": "Typografie"
+    },
+    {
+      "type": "select",
+      "id": "preset",
+      "label": "Voreinstellung",
+      "options": [
+        {
+          "value": "standard",
+          "label": "Standard"
+        },
+        {
+          "value": "small",
+          "label": "Klein"
+        },
+        {
+          "value": "large",
+          "label": "Groß"
+        }
+      ],
+      "default": "standard",
+      "info": "Voreinstellungen können in den Theme-Einstellungen bearbeitet werden."
+    },
+    {
+      "type": "header",
+      "content": "Erscheinungsbild"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_background",
+      "label": "Hintergrund",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe",
+      "visible_if": "{{ block.settings.show_background }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
     }
   ],
   "presets": [
