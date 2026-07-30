@@ -13,7 +13,7 @@
       "header": {
         "type": "header",
         "settings": {
-          "background_color": "#FBE9E2",
+          "background_color": "#FBCEC0",
           "text_color": "#20385F",
           "mobile_menu_title": "Menü",
           "menu": "main-menu",
