@@ -1,3 +1,10 @@
+{% doc %}
+  Rendert ein konfigurierbares Bild.
+
+  @example
+  {% content_for 'block', type: 'image', id: 'card-image' %}
+{% enddoc %}
+
 {% if block.settings.image != blank %}
   <div
     class="image-block"
