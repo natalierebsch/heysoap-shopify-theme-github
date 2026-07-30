@@ -1,6 +1,24 @@
-<div class="text-block" {{ block.shopify_attributes }}>
+<div
+  class="text-block"
+  style="--text-alignment: {{ block.settings.alignment }};"
+  {{ block.shopify_attributes }}
+>
   {{ block.settings.text }}
 </div>
+
+{% stylesheet %}
+  .text-block {
+    text-align: var(--text-alignment);
+  }
+
+  .text-block > *:first-child {
+    margin-top: 0;
+  }
+
+  .text-block > *:last-child {
+    margin-bottom: 0;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
@@ -11,6 +29,12 @@
       "id": "text",
       "label": "Text",
       "default": "<p>Gib hier deinen Text ein.</p>"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "default": "left"
     }
   ],
   "presets": [
