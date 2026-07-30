@@ -1,3 +1,18 @@
+{% liquid
+  assign card_direction = 'column'
+  if block.settings.direction == 'horizontal'
+    assign card_direction = 'row'
+  endif
+
+  assign card_alignment = block.settings.alignment | default: 'flex-start'
+  assign card_position = block.settings.position | default: 'center'
+  assign card_gap = block.settings.gap | default: 12
+  assign card_padding_top = block.settings.padding_top | default: 0
+  assign card_padding_bottom = block.settings.padding_bottom | default: 0
+  assign card_padding_left = block.settings.padding_left | default: 0
+  assign card_padding_right = block.settings.padding_right | default: 0
+%}
+
 <div
   class="
     card-block
@@ -6,15 +21,15 @@
     {% if block.settings.link != blank %}card-block--linked{% endif %}
   "
   style="
-    --card-direction: {{ block.settings.direction }};
-    --card-alignment: {{ block.settings.alignment }};
-    --card-position: {{ block.settings.position }};
-    --card-gap: {{ block.settings.gap }}px;
+    --card-direction: {{ card_direction }};
+    --card-alignment: {{ card_alignment }};
+    --card-position: {{ card_position }};
+    --card-gap: {{ card_gap }}px;
     --card-background: {{ block.settings.background_color | default: 'transparent' }};
-    --card-padding-top: {{ block.settings.padding_top }}px;
-    --card-padding-bottom: {{ block.settings.padding_bottom }}px;
-    --card-padding-left: {{ block.settings.padding_left }}px;
-    --card-padding-right: {{ block.settings.padding_right }}px;
+    --card-padding-top: {{ card_padding_top }}px;
+    --card-padding-bottom: {{ card_padding_bottom }}px;
+    --card-padding-left: {{ card_padding_left }}px;
+    --card-padding-right: {{ card_padding_right }}px;
   "
   {{ block.shopify_attributes }}
 >
@@ -79,6 +94,7 @@
       var(--card-padding-left);
     background-color: var(--card-background);
     box-sizing: border-box;
+    height: 100%;
     overflow: hidden;
   }
 
@@ -114,7 +130,7 @@
     justify-content: var(--card-position);
     gap: var(--card-gap);
     width: 100%;
-    min-height: inherit;
+    height: 100%;
   }
 
   .card-block__content > .shopify-block {
@@ -122,11 +138,14 @@
   }
 
   .card-block--vertical .card-block__content > .shopify-block {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
+    align-self: var(--card-alignment);
   }
 
   .card-block--horizontal .card-block__content > .shopify-block {
     flex: 1 1 0;
+    align-self: var(--card-alignment);
   }
 
   .card-block--linked .card-block__content {
