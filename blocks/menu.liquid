@@ -5,6 +5,8 @@
   {% content_for 'block', type: 'menu', id: 'footer-menu' %}
 {% enddoc %}
 
+{% assign menu_heading = block.settings.heading | default: block.settings.menu.title %}
+
 <div
   class="
     menu-block
@@ -27,27 +29,27 @@
   {% endcomment %}
 
   <div class="menu-block__desktop">
-    {% if block.settings.heading != blank %}
+    {% if menu_heading != blank %}
       {% case block.settings.heading_preset %}
         {% when 'h1' %}
           <h1 class="menu-block__heading">
-            {{ block.settings.heading }}
+            {{ menu_heading }}
           </h1>
 
         {% when 'h2' %}
           <h2 class="menu-block__heading">
-            {{ block.settings.heading }}
+            {{ menu_heading }}
           </h2>
 
         {% else %}
           <h3 class="menu-block__heading">
-            {{ block.settings.heading }}
+            {{ menu_heading }}
           </h3>
       {% endcase %}
     {% endif %}
 
     {% if block.settings.menu != blank %}
-      <nav aria-label="{{ block.settings.heading | default: block.settings.menu.title | escape }}">
+      <nav aria-label="{{ menu_heading | escape }}">
         <ul class="menu-block__list" role="list">
           {% for link in block.settings.menu.links %}
             <li class="menu-block__item">
@@ -93,11 +95,7 @@
     <details class="menu-block__mobile-accordion">
       <summary class="menu-block__summary">
         <span>
-          {% if block.settings.heading != blank %}
-            {{ block.settings.heading }}
-          {% else %}
-            {{ block.settings.menu.title }}
-          {% endif %}
+          {{ menu_heading }}
         </span>
 
         <span class="menu-block__accordion-icon" aria-hidden="true">
@@ -115,7 +113,7 @@
       </summary>
 
       {% if block.settings.menu != blank %}
-        <nav aria-label="{{ block.settings.heading | default: block.settings.menu.title | escape }}">
+        <nav aria-label="{{ menu_heading | escape }}">
           <ul class="menu-block__list" role="list">
             {% for link in block.settings.menu.links %}
               <li class="menu-block__item">
