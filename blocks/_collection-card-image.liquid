@@ -9,7 +9,7 @@
 <div
   class="
     collection-card-image
-    collection-card-image--ratio-{{ block.settings.image_ratio }}
+    {% if block.settings.image_ratio == 'auto' %}collection-card-image--ratio-auto{% endif %}
     collection-card-image--border-{{ block.settings.border }}
   "
   style="
