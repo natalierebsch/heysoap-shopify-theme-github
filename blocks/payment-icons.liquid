@@ -12,9 +12,12 @@
     --payment-icon-gap: {{ block.settings.gap }}px;
     --payment-padding-top: {{ block.settings.padding_top }}px;
     --payment-padding-bottom: {{ block.settings.padding_bottom }}px;
+    --payment-padding-left: {{ block.settings.padding_left }}px;
+    --payment-padding-right: {{ block.settings.padding_right }}px;
   "
   {{ block.shopify_attributes }}
 >
+  <span class="payment-icons-block__label">Akzeptierte Zahlungsmethoden</span>
   {% for type in shop.enabled_payment_types %}
     <span class="payment-icons-block__icon">
       {{ type | payment_type_svg_tag }}
@@ -29,8 +32,11 @@
     flex-wrap: wrap;
     gap: var(--payment-icon-gap);
     width: 100%;
-    padding-top: var(--payment-padding-top);
-    padding-bottom: var(--payment-padding-bottom);
+    padding:
+      var(--payment-padding-top)
+      var(--payment-padding-right)
+      var(--payment-padding-bottom)
+      var(--payment-padding-left);
   }
 
   .payment-icons-block--left {
@@ -43,6 +49,26 @@
 
   .payment-icons-block--right {
     justify-content: flex-end;
+  }
+
+  .payment-icons-block--between {
+    justify-content: space-between;
+  }
+
+  .payment-icons-block--evenly {
+    justify-content: space-evenly;
+  }
+
+  .payment-icons-block__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   .payment-icons-block__icon {
@@ -59,6 +85,7 @@
 {% schema %}
 {
   "name": "Zahlungssymbole",
+  "tag": null,
   "settings": [
     {
       "type": "select",
@@ -76,6 +103,14 @@
         {
           "value": "right",
           "label": "Rechts"
+        },
+        {
+          "value": "between",
+          "label": "Abstand dazwischen"
+        },
+        {
+          "value": "evenly",
+          "label": "Gleichmäßig verteilt"
         }
       ],
       "default": "left"
@@ -95,8 +130,8 @@
       "id": "gap",
       "label": "Abstand",
       "min": 0,
-      "max": 40,
-      "step": 2,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 8
     },
@@ -109,8 +144,8 @@
       "id": "padding_top",
       "label": "Oben",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     },
@@ -119,8 +154,28 @@
       "id": "padding_bottom",
       "label": "Unten",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     }
