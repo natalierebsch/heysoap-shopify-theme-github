@@ -110,6 +110,26 @@
         line-height: var(--font-paragraph-line-height);
       }
 
+      .typography-style,
+      .typography-style h1,
+      .typography-style h2,
+      .typography-style h3,
+      .typography-style h4,
+      .typography-style h5,
+      .typography-style h6,
+      .typography-style p,
+      .typography-style li,
+      .typography-style a {
+        font-family: var(--type-family, var(--font-paragraph-family));
+        font-style: var(--type-style, normal);
+        font-weight: var(--type-weight, inherit);
+        font-size: var(--type-size, var(--font-paragraph-size));
+        line-height: var(--type-line-height, var(--font-paragraph-line-height));
+        letter-spacing: var(--type-letter-spacing, normal);
+        text-transform: var(--type-transform, none);
+        text-wrap: var(--type-wrap, wrap);
+      }
+
       [x-cloak] {
         display: none !important;
       }

@@ -1,0 +1,75 @@
+{% doc %}
+  Gibt gemeinsame CSS-Variablen für Typografie-Presets aus.
+
+  @param {string} preset - Standard, Absatz, H1–H6 oder benutzerdefiniert.
+  @param {string} [custom_font] - Schriftfamilie für benutzerdefinierte Typografie.
+  @param {number} [custom_size] - Schriftgröße in Pixeln.
+  @param {string} [custom_line_height] - Zeilenhöhe.
+  @param {string} [custom_letter_spacing] - Zeichenabstand.
+  @param {string} [custom_case] - Schreibweise.
+  @param {string} [custom_wrap] - Textumbruch.
+{% enddoc %}
+
+{% case preset %}
+  {% when 'h1' %}
+    --type-family: var(--font-h1-family);
+    --type-style: var(--font-h1-style);
+    --type-weight: var(--font-h1-weight);
+    --type-size: var(--font-h1-size);
+    --type-line-height: var(--font-h1-line-height);
+  {% when 'h2' %}
+    --type-family: var(--font-h2-family);
+    --type-style: var(--font-h2-style);
+    --type-weight: var(--font-h2-weight);
+    --type-size: var(--font-h2-size);
+    --type-line-height: var(--font-h2-line-height);
+  {% when 'h3' %}
+    --type-family: var(--font-h2-family);
+    --type-style: var(--font-h2-style);
+    --type-weight: var(--font-h2-weight);
+    --type-size: calc(var(--font-h2-size) * 0.8);
+    --type-line-height: var(--font-h2-line-height);
+  {% when 'h4' %}
+    --type-family: var(--font-h2-family);
+    --type-style: var(--font-h2-style);
+    --type-weight: var(--font-h2-weight);
+    --type-size: calc(var(--font-h2-size) * 0.65);
+    --type-line-height: var(--font-h2-line-height);
+  {% when 'h5' %}
+    --type-family: var(--font-h2-family);
+    --type-style: var(--font-h2-style);
+    --type-weight: var(--font-h2-weight);
+    --type-size: calc(var(--font-h2-size) * 0.55);
+    --type-line-height: var(--font-h2-line-height);
+  {% when 'h6' %}
+    --type-family: var(--font-h2-family);
+    --type-style: var(--font-h2-style);
+    --type-weight: var(--font-h2-weight);
+    --type-size: calc(var(--font-h2-size) * 0.48);
+    --type-line-height: var(--font-h2-line-height);
+  {% when 'custom' %}
+    {% if custom_font == 'heading_1' %}
+      --type-family: var(--font-h1-family);
+      --type-style: var(--font-h1-style);
+      --type-weight: var(--font-h1-weight);
+    {% elsif custom_font == 'heading' %}
+      --type-family: var(--font-h2-family);
+      --type-style: var(--font-h2-style);
+      --type-weight: var(--font-h2-weight);
+    {% else %}
+      --type-family: var(--font-paragraph-family);
+      --type-style: var(--font-paragraph-style);
+      --type-weight: var(--font-paragraph-weight);
+    {% endif %}
+    --type-size: {{ custom_size | default: 20 }}px;
+    --type-line-height: {{ custom_line_height | default: 'normal' }};
+    --type-letter-spacing: {{ custom_letter_spacing | default: 'normal' }};
+    --type-transform: {{ custom_case | default: 'none' }};
+    --type-wrap: {{ custom_wrap | default: 'pretty' }};
+  {% else %}
+    --type-family: var(--font-paragraph-family);
+    --type-style: var(--font-paragraph-style);
+    --type-weight: var(--font-paragraph-weight);
+    --type-size: var(--font-paragraph-size);
+    --type-line-height: var(--font-paragraph-line-height);
+{% endcase %}
