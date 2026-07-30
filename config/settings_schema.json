@@ -51,6 +51,11 @@
             "default": "#FFFFFF"
           },
           {
+            "type": "color_background",
+            "id": "background_gradient",
+            "label": "Hintergrundverlauf"
+          },
+          {
             "type": "color",
             "id": "text",
             "label": "Text",
@@ -59,7 +64,8 @@
         ],
         "role": {
           "background": {
-            "solid": "background"
+            "solid": "background",
+            "gradient": "background_gradient"
           },
           "text": "text",
           "links": "text",
