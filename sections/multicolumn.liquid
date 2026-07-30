@@ -1,0 +1,206 @@
+<section
+  class="
+    multicolumn-section
+    multicolumn-section--{{ section.settings.width }}
+  "
+  style="
+    --multicolumn-columns-desktop: {{ section.settings.columns_desktop }};
+    --multicolumn-columns-mobile: {{ section.settings.columns_mobile }};
+    --multicolumn-column-gap: {{ section.settings.column_gap }}px;
+    --multicolumn-row-gap: {{ section.settings.row_gap }}px;
+    --multicolumn-background: {{ section.settings.background_color | default: 'transparent' }};
+    --multicolumn-padding-top: {{ section.settings.padding_top }}px;
+    --multicolumn-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --multicolumn-padding-left: {{ section.settings.padding_left }}px;
+    --multicolumn-padding-right: {{ section.settings.padding_right }}px;
+  "
+>
+  <div class="multicolumn-section__grid">
+    {% content_for 'blocks' %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .multicolumn-section {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    background-color: var(--multicolumn-background);
+    padding:
+      var(--multicolumn-padding-top)
+      var(--multicolumn-padding-right)
+      var(--multicolumn-padding-bottom)
+      var(--multicolumn-padding-left);
+  }
+
+  .multicolumn-section--page {
+    max-width: var(--page-width);
+    margin-inline: auto;
+  }
+
+  .multicolumn-section--full {
+    width: 100cqw;
+    max-width: 100cqw;
+    margin-left: calc(50% - 50cqw);
+  }
+
+  .multicolumn-section__grid {
+    display: grid;
+    grid-template-columns:
+      repeat(
+        var(--multicolumn-columns-desktop),
+        minmax(0, 1fr)
+      );
+    column-gap: var(--multicolumn-column-gap);
+    row-gap: var(--multicolumn-row-gap);
+    width: 100%;
+    min-width: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .multicolumn-section__grid {
+      grid-template-columns:
+        repeat(
+          var(--multicolumn-columns-mobile),
+          minmax(0, 1fr)
+        );
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Mehrspaltig",
+  "blocks": [
+    {
+      "type": "column"
+    }
+  ],
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Spalten Desktop",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Spalten Mobil",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Breite",
+      "options": [
+        {
+          "value": "page",
+          "label": "Seite"
+        },
+        {
+          "value": "full",
+          "label": "Vollständig"
+        }
+      ],
+      "default": "page"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "label": "Horizontaler Abstand",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "row_gap",
+      "label": "Vertikaler Abstand",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "header",
+      "content": "Erscheinungsbild"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    }
+  ],
+  "presets": [
+    {
+      "name": "Mehrspaltig"
+    }
+  ]
+}
+{% endschema %}
