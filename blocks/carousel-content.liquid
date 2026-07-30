@@ -1,0 +1,184 @@
+{% doc %}
+  Rendert den Karteninhalt innerhalb der Karussell-Section.
+
+  @example
+  {% content_for 'block',
+    type: 'carousel-content',
+    id: 'carousel-content'
+  %}
+{% enddoc %}
+
+<div
+  class="carousel-content"
+  style="
+    --carousel-columns-desktop: {{ block.settings.columns_desktop }};
+    --carousel-columns-mobile: {{ block.settings.columns_mobile }};
+    --carousel-card-gap: {{ block.settings.gap }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  <div class="carousel-content__viewport">
+    <div class="carousel-content__track" data-carousel-track>
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+
+  <button
+    class="carousel-content__arrow carousel-content__arrow--previous"
+    type="button"
+    data-carousel-direction="-1"
+    aria-label="Vorherige Karten"
+  >
+    &#10094;
+  </button>
+
+  <button
+    class="carousel-content__arrow carousel-content__arrow--next"
+    type="button"
+    data-carousel-direction="1"
+    aria-label="Nächste Karten"
+  >
+    &#10095;
+  </button>
+</div>
+
+{% stylesheet %}
+  .carousel-content {
+    position: relative;
+    width: 100%;
+  }
+
+  .carousel-content__viewport {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .carousel-content__track {
+    display: flex;
+    gap: var(--carousel-card-gap);
+    width: 100%;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .carousel-content__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-content__track > .shopify-block {
+    flex: 0 0 calc(
+      (
+        100% - (
+          var(--carousel-card-gap) *
+          (var(--carousel-columns-desktop) - 1)
+        )
+      ) / var(--carousel-columns-desktop)
+    );
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  .carousel-content__arrow {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgb(0 0 0 / 15%);
+    border-radius: 50%;
+    background: #ffffff;
+    color: #111111;
+    cursor: pointer;
+    transform: translateY(-50%);
+  }
+
+  .carousel-content__arrow--previous {
+    left: 10px;
+  }
+
+  .carousel-content__arrow--next {
+    right: 10px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .carousel-content__track > .shopify-block {
+      flex-basis: calc(
+        (
+          100% - (
+            var(--carousel-card-gap) *
+            (var(--carousel-columns-mobile) - 1)
+          )
+        ) / var(--carousel-columns-mobile)
+      );
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Karussell-Inhalt",
+  "blocks": [
+    {
+      "type": "card"
+    }
+  ],
+  "settings": [
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Sichtbare Karten Desktop",
+      "min": 1,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Sichtbare Karten Mobil",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Abstand zwischen Karten",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    }
+  ],
+  "presets": [
+    {
+      "name": "Karussell-Inhalt",
+      "blocks": [
+        {
+          "type": "card"
+        },
+        {
+          "type": "card"
+        },
+        {
+          "type": "card"
+        },
+        {
+          "type": "card"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
