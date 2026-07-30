@@ -1,0 +1,404 @@
+{% doc %}
+  Rendert einen konfigurierbaren Richtext-Block.
+
+  @example
+  {% content_for 'block', type: 'text', id: 'card-text' %}
+{% enddoc %}
+
+<div
+  class="
+    text-block
+    typography-style
+    text-block--desktop-{{ block.settings.desktop_width }}
+    text-block--mobile-{{ block.settings.mobile_width }}
+    text-block--max-width-{{ block.settings.max_width }}
+    text-block--alignment-{{ block.settings.alignment }}
+    text-block--background-{{ block.settings.show_background }}
+  "
+  style="
+    --text-color: {{ block.settings.text_color | default: 'inherit' }};
+    --text-background-color: {{ block.settings.background_color | default: 'transparent' }};
+    --text-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
+    --text-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
+    --text-padding-top: {{ block.settings.padding_top }}px;
+    --text-padding-bottom: {{ block.settings.padding_bottom }}px;
+    --text-padding-left: {{ block.settings.padding_left }}px;
+    --text-padding-right: {{ block.settings.padding_right }}px;
+    {% render 'typography-variables',
+      preset: block.settings.type_preset,
+      custom_font: block.settings.custom_font,
+      custom_size: block.settings.custom_size,
+      custom_line_height: block.settings.custom_line_height,
+      custom_letter_spacing: block.settings.custom_letter_spacing,
+      custom_case: block.settings.custom_case,
+      custom_wrap: block.settings.custom_wrap
+    %}
+  "
+  {{ block.shopify_attributes }}
+>
+  {{ block.settings.text }}
+</div>
+
+{% stylesheet %}
+  .text-block {
+    box-sizing: border-box;
+    color: var(--text-color);
+    font-family: var(--font-paragraph-family);
+    font-style: var(--font-paragraph-style);
+    font-weight: var(--font-paragraph-weight);
+    font-size: var(--font-paragraph-size);
+    line-height: var(--font-paragraph-line-height);
+    padding:
+      var(--text-padding-top)
+      var(--text-padding-right)
+      var(--text-padding-bottom)
+      var(--text-padding-left);
+  }
+
+  .text-block--desktop-fit {
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .text-block--desktop-fill {
+    width: 100%;
+  }
+
+  .text-block--desktop-custom {
+    width: var(--text-custom-width-desktop);
+    max-width: 100%;
+  }
+
+  .text-block--max-width-small {
+    max-width: 480px;
+  }
+
+  .text-block--max-width-normal {
+    max-width: 720px;
+  }
+
+  .text-block--max-width-wide {
+    max-width: 1000px;
+  }
+
+  .text-block--max-width-none {
+    max-width: none;
+  }
+
+  .text-block--alignment-left {
+    text-align: left;
+  }
+
+  .text-block--alignment-center {
+    text-align: center;
+  }
+
+  .text-block--alignment-right {
+    text-align: right;
+  }
+
+  .text-block--background-true {
+    background-color: var(--text-background-color);
+  }
+
+  .text-block p,
+  .text-block li,
+  .text-block a {
+    color: inherit;
+  }
+
+  .text-block p {
+    margin: 0;
+  }
+
+  .text-block p + p {
+    margin-top: 1em;
+  }
+
+  .text-block > *:first-child {
+    margin-top: 0;
+  }
+
+  .text-block > *:last-child {
+    margin-bottom: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .text-block--mobile-fit {
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .text-block--mobile-fill {
+      width: 100%;
+    }
+
+    .text-block--mobile-custom {
+      width: var(--text-custom-width-mobile);
+      max-width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Text",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Gib hier deinen Text ein.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "desktop_width",
+      "label": "Desktop-Breite",
+      "options": [
+        {
+          "value": "fit",
+          "label": "Anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Füllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
+        }
+      ],
+      "default": "fit"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_desktop",
+      "label": "Benutzerdefinierte Desktop-Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.desktop_width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "mobile_width",
+      "label": "Mobile Breite",
+      "options": [
+        {
+          "value": "fit",
+          "label": "Anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Füllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
+        }
+      ],
+      "default": "fit"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Benutzerdefinierte Mobile Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.mobile_width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "Max. Breite",
+      "options": [
+        { "value": "small", "label": "Schmal" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "wide", "label": "Breit" },
+        { "value": "none", "label": "Keine Begrenzung" }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Typografie"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "Voreinstellung",
+      "options": [
+        { "value": "standard", "label": "Standard" },
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "h1", "label": "Überschrift 1" },
+        { "value": "h2", "label": "Überschrift 2" },
+        { "value": "h3", "label": "Überschrift 3" },
+        { "value": "h4", "label": "Überschrift 4" },
+        { "value": "h5", "label": "Überschrift 5" },
+        { "value": "h6", "label": "Überschrift 6" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
+      ],
+      "default": "standard",
+      "info": "Voreinstellungen können in den Theme-Einstellungen bearbeitet werden."
+    },
+    {
+      "type": "select",
+      "id": "custom_font",
+      "label": "Schriftart",
+      "options": [
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "heading", "label": "Überschrift" },
+        { "value": "heading_1", "label": "Überschrift 1" }
+      ],
+      "default": "paragraph",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "custom_size",
+      "label": "Größe",
+      "min": 8,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 16,
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_line_height",
+      "label": "Zeilenhöhe",
+      "options": [
+        { "value": "1", "label": "Eng" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "1.5", "label": "Weit" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_letter_spacing",
+      "label": "Zeichenabstand",
+      "options": [
+        { "value": "-0.02em", "label": "Eng" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "0.05em", "label": "Weit" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_case",
+      "label": "Schreibweise",
+      "options": [
+        { "value": "none", "label": "Standard" },
+        { "value": "uppercase", "label": "Großbuchstaben" },
+        { "value": "lowercase", "label": "Kleinbuchstaben" },
+        { "value": "capitalize", "label": "Wortanfänge groß" }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_wrap",
+      "label": "Umbruch",
+      "options": [
+        { "value": "wrap", "label": "Standard" },
+        { "value": "pretty", "label": "Hübsch" },
+        { "value": "balance", "label": "Ausgeglichen" },
+        { "value": "nowrap", "label": "Kein Umbruch" }
+      ],
+      "default": "pretty",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Erscheinungsbild"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_background",
+      "label": "Hintergrund",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe",
+      "visible_if": "{{ block.settings.show_background }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Text"
+    }
+  ]
+}
+{% endschema %}

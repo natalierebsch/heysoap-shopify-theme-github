@@ -1,0 +1,344 @@
+{% doc %}
+  Rendert automatisch eine Kollektionsliste als Karussellkarten.
+
+  @param {array} collections - Die in der übergeordneten Section ausgewählten Kollektionen.
+
+  @example
+  {% content_for 'block', type: '_collection-carousel-content', id: 'collection-carousel-content', collections: section.settings.collection_list %}
+{% enddoc %}
+
+<div
+  class="
+    collection-carousel-content
+    collection-carousel--placement-{{ block.settings.placement }}
+    collection-carousel--align-{{ block.settings.horizontal_alignment }}
+    collection-carousel--position-{{ block.settings.vertical_alignment }}
+    collection-carousel--title-{{ block.settings.title_preset }}
+    {% if block.settings.aspect_ratio == 'auto' %}collection-carousel--ratio-auto{% endif %}
+    collection-carousel--border-{{ block.settings.border }}
+  "
+  style="
+    --collection-card-background: {{ block.settings.background_color | default: 'transparent' }};
+    --collection-card-text: {{ block.settings.text_color | default: 'inherit' }};
+    --collection-card-gap: {{ block.settings.collection_card_gap }}px;
+    --collection-card-overlay: {{ block.settings.overlay_color | default: '#000000' }};
+    --collection-card-overlay-opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};
+    --collection-card-ratio: {{ block.settings.aspect_ratio }};
+    --collection-card-radius: {{ block.settings.border_radius }}px;
+    --collection-card-border-width: {{ block.settings.border_width }}px;
+    --collection-card-border-color: {{ block.settings.border_color | default: 'currentColor' }};
+    --collection-card-border-opacity: {{ block.settings.border_opacity }}%;
+    --collection-card-padding: {{ block.settings.card_padding }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% if collections != blank %}
+    <div class="collection-carousel__stage">
+      <div class="collection-carousel__viewport">
+        <div class="collection-carousel__track" data-collection-carousel-track>
+          {% for collection in collections %}
+            <article class="collection-carousel__slide">
+              <a
+                class="collection-carousel__card"
+                href="{{ collection.url }}"
+                aria-label="{{ collection.title | escape }}"
+              >
+                <div class="collection-carousel__media">
+                  {% if collection.image != blank %}
+                    {{
+                      collection.image
+                      | image_url: width: 2000
+                      | image_tag:
+                        class: 'collection-carousel__image',
+                        loading: 'lazy',
+                        widths: '400, 750, 1000, 1500, 2000',
+                        sizes: '(max-width: 749px) 80vw, 33vw',
+                        alt: collection.title
+                    }}
+                  {% else %}
+                    {{ 'collection-1' | placeholder_svg_tag: 'collection-carousel__placeholder' }}
+                  {% endif %}
+
+                  {% if block.settings.placement == 'on_image' %}
+                    <span class="collection-carousel__overlay"></span>
+
+                    <div class="collection-carousel__content">
+                      {% if block.settings.show_title %}
+                        <h3 class="collection-carousel__title">
+                          {{ collection.title }}
+                        </h3>
+                      {% endif %}
+                    </div>
+                  {% endif %}
+                </div>
+
+                {% if block.settings.placement == 'below_image' %}
+                  <div class="collection-carousel__content">
+                    {% if block.settings.show_title %}
+                      <h3 class="collection-carousel__title">
+                        {{ collection.title }}
+                      </h3>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </a>
+            </article>
+          {% endfor %}
+        </div>
+      </div>
+
+      {% if section.settings.navigation_symbol != 'none' %}
+        <button
+          class="collection-carousel__arrow collection-carousel__arrow--previous"
+          type="button"
+          data-collection-carousel-direction="-1"
+          aria-label="Vorherige Kollektionen"
+        >
+          {% if section.settings.navigation_symbol == 'chevrons' %}
+            &#10094;
+          {% else %}
+            &larr;
+          {% endif %}
+        </button>
+
+        <button
+          class="collection-carousel__arrow collection-carousel__arrow--next"
+          type="button"
+          data-collection-carousel-direction="1"
+          aria-label="Nächste Kollektionen"
+        >
+          {% if section.settings.navigation_symbol == 'chevrons' %}
+            &#10095;
+          {% else %}
+            &rarr;
+          {% endif %}
+        </button>
+      {% endif %}
+    </div>
+  {% else %}
+    <div class="collection-carousel__empty">
+      Wähle in den Section-Einstellungen mindestens eine Kollektion aus.
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Kollektionskarten",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Kollektionsname anzeigen",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "title_preset",
+      "label": "Titel-Voreinstellung",
+      "options": [
+        {
+          "value": "h1",
+          "label": "Überschrift 1"
+        },
+        {
+          "value": "h2",
+          "label": "Überschrift 2"
+        },
+        {
+          "value": "h3",
+          "label": "Überschrift 3"
+        }
+      ],
+      "default": "h3",
+      "visible_if": "{{ block.settings.show_title }}"
+    },
+    {
+      "type": "select",
+      "id": "placement",
+      "label": "Titelplatzierung",
+      "options": [
+        {
+          "value": "on_image",
+          "label": "Auf dem Bild"
+        },
+        {
+          "value": "below_image",
+          "label": "Unter dem Bild"
+        }
+      ],
+      "default": "below_image"
+    },
+    {
+      "type": "select",
+      "id": "horizontal_alignment",
+      "label": "Ausrichtung",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Links"
+        },
+        {
+          "value": "center",
+          "label": "Zentriert"
+        },
+        {
+          "value": "flex-end",
+          "label": "Rechts"
+        }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "Position",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Oben"
+        },
+        {
+          "value": "center",
+          "label": "Zentriert"
+        },
+        {
+          "value": "flex-end",
+          "label": "Unten"
+        }
+      ],
+      "default": "center",
+      "visible_if": "{{ block.settings.placement == 'on_image' }}"
+    },
+    {
+      "type": "range",
+      "id": "collection_card_gap",
+      "label": "Vertikaler Abstand",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "label": "Seitenverhältnis",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Automatisch"
+        },
+        {
+          "value": "3 / 4",
+          "label": "Hochformat"
+        },
+        {
+          "value": "4 / 3",
+          "label": "Querformat"
+        },
+        {
+          "value": "1 / 1",
+          "label": "Quadrat"
+        }
+      ],
+      "default": "1 / 1"
+    },
+    {
+      "type": "range",
+      "id": "card_padding",
+      "label": "Innenabstand",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe"
+    },
+    {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Überlagerungsfarbe",
+      "visible_if": "{{ block.settings.placement == 'on_image' }}"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Überlagerungsdeckkraft",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 20,
+      "visible_if": "{{ block.settings.placement == 'on_image' }}"
+    },
+    {
+      "type": "header",
+      "content": "Ränder"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "Stil",
+      "options": [
+        {
+          "value": "none",
+          "label": "Keine"
+        },
+        {
+          "value": "solid",
+          "label": "Einfarbig"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Stärke",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "label": "Deckkraft",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Farbe",
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,189 @@
+{% if block.settings.logo != blank %}
+  <div
+    class="
+      logo-block
+      logo-block--desktop-{{ block.settings.desktop_width }}
+      logo-block--mobile-{{ block.settings.mobile_width }}
+    "
+    style="
+      --logo-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
+      --logo-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
+      --logo-alignment: {{ block.settings.alignment }};
+    "
+    {{ block.shopify_attributes }}
+  >
+    {% if block.settings.link_to_home %}
+      <a href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+    {% endif %}
+
+    {{
+      block.settings.logo
+      | image_url: width: 1000
+      | image_tag:
+        class: 'logo-block__image',
+        loading: 'lazy',
+        widths: '100, 200, 300, 400, 600, 800, 1000',
+        alt: shop.name
+    }}
+
+    {% if block.settings.link_to_home %}
+      </a>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .logo-block {
+    display: flex;
+    justify-content: var(--logo-alignment);
+    max-width: 100%;
+  }
+
+  .logo-block__image {
+    display: block;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .logo-block--desktop-fit {
+    width: fit-content;
+  }
+
+  .logo-block--desktop-fill {
+    width: 100%;
+  }
+
+  .logo-block--desktop-custom {
+    width: var(--logo-custom-width-desktop);
+  }
+
+  .logo-block--desktop-fill .logo-block__image,
+  .logo-block--desktop-custom .logo-block__image {
+    width: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .logo-block--mobile-fit {
+      width: fit-content;
+    }
+
+    .logo-block--mobile-fill {
+      width: 100%;
+    }
+
+    .logo-block--mobile-custom {
+      width: var(--logo-custom-width-mobile);
+    }
+
+    .logo-block--mobile-fill .logo-block__image,
+    .logo-block--mobile-custom .logo-block__image {
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Logo",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo"
+    },
+    {
+      "type": "select",
+      "id": "desktop_width",
+      "label": "Desktop-Breite",
+      "options": [
+        {
+          "value": "fit",
+          "label": "Anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Füllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
+        }
+      ],
+      "default": "fit"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_desktop",
+      "label": "Benutzerdefinierte Desktop-Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 30,
+      "visible_if": "{{ block.settings.desktop_width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "mobile_width",
+      "label": "Mobile Breite",
+      "options": [
+        {
+          "value": "fit",
+          "label": "Anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Füllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
+        }
+      ],
+      "default": "fit"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Benutzerdefinierte Mobile Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50,
+      "visible_if": "{{ block.settings.mobile_width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Links"
+        },
+        {
+          "value": "center",
+          "label": "Mittig"
+        },
+        {
+          "value": "flex-end",
+          "label": "Rechts"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "link_to_home",
+      "label": "Mit Startseite verlinken",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Logo"
+    }
+  ]
+}
+{% endschema %}

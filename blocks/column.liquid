@@ -1,0 +1,256 @@
+{% doc %}
+  Rendert eine Spalte, in der weitere Theme-Blöcke eingefügt werden können.
+
+  @example
+  {% content_for 'block', type: 'column', id: 'column' %}
+{% enddoc %}
+
+<div
+  class="
+    multicolumn-column
+    multicolumn-column--horizontal-{{ block.settings.horizontal_alignment }}
+    multicolumn-column--vertical-{{ block.settings.vertical_alignment }}
+    multicolumn-column--border-{{ block.settings.border_style }}
+  "
+  style="
+    --column-background: {{ block.settings.background_color | default: 'transparent' }};
+    --column-gap: {{ block.settings.gap }}px;
+    --column-radius: {{ block.settings.border_radius }}px;
+    --column-padding-top: {{ block.settings.padding_top }}px;
+    --column-padding-bottom: {{ block.settings.padding_bottom }}px;
+    --column-padding-left: {{ block.settings.padding_left }}px;
+    --column-padding-right: {{ block.settings.padding_right }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% content_for 'blocks' %}
+</div>
+
+{% stylesheet %}
+  .multicolumn-column {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--column-gap);
+    min-width: 0;
+    height: auto;
+    overflow: hidden;
+    background-color: var(--column-background);
+    border-radius: var(--column-radius);
+    padding:
+      var(--column-padding-top)
+      var(--column-padding-right)
+      var(--column-padding-bottom)
+      var(--column-padding-left);
+  }
+
+  .multicolumn-column--horizontal-left {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .multicolumn-column--horizontal-center {
+    align-items: center;
+    text-align: center;
+  }
+
+  .multicolumn-column--horizontal-right {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .multicolumn-column--vertical-top {
+    justify-content: flex-start;
+  }
+
+  .multicolumn-column--vertical-center {
+    justify-content: center;
+  }
+
+  .multicolumn-column--vertical-bottom {
+    justify-content: flex-end;
+  }
+
+  .multicolumn-column--border-none {
+    border: 0;
+  }
+
+  .multicolumn-column--border-solid {
+    border: 1px solid currentColor;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Spalte",
+  "blocks": [
+    {
+        "type": "heading"
+    },
+    {
+        "type": "text"
+    },
+    {
+        "type": "image"
+    },
+    {
+        "type": "button"
+    },
+    {
+        "type": "logo"
+    },
+    {
+        "type": "menu"
+    },
+    {
+        "type": "payment-icons"
+    },
+    {
+        "type": "spacer"
+    },
+    {
+        "type": "collection-card"
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "horizontal_alignment",
+      "label": "Horizontale Ausrichtung",
+      "options": [
+        {
+          "value": "left",
+          "label": "Links"
+        },
+        {
+          "value": "center",
+          "label": "Mittig"
+        },
+        {
+          "value": "right",
+          "label": "Rechts"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "Vertikale Ausrichtung",
+      "options": [
+        {
+          "value": "top",
+          "label": "Oben"
+        },
+        {
+          "value": "center",
+          "label": "Zentriert"
+        },
+        {
+          "value": "bottom",
+          "label": "Unten"
+        }
+      ],
+      "default": "top"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Abstand zwischen Blöcken",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "header",
+      "content": "Erscheinungsbild"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe"
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Rahmen",
+      "options": [
+        {
+          "value": "none",
+          "label": "Keiner"
+        },
+        {
+          "value": "solid",
+          "label": "Einfarbig"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Spalte"
+    }
+  ]
+}
+{% endschema %}

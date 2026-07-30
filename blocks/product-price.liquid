@@ -1,0 +1,37 @@
+{% doc %}
+  Rendert den Preis des nächstgelegenen Produkts.
+{% enddoc %}
+
+{% assign price_product = closest.product %}
+
+{% if price_product != blank %}
+  <div class="featured-product-price" {{ block.shopify_attributes }}>
+    {% if price_product.compare_at_price > price_product.price %}
+      <span class="featured-product-price__compare">
+        {{ price_product.compare_at_price | money }}
+      </span>
+    {% endif %}
+
+    <span>{{ price_product.price | money }}</span>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .featured-product-price {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .featured-product-price__compare {
+    opacity: 0.65;
+    text-decoration: line-through;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Preis",
+  "settings": []
+}
+{% endschema %}

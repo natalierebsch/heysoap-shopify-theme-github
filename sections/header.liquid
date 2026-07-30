@@ -1,9 +1,39 @@
-<div class="relative bg-white" x-data="{ mobileMenuOpen: false, searchBarOpen: false }">
+{% liquid 
+    if section.settings.menu.links == blank
+        assign main_menu_linklist = linklists[section.settings.menu].links
+    else
+        assign main_menu_linklist = section.settings.menu.links
+    endif
+%}
+
+<div 
+    class="site-header relative"
+    style="
+        --header-background-color: {{ section.settings.background_color | default: 'transparent' }};
+        --header-text-color: {{ section.settings.text_color | default: 'inherit' }};
+    "
+    x-data="{ mobileMenuOpen: false, searchBarOpen: false }"
+    x-cloak>    
     <div class="mx-auto px-4 sm:px-6">
         <div class="flex justify-center items-center py-6 md:justify-start md:space-x-10">
             <!-- STORE NAME / STORE LOGO -->
-            <div class="flex justify-start lg:flex-1 truncate">
-                <h1 class="text-xl font-bold truncate">{{ shop.name }}</h1>
+            <div class="flex justify-start lg:flex-1">
+                <a href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+                    {% if section.settings.logo != blank %}
+                        {% assign logo_render_width = section.settings.logo_width | times: 2 %}
+
+                        {{
+                            section.settings.logo
+                            | image_url: width: logo_render_width
+                            | image_tag:
+                                class: 'block h-auto',
+                                width: section.settings.logo_width,
+                                alt: shop.name
+                        }}
+                    {% else %}
+                        <span class="text-xl font-bold truncate">{{ shop.name }}</span>
+                    {% endif %}
+                </a>
             </div>
 
             <div class="-mr-2 -my-2 ml-3 md:hidden">
@@ -13,11 +43,7 @@
             </div>
             <!-- NAVIGATION MENU -->
             <nav class="hidden md:flex space-x-10">
-                {% if section.settings.menu.links == blank %}
-                    {% assign main_menu_linklist = linklists[section.settings.menu].links %}
-                {% else %}
-                    {% assign main_menu_linklist = section.settings.menu.links %}
-                {% endif %}
+
                 {% for link in main_menu_linklist %}
                     {% if link.links != blank %}
                         {% assign link_handle = link.handle | replace: '-', '_' %}
@@ -67,10 +93,10 @@
                 {% if shop.customer_accounts_enabled %}
                     {% if customer %}
                         <a href="{{ routes.account_url }}" class="text-base text-gray-500 hover:text-gray-900">account</a>
-                        {{ 'Log out'  | customer_logout_link | replace: '<a', '<a class="text-base text-gray-500 hover:text-gray-900"' }}
+                        {{ 'Log out' | customer_logout_link | replace: '<a', '<a class="text-base text-gray-500 hover:text-gray-900"' }}
                     {% else %}
-                        {{ 'Log in ' | customer_login_link | replace: '<a', '<a class="text-base text-gray-500 hover:text-gray-900"' }}
-                        {{ 'Register' | customer_register_link | replace: '<a', '<a class="text-base text-gray-500 hover:text-gray-900"' }}
+                        {{ 'Einloggen' | customer_login_link | replace: '<a', '<a class="text-base text-gray-500 hover:text-gray-900"' }}
+                        {{ 'Registrieren' | customer_register_link | replace: '<a', '<a class="text-base text-gray-500 hover:text-gray-900"' }}
                     {% endif %}
                 {% endif %}
             </div>
@@ -96,11 +122,7 @@
                         <!-- NAVIGATION LINKS FOR MOBILE MENU -->
                         <div class="pt-3">
                             <nav class="grid gap-y-7">
-                                {% if section.settings.menu.links == blank %}
-                                    {% assign main_menu_linklist = linklists[section.settings.menu].links %}
-                                {% else %}
-                                    {% assign main_menu_linklist = section.settings.menu.links %}
-                                {% endif %}
+                                
                                 {% for link in main_menu_linklist %}
                                     {% if link.links != blank %}
                                     {% assign mobile_link_handle = link.handle | replace: '-', '_' %}
@@ -151,10 +173,40 @@
     </div>
 </div>
 
+{% stylesheet %}
+    .site-header,
+    .site-header .bg-white {
+        background-color: var(--header-background-color);
+    }
+
+    .site-header,
+    .site-header a,
+    .site-header button,
+    .site-header h1,
+    .site-header p,
+    .site-header span,
+    .site-header input {
+        color: var(--header-text-color);
+    }
+
+    .site-header svg {
+        color: currentColor;
+    }
+{% endstylesheet %}
 {% schema %}
 {
     "name": "Header",
     "settings": [
+        {
+            "type": "color",
+            "id": "background_color",
+            "label": "Header background color"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Header text color"
+        },
         {
             "type": "text",
             "id": "mobile_menu_title",
@@ -166,6 +218,21 @@
             "id": "menu",
             "default": "main-menu",
             "label": "Heading Navigation Menu"
+        },
+        {
+            "type": "image_picker",
+            "id": "logo",
+            "label": "Logo"
+        },
+        {
+            "type": "range",
+            "id": "logo_width",
+            "min": 50,
+            "max": 300,
+            "step": 10,
+            "unit": "px",
+            "default": 150,
+            "label": "Logo width"
         }
     ]
 }

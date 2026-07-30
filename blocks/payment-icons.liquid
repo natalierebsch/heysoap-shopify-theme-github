@@ -1,0 +1,134 @@
+{% doc %}
+  Zeigt die im Shop aktivierten Zahlungssymbole an.
+
+  @example
+  {% content_for 'block', type: 'payment-icons', id: 'payment-icons' %}
+{% enddoc %}
+
+<div
+  class="payment-icons-block payment-icons-block--{{ block.settings.alignment }}"
+  style="
+    --payment-icon-size: {{ block.settings.icon_size }}px;
+    --payment-icon-gap: {{ block.settings.gap }}px;
+    --payment-padding-top: {{ block.settings.padding_top }}px;
+    --payment-padding-bottom: {{ block.settings.padding_bottom }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% for type in shop.enabled_payment_types %}
+    <span class="payment-icons-block__icon">
+      {{ type | payment_type_svg_tag }}
+    </span>
+  {% endfor %}
+</div>
+
+{% stylesheet %}
+  .payment-icons-block {
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--payment-icon-gap);
+    width: 100%;
+    padding-top: var(--payment-padding-top);
+    padding-bottom: var(--payment-padding-bottom);
+  }
+
+  .payment-icons-block--left {
+    justify-content: flex-start;
+  }
+
+  .payment-icons-block--center {
+    justify-content: center;
+  }
+
+  .payment-icons-block--right {
+    justify-content: flex-end;
+  }
+
+  .payment-icons-block__icon {
+    display: inline-flex;
+  }
+
+  .payment-icons-block__icon svg {
+    display: block;
+    width: var(--payment-icon-size);
+    height: auto;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Zahlungssymbole",
+  "settings": [
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "options": [
+        {
+          "value": "left",
+          "label": "Links"
+        },
+        {
+          "value": "center",
+          "label": "Mittig"
+        },
+        {
+          "value": "right",
+          "label": "Rechts"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Symbolgröße",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Abstand",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Zahlungssymbole"
+    }
+  ]
+}
+{% endschema %}

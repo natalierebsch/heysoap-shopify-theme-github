@@ -9,12 +9,707 @@
  */
 {
   "sections": {
+    "banner_slider_wXEUYL": {
+      "type": "banner-slider",
+      "blocks": {
+        "slide_NgTKBA": {
+          "type": "slide",
+          "settings": {
+            "heading": "Banner-Überschrift",
+            "text": "<p>Beschreibe hier dein Angebot.</p>",
+            "button_label": "Mehr erfahren",
+            "button_link": ""
+          }
+        },
+        "slide_hFVEYA": {
+          "type": "slide",
+          "settings": {
+            "heading": "Banner-Überschrift",
+            "text": "<p>Beschreibe hier dein Angebot.</p>",
+            "button_label": "Mehr erfahren",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_NgTKBA",
+        "slide_hFVEYA"
+      ],
+      "name": "Banner-Slider",
+      "settings": {
+        "height_desktop": 600,
+        "height_mobile": 450
+      }
+    },
+    "collection_carousel_attbtg": {
+      "type": "collection-carousel",
+      "blocks": {
+        "heading_YeHMTp": {
+          "type": "heading",
+          "name": "Header",
+          "settings": {
+            "heading": "Entdecke unsere Produkte",
+            "desktop_width": "fit",
+            "custom_width_desktop": 100,
+            "mobile_width": "fit",
+            "custom_width_mobile": 100,
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h2",
+            "custom_font": "heading",
+            "custom_size": 20,
+            "custom_line_height": "normal",
+            "custom_letter_spacing": "normal",
+            "custom_case": "none",
+            "custom_wrap": "pretty",
+            "text_color": "",
+            "show_background": false,
+            "background_color": "",
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          },
+          "blocks": {}
+        },
+        "collection-card": {
+          "type": "_collection-card",
+          "static": true,
+          "settings": {
+            "placement": "on_image",
+            "horizontal_alignment": "center",
+            "vertical_alignment": "flex-end",
+            "collection_card_gap": 8,
+            "background_color": "#fbe9e2",
+            "border": "none",
+            "border_width": 20,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 20
+          },
+          "blocks": {
+            "collection-card-image": {
+              "type": "_collection-card-image",
+              "static": true,
+              "settings": {
+                "image_ratio": "3 / 4",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 20
+              },
+              "blocks": {}
+            },
+            "collection-title": {
+              "type": "collection-title",
+              "static": true,
+              "settings": {
+                "width": "fill",
+                "max_width": "small",
+                "alignment": "center",
+                "type_preset": "custom",
+                "custom_font": "heading",
+                "custom_size": 36,
+                "custom_line_height": "1.5",
+                "custom_letter_spacing": "normal",
+                "custom_case": "none",
+                "custom_wrap": "wrap",
+                "text_color": "#fdfdfd",
+                "show_background": true,
+                "background_color": "#ff808c",
+                "border_radius": 20,
+                "padding_top": 5,
+                "padding_bottom": 5,
+                "padding_left": 5,
+                "padding_right": 5
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": []
+        }
+      },
+      "block_order": [
+        "heading_YeHMTp"
+      ],
+      "name": "Kollektionskarussell",
+      "settings": {
+        "collection_list": [
+          "sets",
+          "bundles",
+          "nachfull-packs",
+          "spender"
+        ],
+        "columns_desktop": 3,
+        "columns_mobile": "1",
+        "gap": 12,
+        "width": "page",
+        "navigation_symbol": "chevrons",
+        "navigation_background": "circle",
+        "background_color": "",
+        "padding_top": 48,
+        "padding_bottom": 48
+      }
+    },
+    "carousel_6kzRVB": {
+      "type": "carousel",
+      "blocks": {
+        "carousel-heading": {
+          "type": "heading",
+          "static": true,
+          "settings": {
+            "heading": "heysoap Philisophie",
+            "desktop_width": "fit",
+            "custom_width_desktop": 100,
+            "mobile_width": "fit",
+            "custom_width_mobile": 100,
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h3",
+            "custom_font": "heading",
+            "custom_size": 20,
+            "custom_line_height": "normal",
+            "custom_letter_spacing": "normal",
+            "custom_case": "none",
+            "custom_wrap": "pretty",
+            "text_color": "",
+            "show_background": false,
+            "background_color": "",
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          },
+          "blocks": {}
+        },
+        "carousel-content": {
+          "type": "carousel-content",
+          "static": true,
+          "settings": {
+            "background_color": "",
+            "card_height": "adapt",
+            "position": "flex-start",
+            "border_style": "none",
+            "border_radius": 0,
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          },
+          "blocks": {
+            "card_aHzafD": {
+              "type": "card",
+              "name": "Karte",
+              "settings": {
+                "direction": "vertical",
+                "alignment": "flex-start",
+                "position": "center",
+                "gap": 12,
+                "background_media": "none",
+                "background_color": "",
+                "media_overlay": false,
+                "link": "",
+                "open_new_tab": false,
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
+              },
+              "blocks": {
+                "card-image": {
+                  "type": "image",
+                  "static": true,
+                  "settings": {
+                    "image": "shopify://shop_images/LiquidSoapRefill.png",
+                    "link": "",
+                    "aspect_ratio": "auto",
+                    "desktop_width": "fill",
+                    "custom_width_desktop": 100,
+                    "mobile_width": "fit",
+                    "custom_width_mobile": 100,
+                    "height": "adapt",
+                    "border_style": "none",
+                    "border_radius": 20,
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
+                  },
+                  "blocks": {}
+                },
+                "card-heading": {
+                  "type": "heading",
+                  "static": true,
+                  "settings": {
+                    "heading": "Weil Gerüche nicht bleiben sollten",
+                    "desktop_width": "fit",
+                    "custom_width_desktop": 100,
+                    "mobile_width": "fit",
+                    "custom_width_mobile": 100,
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "h3",
+                    "custom_font": "heading",
+                    "custom_size": 20,
+                    "custom_line_height": "normal",
+                    "custom_letter_spacing": "normal",
+                    "custom_case": "none",
+                    "custom_wrap": "pretty",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
+                  },
+                  "blocks": {}
+                },
+                "card-text": {
+                  "type": "text",
+                  "static": true,
+                  "settings": {
+                    "text": "<p>Die Idee zu heysoap entstand in der Gastronomie. Trotz mehrmaligem Händewaschen, langen Duschen oder Edelstahlseife blieb der Geruch von Zwiebeln und Knoblauch oft hartnäckig an den Händen.</p><p>Als auch Kolleginnen und Kollegen nach einer Lösung suchten, wurde uns klar: Es fehlt eine Seife, die unangenehme Gerüche entfernt und unkompliziert erhältlich ist. Genau daraus ist heysoap entstanden.</p>",
+                    "desktop_width": "fit",
+                    "custom_width_desktop": 100,
+                    "mobile_width": "fit",
+                    "custom_width_mobile": 100,
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "standard",
+                    "custom_font": "paragraph",
+                    "custom_size": 16,
+                    "custom_line_height": "normal",
+                    "custom_letter_spacing": "normal",
+                    "custom_case": "none",
+                    "custom_wrap": "pretty",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": []
+            },
+            "card_YME7LU": {
+              "type": "card",
+              "name": "Karte",
+              "settings": {
+                "direction": "vertical",
+                "alignment": "flex-start",
+                "position": "center",
+                "gap": 16,
+                "background_media": "none",
+                "background_color": "",
+                "media_overlay": false,
+                "link": "",
+                "open_new_tab": false,
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
+              },
+              "blocks": {
+                "card-image": {
+                  "type": "image",
+                  "static": true,
+                  "settings": {
+                    "image": "shopify://shop_images/Spender_Ablagen_Kollektion.png",
+                    "link": "",
+                    "aspect_ratio": "auto",
+                    "desktop_width": "fill",
+                    "custom_width_desktop": 100,
+                    "mobile_width": "fill",
+                    "custom_width_mobile": 100,
+                    "height": "adapt",
+                    "border_style": "none",
+                    "border_radius": 20,
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
+                  },
+                  "blocks": {}
+                },
+                "card-heading": {
+                  "type": "heading",
+                  "static": true,
+                  "settings": {
+                    "heading": "Langlebig und fair",
+                    "desktop_width": "fit",
+                    "custom_width_desktop": 100,
+                    "mobile_width": "fit",
+                    "custom_width_mobile": 100,
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "h3",
+                    "custom_font": "heading",
+                    "custom_size": 20,
+                    "custom_line_height": "normal",
+                    "custom_letter_spacing": "normal",
+                    "custom_case": "none",
+                    "custom_wrap": "pretty",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
+                  },
+                  "blocks": {}
+                },
+                "card-text": {
+                  "type": "text",
+                  "static": true,
+                  "settings": {
+                    "text": "<p>Bei unseren Spendern war uns Langlebigkeit besonders wichtig. Deshalb haben wir uns bewusst für hochwertige Keramik entschieden.</p><p>Unser Ziel: zeitlose Produkte zu fairen Bedingungen herstellen lassen und zu einem fairen Preis anbieten.</p>",
+                    "desktop_width": "fit",
+                    "custom_width_desktop": 100,
+                    "mobile_width": "fit",
+                    "custom_width_mobile": 100,
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "standard",
+                    "custom_font": "paragraph",
+                    "custom_size": 16,
+                    "custom_line_height": "normal",
+                    "custom_letter_spacing": "normal",
+                    "custom_case": "none",
+                    "custom_wrap": "pretty",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": []
+            },
+            "card_AkKGhr": {
+              "type": "card",
+              "name": "Karte",
+              "settings": {
+                "direction": "vertical",
+                "alignment": "flex-start",
+                "position": "center",
+                "gap": 16,
+                "background_media": "none",
+                "background_color": "",
+                "media_overlay": false,
+                "link": "",
+                "open_new_tab": false,
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
+              },
+              "blocks": {
+                "card-image": {
+                  "type": "image",
+                  "static": true,
+                  "settings": {
+                    "image": "shopify://shop_images/ChatGPT_Image_23._Juli_2026_08_51_13_7.png",
+                    "link": "",
+                    "aspect_ratio": "auto",
+                    "desktop_width": "fill",
+                    "custom_width_desktop": 100,
+                    "mobile_width": "fill",
+                    "custom_width_mobile": 100,
+                    "height": "adapt",
+                    "border_style": "none",
+                    "border_radius": 20,
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
+                  },
+                  "blocks": {}
+                },
+                "card-heading": {
+                  "type": "heading",
+                  "static": true,
+                  "settings": {
+                    "heading": "Refill statt Neukauf",
+                    "desktop_width": "fit",
+                    "custom_width_desktop": 100,
+                    "mobile_width": "fit",
+                    "custom_width_mobile": 100,
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "h3",
+                    "custom_font": "heading",
+                    "custom_size": 20,
+                    "custom_line_height": "normal",
+                    "custom_letter_spacing": "normal",
+                    "custom_case": "none",
+                    "custom_wrap": "pretty",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
+                  },
+                  "blocks": {}
+                },
+                "card-text": {
+                  "type": "text",
+                  "static": true,
+                  "settings": {
+                    "text": "<p>Du hast bereits einen Seifenspender, möchtest aber unsere Seife oder Handlotion ausprobieren? Kein Problem.</p><p>Unsere Produkte sind auch einzeln als Refill-Pack in praktischen Größen erhältlich. Du musst kein vollständiges Starterset kaufen.</p>",
+                    "desktop_width": "fit",
+                    "custom_width_desktop": 100,
+                    "mobile_width": "fit",
+                    "custom_width_mobile": 100,
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "standard",
+                    "custom_font": "paragraph",
+                    "custom_size": 16,
+                    "custom_line_height": "normal",
+                    "custom_letter_spacing": "normal",
+                    "custom_case": "none",
+                    "custom_wrap": "pretty",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": []
+            },
+            "card_f7FDHY": {
+              "type": "card",
+              "name": "Karte",
+              "settings": {
+                "direction": "vertical",
+                "alignment": "flex-start",
+                "position": "center",
+                "gap": 16,
+                "background_media": "none",
+                "background_color": "",
+                "media_overlay": false,
+                "link": "",
+                "open_new_tab": false,
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
+              },
+              "blocks": {
+                "card-image": {
+                  "type": "image",
+                  "static": true,
+                  "settings": {
+                    "image": "shopify://shop_images/barsoapstarterset.png",
+                    "link": "",
+                    "aspect_ratio": "auto",
+                    "desktop_width": "fit",
+                    "custom_width_desktop": 100,
+                    "mobile_width": "fit",
+                    "custom_width_mobile": 100,
+                    "height": "adapt",
+                    "border_style": "none",
+                    "border_radius": 20,
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
+                  },
+                  "blocks": {}
+                },
+                "card-heading": {
+                  "type": "heading",
+                  "static": true,
+                  "settings": {
+                    "heading": "Mix & Match",
+                    "desktop_width": "fit",
+                    "custom_width_desktop": 100,
+                    "mobile_width": "fit",
+                    "custom_width_mobile": 100,
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "h3",
+                    "custom_font": "heading",
+                    "custom_size": 20,
+                    "custom_line_height": "normal",
+                    "custom_letter_spacing": "normal",
+                    "custom_case": "none",
+                    "custom_wrap": "pretty",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
+                  },
+                  "blocks": {}
+                },
+                "card-text": {
+                  "type": "text",
+                  "static": true,
+                  "settings": {
+                    "text": "<p><br/>Dir gefallen die Farben eines Sets nicht? Dann stell dir deine eigene Kombination zusammen.Alle Spender und Keramikuntersetzer sind auch einzeln erhältlich. Kombiniere Farben und Produkte so, wie sie zu deinem Zuhause passen.<br/><br/></p>",
+                    "desktop_width": "fit",
+                    "custom_width_desktop": 100,
+                    "mobile_width": "fit",
+                    "custom_width_mobile": 100,
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "standard",
+                    "custom_font": "paragraph",
+                    "custom_size": 16,
+                    "custom_line_height": "normal",
+                    "custom_letter_spacing": "normal",
+                    "custom_case": "none",
+                    "custom_wrap": "pretty",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": []
+            }
+          },
+          "block_order": [
+            "card_aHzafD",
+            "card_YME7LU",
+            "card_AkKGhr",
+            "card_f7FDHY"
+          ]
+        }
+      },
+      "name": "Karussell",
+      "settings": {
+        "columns_desktop": 3,
+        "columns_mobile": "1",
+        "width": "full",
+        "horizontal_gap": 12,
+        "background_color": "#f5f5f5",
+        "navigation_symbol": "chevrons",
+        "navigation_background": "circle",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    },
     "featured-collection": {
       "type": "featured-collection",
-      "settings":{
-        "featured_collection": "all"
+      "blocks": {
+        "featured-collection-heading": {
+          "type": "_featured-collection-heading",
+          "static": true,
+          "settings": {
+            "alignment": "between",
+            "gap": 16,
+            "show_button": true,
+            "button_label": "Alle ansehen",
+            "padding_top": 0,
+            "padding_bottom": 0
+          },
+          "blocks": {}
+        },
+        "featured-product-card": {
+          "type": "_featured-product-card",
+          "static": true,
+          "settings": {
+            "gap": 8,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "background_color": "#FDFDFD",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 20,
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          },
+          "blocks": {
+            "product-card-image": {
+              "type": "_product-card-image",
+              "static": true,
+              "settings": {
+                "aspect_ratio": "1 / 1",
+                "border_radius": 0
+              },
+              "blocks": {}
+            },
+            "product-title": {
+              "type": "product-title",
+              "static": true,
+              "settings": {
+                "type_preset": "h4",
+                "text_color": ""
+              },
+              "blocks": {}
+            },
+            "product-text": {
+              "type": "product-text",
+              "static": true,
+              "settings": {
+                "source": "vendor",
+                "max_words": 15,
+                "type_preset": "paragraph",
+                "text_color": ""
+              },
+              "blocks": {}
+            },
+            "product-price": {
+              "type": "product-price",
+              "static": true,
+              "settings": {},
+              "blocks": {}
+            }
+          },
+          "block_order": []
+        }
+      },
+      "settings": {
+        "product_source": "all",
+        "collection": "",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "columns_mobile": "1",
+        "gap": 16,
+        "width": "page",
+        "background_color": "",
+        "padding_top": 48,
+        "padding_bottom": 48
       }
     }
   },
-  "order": ["featured-collection"]
+  "order": [
+    "banner_slider_wXEUYL",
+    "collection_carousel_attbtg",
+    "carousel_6kzRVB",
+    "featured-collection"
+  ]
 }

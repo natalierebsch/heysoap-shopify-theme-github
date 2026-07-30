@@ -9,32 +9,47 @@
  */
 {
   "current": {
-    "logo": "shopify://shop_images/hey_soap_finales_logo.png",
-    "page_text_color": "#FBE9E2",
-    "type_body_font": "poppins_n4",
-    "type_subheading_font": "poppins_n5",
-    "type_heading_font": "poppins_n6",
-    "type_accent_font": "fraunces_n4",
-    "page_background_color": "{{ settings.color_palette.color1 }}",
+    "page_background_color": "#FBE9E2",
+    "page_width": "2400px",
+    "h1_font": "poppins_n6",
+    "h2_font": "work_sans_n5",
+    "paragraph_font": "poppins_n4",
     "sections": {
       "header": {
         "type": "header",
         "settings": {
-          "mobile_menu_title": "Menu",
-          "menu": "main-menu"
+          "background_color": "#fbcec0",
+          "text_color": "#49302f",
+          "mobile_menu_title": "Menü",
+          "menu": "main-menu",
+          "logo": "shopify://shop_images/hey_soap_finales_logo.png",
+          "logo_width": 140
         }
       }
     },
     "content_for_index": [],
-    "color_palette": {
-      "background": "#FF808C",
-      "foreground": "#DA5352",
-      "color1": "#FBE9E2",
-      "color2": "#FBCEC0",
-      "color3": "#FFF9F5",
-      "color4": "#E9DED3",
-      "color5": "#B66A50",
-      "color6": "#49302F"
+    "color_schemes": {
+      "scheme-1": {
+        "settings": {
+          "background": "#ffffff",
+          "background_gradient": "",
+          "text": "#121212"
+        }
+      },
+      "scheme-2": {
+        "settings": {
+          "background": "#fbe9e2",
+          "background_gradient": "",
+          "text": "#49302f"
+        }
+      },
+      "scheme-3": {
+        "settings": {
+          "background": "#49302f",
+          "background_gradient": "",
+          "text": "#ffffff"
+        }
+      }
     }
   },
   "presets": {

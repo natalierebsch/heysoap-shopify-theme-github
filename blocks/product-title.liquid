@@ -1,0 +1,57 @@
+{% doc %}
+  Rendert den Titel des nächstgelegenen Produkts.
+{% enddoc %}
+
+{% assign title_product = closest.product %}
+
+{% if title_product != blank %}
+  <div
+    class="featured-product-title typography-style"
+    style="
+      --featured-product-title-color: {{ block.settings.text_color | default: 'inherit' }};
+      {% render 'typography-variables', preset: block.settings.type_preset %}
+    "
+    {{ block.shopify_attributes }}
+  >
+    <a href="{{ title_product.url }}">{{ title_product.title }}</a>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .featured-product-title {
+    color: var(--featured-product-title-color);
+  }
+
+  .featured-product-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Text",
+  "settings": [
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "Voreinstellung",
+      "options": [
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "h1", "label": "Überschrift 1" },
+        { "value": "h2", "label": "Überschrift 2" },
+        { "value": "h3", "label": "Überschrift 3" },
+        { "value": "h4", "label": "Überschrift 4" },
+        { "value": "h5", "label": "Überschrift 5" },
+        { "value": "h6", "label": "Überschrift 6" }
+      ],
+      "default": "h4"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe"
+    }
+  ]
+}
+{% endschema %}

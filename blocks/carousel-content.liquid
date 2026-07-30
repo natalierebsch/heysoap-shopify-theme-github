@@ -1,0 +1,327 @@
+{% doc %}
+  Rendert den Karteninhalt innerhalb der Karussell-Section.
+
+  @example
+  {% content_for 'block', type: 'carousel-content', id: 'carousel-content' %}
+{% enddoc %}
+
+<div
+  class="
+    carousel-content
+    carousel-content--height-{{ block.settings.card_height }}
+    carousel-content--border-{{ block.settings.border_style }}
+  "
+  style="
+    --carousel-content-background: {{ block.settings.background_color | default: 'transparent' }};
+    --carousel-content-position: {{ block.settings.position }};
+    --carousel-content-radius: {{ block.settings.border_radius }}px;
+    --carousel-content-padding-top: {{ block.settings.padding_top }}px;
+    --carousel-content-padding-bottom: {{ block.settings.padding_bottom }}px;
+    --carousel-content-padding-left: {{ block.settings.padding_left }}px;
+    --carousel-content-padding-right: {{ block.settings.padding_right }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  <div class="carousel-content__viewport">
+    <div class="carousel-content__track" data-carousel-track>
+      {% content_for 'blocks' %}
+    </div>
+  </div>
+
+  <button
+    class="carousel-content__arrow carousel-content__arrow--previous"
+    type="button"
+    data-carousel-direction="-1"
+    aria-label="Vorherige Karten"
+  >
+    {% if section.settings.navigation_symbol == 'chevrons' %}
+      &#10094;
+    {% else %}
+      &larr;
+    {% endif %}
+  </button>
+
+  <button
+    class="carousel-content__arrow carousel-content__arrow--next"
+    type="button"
+    data-carousel-direction="1"
+    aria-label="Nächste Karten"
+  >
+    {% if section.settings.navigation_symbol == 'chevrons' %}
+      &#10095;
+    {% else %}
+      &rarr;
+    {% endif %}
+  </button>
+</div>
+
+{% stylesheet %}
+  .carousel-content {
+    position: relative;
+    width: 100%;
+    padding:
+      var(--carousel-content-padding-top)
+      var(--carousel-content-padding-right)
+      var(--carousel-content-padding-bottom)
+      var(--carousel-content-padding-left);
+    border-radius: var(--carousel-content-radius);
+    background: var(--carousel-content-background);
+    box-sizing: border-box;
+  }
+
+  .carousel-content--border-none {
+    border: 0;
+  }
+
+  .carousel-content--border-solid {
+    border: 1px solid currentColor;
+  }
+
+  .carousel-content__viewport {
+    width: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+  }
+
+  .carousel-content__track {
+    display: flex;
+    gap: var(--carousel-card-gap);
+    width: 100%;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .carousel-content__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .carousel-content__track > .shopify-block {
+    flex: 0 0 calc(
+      (
+        100% - (
+          var(--carousel-card-gap) *
+          (var(--carousel-columns-desktop) - 1)
+        )
+      ) / var(--carousel-columns-desktop)
+    );
+    min-width: 0;
+    scroll-snap-align: start;
+  }
+
+  .carousel-content--height-adapt .carousel-content__track {
+    align-items: flex-start;
+  }
+
+  .carousel-content--height-adapt .carousel-content__track > .shopify-block {
+    align-self: flex-start;
+  }
+
+  .carousel-content--height-fill .carousel-content__track {
+    align-items: stretch;
+  }
+
+  .carousel-content--height-fill .carousel-content__track > .shopify-block {
+    display: flex;
+    align-items: var(--carousel-content-position);
+    align-self: stretch;
+  }
+
+  .carousel-content--height-fill .carousel-content__track > .shopify-block > * {
+    width: 100%;
+  }
+
+  .carousel-content--height-fill .card-block {
+    height: 100%;
+  }
+
+  .carousel-content__arrow {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid rgb(0 0 0 / 15%);
+    background: #ffffff;
+    color: #111111;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
+    transform: translateY(-50%);
+  }
+
+  .carousel-content__arrow--previous {
+    left: 10px;
+  }
+
+  .carousel-content__arrow--next {
+    right: 10px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .carousel-content__track > .shopify-block {
+      flex-basis: calc(
+        (
+          100% - (
+            var(--carousel-card-gap) *
+            (var(--carousel-columns-mobile) - 1)
+          )
+        ) / var(--carousel-columns-mobile)
+      );
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Karussell-Inhalt",
+  "blocks": [
+    {
+      "type": "card"
+    },
+    {
+      "type": "collection-card"
+    }
+  ],
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe"
+    },
+    {
+      "type": "select",
+      "id": "card_height",
+      "label": "Kartenhöhe",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Füllen"
+        }
+      ],
+      "default": "adapt"
+    },
+    {
+      "type": "select",
+      "id": "position",
+      "label": "Position",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Oben"
+        },
+        {
+          "value": "center",
+          "label": "Zentriert"
+        },
+        {
+          "value": "flex-end",
+          "label": "Unten"
+        }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "header",
+      "content": "Ränder"
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Stil",
+      "options": [
+        {
+          "value": "none",
+          "label": "Keine"
+        },
+        {
+          "value": "solid",
+          "label": "Einfarbig"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Karussell-Inhalt",
+      "blocks": [
+        {
+          "type": "card"
+        },
+        {
+          "type": "card"
+        },
+        {
+          "type": "card"
+        },
+        {
+          "type": "card"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

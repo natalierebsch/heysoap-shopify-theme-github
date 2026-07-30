@@ -1,0 +1,20 @@
+<div class="flexible-content">
+  {% content_for 'blocks' %}
+</div>
+
+{% schema %}
+{
+  "name": "Flexibler Inhalt",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "@theme"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Flexibler Inhalt"
+    }
+  ]
+}
+{% endschema %}

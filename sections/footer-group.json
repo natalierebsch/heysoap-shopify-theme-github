@@ -1,0 +1,208 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer-Gruppe",
+  "sections": {
+    "multicolumn_mbcrcT": {
+      "type": "multicolumn",
+      "blocks": {
+        "column_mnpxbz": {
+          "type": "column",
+          "name": "Spalte",
+          "settings": {
+            "horizontal_alignment": "left",
+            "vertical_alignment": "top",
+            "gap": 16,
+            "background_color": "",
+            "border_style": "none",
+            "border_radius": 0,
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          },
+          "blocks": {
+            "menu_WdF3Ed": {
+              "type": "menu",
+              "name": "Menü",
+              "settings": {
+                "menu": "heysoap",
+                "heading": "",
+                "vertical_gap": 12,
+                "mobile_accordion": false,
+                "background_color": "",
+                "text_color": "#49302f",
+                "heading_preset": "h3",
+                "link_preset": "paragraph",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "menu_WdF3Ed"
+          ]
+        },
+        "column_wybckH": {
+          "type": "column",
+          "name": "Spalte",
+          "settings": {
+            "horizontal_alignment": "left",
+            "vertical_alignment": "top",
+            "gap": 16,
+            "background_color": "",
+            "border_style": "none",
+            "border_radius": 0,
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          },
+          "blocks": {
+            "menu_9yLVUB": {
+              "type": "menu",
+              "name": "Menü",
+              "settings": {
+                "menu": "hilfe",
+                "heading": "",
+                "vertical_gap": 12,
+                "mobile_accordion": false,
+                "background_color": "",
+                "text_color": "",
+                "heading_preset": "h3",
+                "link_preset": "paragraph",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
+              },
+              "blocks": {}
+            },
+            "image_TifBpr": {
+              "type": "image",
+              "name": "Bild",
+              "disabled": true,
+              "settings": {
+                "link": "",
+                "aspect_ratio": "auto",
+                "desktop_width": "fill",
+                "custom_width_desktop": 100,
+                "mobile_width": "fill",
+                "custom_width_mobile": 100,
+                "height": "adapt",
+                "border_style": "none",
+                "border_radius": 0,
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "menu_9yLVUB",
+            "image_TifBpr"
+          ]
+        },
+        "column_tgGVA6": {
+          "type": "column",
+          "name": "Spalte",
+          "settings": {
+            "horizontal_alignment": "left",
+            "vertical_alignment": "top",
+            "gap": 16,
+            "background_color": "",
+            "border_style": "none",
+            "border_radius": 0,
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          },
+          "blocks": {
+            "menu_k46CXD": {
+              "type": "menu",
+              "name": "Menü",
+              "settings": {
+                "menu": "kundenkonto",
+                "heading": "",
+                "vertical_gap": 12,
+                "mobile_accordion": false,
+                "background_color": "",
+                "text_color": "",
+                "heading_preset": "h3",
+                "link_preset": "paragraph",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "menu_k46CXD"
+          ]
+        }
+      },
+      "block_order": [
+        "column_mnpxbz",
+        "column_wybckH",
+        "column_tgGVA6"
+      ],
+      "name": "Untermenüs",
+      "settings": {
+        "direction": "horizontal",
+        "stack_mobile": true,
+        "alignment": "evenly",
+        "position": "top",
+        "gap": 0,
+        "width": "page",
+        "height": "auto",
+        "custom_height": 50,
+        "background_media": "none",
+        "background_color": "",
+        "color_scheme": "",
+        "border_style": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding_top": 40,
+        "padding_bottom": 40,
+        "padding_left": 0,
+        "padding_right": 0
+      }
+    },
+    "footer": {
+      "type": "footer",
+      "settings": {
+        "logo_width": 180,
+        "text": "<p>Erzähle deinen Kunden etwas über dein Unternehmen.</p>",
+        "menu_heading": "Informationen",
+        "menu": "",
+        "background_color": "",
+        "text_color": "",
+        "show_payment_icons": true,
+        "padding_top": 64,
+        "padding_bottom": 32
+      }
+    }
+  },
+  "order": [
+    "multicolumn_mbcrcT",
+    "footer"
+  ]
+}

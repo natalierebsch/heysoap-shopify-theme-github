@@ -1,0 +1,296 @@
+{% doc %}
+  Rendert die gemeinsame Kartenvorlage für eine Kollektion.
+{% enddoc %}
+
+{% assign card_collection = closest.collection %}
+
+{% capture card_image %}
+  {% content_for 'block',
+    type: '_collection-card-image',
+    id: 'collection-card-image',
+    closest.collection: card_collection,
+    parent_block_id: block.id
+  %}
+{% endcapture %}
+
+{% capture children %}
+  {% content_for 'blocks' %}
+{% endcapture %}
+
+{% capture collection_title %}
+  {% content_for 'block',
+    type: 'collection-title',
+    id: 'collection-title',
+    closest.collection: card_collection,
+    parent_block_id: block.id
+  %}
+{% endcapture %}
+
+<article
+  class="
+    collection-card-template
+    collection-card-template--placement-{{ block.settings.placement }}
+    collection-card-template--horizontal-{{ block.settings.horizontal_alignment }}
+    collection-card-template--vertical-{{ block.settings.vertical_alignment }}
+    collection-card-template--border-{{ block.settings.border }}
+  "
+  style="
+    --collection-template-gap: {{ block.settings.collection_card_gap }}px;
+    --collection-template-background: {{ block.settings.background_color | default: 'transparent' }};
+    --collection-template-border-width: {{ block.settings.border_width }}px;
+    --collection-template-border-color: {{ block.settings.border_color | default: 'currentColor' }};
+    --collection-template-border-opacity: {{ block.settings.border_opacity }}%;
+    --collection-template-radius: {{ block.settings.border_radius }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% if block.settings.placement == 'on_image' %}
+    <div class="collection-card-template__media">
+      {{ card_image }}
+
+      <div class="collection-card-template__content">
+        {{ children }}
+        {{ collection_title }}
+      </div>
+    </div>
+  {% else %}
+    {{ card_image }}
+
+    <div class="collection-card-template__content">
+      {{ children }}
+      {{ collection_title }}
+    </div>
+  {% endif %}
+</article>
+
+{% stylesheet %}
+  .collection-card-template {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    background: var(--collection-template-background);
+    border-radius: var(--collection-template-radius);
+  }
+
+  .collection-card-template--border-solid {
+    border:
+      var(--collection-template-border-width)
+      solid
+      color-mix(
+        in srgb,
+        var(--collection-template-border-color) var(--collection-template-border-opacity),
+        transparent
+      );
+  }
+
+  .collection-card-template__media {
+    position: relative;
+  }
+
+  .collection-card-template__media > .shopify-block {
+    width: 100%;
+  }
+
+  .collection-card-template__content {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--collection-template-gap);
+    width: 100%;
+    padding: 16px;
+  }
+
+  .collection-card-template--placement-on_image .collection-card-template__content {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+  }
+
+  .collection-card-template--horizontal-flex-start .collection-card-template__content {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .collection-card-template--horizontal-center .collection-card-template__content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .collection-card-template--horizontal-flex-end .collection-card-template__content {
+    align-items: flex-end;
+    text-align: right;
+  }
+
+  .collection-card-template--vertical-flex-start .collection-card-template__content {
+    justify-content: flex-start;
+  }
+
+  .collection-card-template--vertical-center .collection-card-template__content {
+    justify-content: center;
+  }
+
+  .collection-card-template--vertical-flex-end .collection-card-template__content {
+    justify-content: flex-end;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Kollektionskarte",
+  "blocks": [
+    {
+      "type": "text"
+    },
+    {
+      "type": "spacer"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "heading"
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Text"
+    },
+    {
+      "type": "select",
+      "id": "placement",
+      "label": "Platzierung",
+      "options": [
+        {
+          "value": "on_image",
+          "label": "Auf dem Bild"
+        },
+        {
+          "value": "below_image",
+          "label": "Unter dem Bild"
+        }
+      ],
+      "default": "below_image"
+    },
+    {
+      "type": "select",
+      "id": "horizontal_alignment",
+      "label": "Ausrichtung",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Links"
+        },
+        {
+          "value": "center",
+          "label": "Zentriert"
+        },
+        {
+          "value": "flex-end",
+          "label": "Rechts"
+        }
+      ],
+      "default": "flex-start"
+    },
+    {
+      "type": "select",
+      "id": "vertical_alignment",
+      "label": "Position",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Oben"
+        },
+        {
+          "value": "center",
+          "label": "Zentriert"
+        },
+        {
+          "value": "flex-end",
+          "label": "Unten"
+        }
+      ],
+      "default": "center",
+      "visible_if": "{{ block.settings.placement == 'on_image' }}"
+    },
+    {
+      "type": "range",
+      "id": "collection_card_gap",
+      "label": "Vertikaler Abstand",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Erscheinungsbild"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe"
+    },
+    {
+      "type": "header",
+      "content": "Ränder"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "Stil",
+      "options": [
+        {
+          "value": "none",
+          "label": "Keine"
+        },
+        {
+          "value": "solid",
+          "label": "Einfarbig"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Stärke",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "label": "Deckkraft",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Farbe",
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}
