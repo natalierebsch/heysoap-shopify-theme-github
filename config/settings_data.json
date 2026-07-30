@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "page_background_color": "#FBE9E2",
     "h1_font": "poppins_n6",
     "h2_font": "work_sans_n5",
     "paragraph_font": "poppins_n4",
