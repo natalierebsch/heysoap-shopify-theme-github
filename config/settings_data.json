@@ -8,7 +8,35 @@
  * ------------------------------------------------------------
  */
 {
-  "current": "Default",
+  "current": {
+    "logo": "shopify://shop_images/hey_soap_finales_logo.png",
+    "page_text_color": "#FBE9E2",
+    "type_body_font": "poppins_n4",
+    "type_subheading_font": "poppins_n5",
+    "type_heading_font": "poppins_n6",
+    "type_accent_font": "fraunces_n4",
+    "page_background_color": "{{ settings.color_palette.color1 }}",
+    "sections": {
+      "header": {
+        "type": "header",
+        "settings": {
+          "mobile_menu_title": "Menu",
+          "menu": "main-menu"
+        }
+      }
+    },
+    "content_for_index": [],
+    "color_palette": {
+      "background": "#FF808C",
+      "foreground": "#DA5352",
+      "color1": "#FBE9E2",
+      "color2": "#FBCEC0",
+      "color3": "#FFF9F5",
+      "color4": "#E9DED3",
+      "color5": "#B66A50",
+      "color6": "#49302F"
+    }
+  },
   "presets": {
     "Default": {}
   }
