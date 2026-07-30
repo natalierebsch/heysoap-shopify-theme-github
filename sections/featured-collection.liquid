@@ -1,4 +1,14 @@
-{% assign featured_collection = section.settings.collection %}
+{% liquid
+  assign featured_collection = section.settings.collection
+  assign featured_heading = featured_collection.title
+  assign featured_url = featured_collection.url
+
+  if section.settings.product_source == 'all'
+    assign featured_collection = collections['all']
+    assign featured_heading = 'Alle Produkte'
+    assign featured_url = routes.all_products_collection_url
+  endif
+%}
 
 <section
   class="featured-collection featured-collection--{{ section.settings.width }}"
@@ -15,7 +25,9 @@
     {% content_for 'block',
       type: '_featured-collection-heading',
       id: 'featured-collection-heading',
-      closest.collection: featured_collection
+      closest.collection: featured_collection,
+      heading_text: featured_heading,
+      heading_url: featured_url
     %}
 
     <div class="featured-collection__additional">
@@ -130,9 +142,26 @@
   ],
   "settings": [
     {
+      "type": "select",
+      "id": "product_source",
+      "label": "Produktauswahl",
+      "options": [
+        {
+          "value": "collection",
+          "label": "Kollektion"
+        },
+        {
+          "value": "all",
+          "label": "Alle Produkte"
+        }
+      ],
+      "default": "collection"
+    },
+    {
       "type": "collection",
       "id": "collection",
-      "label": "Kollektion"
+      "label": "Kollektion",
+      "info": "Wird nur verwendet, wenn bei der Produktauswahl „Kollektion“ gewählt ist."
     },
     {
       "type": "range",
