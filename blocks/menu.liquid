@@ -1,0 +1,455 @@
+{% doc %}
+  Rendert ein auswählbares Menü mit optionalem Akkordeon auf Mobilgeräten.
+
+  @example
+  {% content_for 'block', type: 'menu', id: 'footer-menu' %}
+{% enddoc %}
+
+<div
+  class="
+    menu-block
+    menu-block--heading-{{ block.settings.heading_preset }}
+    menu-block--links-{{ block.settings.link_preset }}
+  "
+  style="
+    --menu-gap: {{ block.settings.vertical_gap }}px;
+    --menu-background: {{ block.settings.background_color | default: 'transparent' }};
+    --menu-text-color: {{ block.settings.text_color | default: 'inherit' }};
+    --menu-padding-top: {{ block.settings.padding_top }}px;
+    --menu-padding-bottom: {{ block.settings.padding_bottom }}px;
+    --menu-padding-left: {{ block.settings.padding_left }}px;
+    --menu-padding-right: {{ block.settings.padding_right }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% comment %}
+    Normales Menü für Desktop
+  {% endcomment %}
+
+  <div class="menu-block__desktop">
+    {% if block.settings.heading != blank %}
+      {% case block.settings.heading_preset %}
+        {% when 'h1' %}
+          <h1 class="menu-block__heading">
+            {{ block.settings.heading }}
+          </h1>
+
+        {% when 'h2' %}
+          <h2 class="menu-block__heading">
+            {{ block.settings.heading }}
+          </h2>
+
+        {% else %}
+          <h3 class="menu-block__heading">
+            {{ block.settings.heading }}
+          </h3>
+      {% endcase %}
+    {% endif %}
+
+    {% if block.settings.menu != blank %}
+      <nav aria-label="{{ block.settings.heading | default: block.settings.menu.title | escape }}">
+        <ul class="menu-block__list" role="list">
+          {% for link in block.settings.menu.links %}
+            <li class="menu-block__item">
+              <a
+                class="menu-block__link"
+                href="{{ link.url }}"
+                {% if link.current %}
+                  aria-current="page"
+                {% endif %}
+              >
+                {{ link.title }}
+              </a>
+
+              {% if link.links != blank %}
+                <ul class="menu-block__sublist" role="list">
+                  {% for child_link in link.links %}
+                    <li>
+                      <a
+                        class="menu-block__link menu-block__sublink"
+                        href="{{ child_link.url }}"
+                        {% if child_link.current %}
+                          aria-current="page"
+                        {% endif %}
+                      >
+                        {{ child_link.title }}
+                      </a>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </nav>
+    {% endif %}
+  </div>
+
+  {% comment %}
+    Akkordeon-Menü für Mobilgeräte
+  {% endcomment %}
+
+  {% if block.settings.mobile_accordion %}
+    <details class="menu-block__mobile-accordion">
+      <summary class="menu-block__summary">
+        <span>
+          {% if block.settings.heading != blank %}
+            {{ block.settings.heading }}
+          {% else %}
+            {{ block.settings.menu.title }}
+          {% endif %}
+        </span>
+
+        <span class="menu-block__accordion-icon" aria-hidden="true">
+          <svg
+            viewBox="0 0 20 20"
+            width="16"
+            height="16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+          >
+            <path d="M5 7.5L10 12.5L15 7.5"></path>
+          </svg>
+        </span>
+      </summary>
+
+      {% if block.settings.menu != blank %}
+        <nav aria-label="{{ block.settings.heading | default: block.settings.menu.title | escape }}">
+          <ul class="menu-block__list" role="list">
+            {% for link in block.settings.menu.links %}
+              <li class="menu-block__item">
+                <a
+                  class="menu-block__link"
+                  href="{{ link.url }}"
+                  {% if link.current %}
+                    aria-current="page"
+                  {% endif %}
+                >
+                  {{ link.title }}
+                </a>
+
+                {% if link.links != blank %}
+                  <ul class="menu-block__sublist" role="list">
+                    {% for child_link in link.links %}
+                      <li>
+                        <a
+                          class="menu-block__link menu-block__sublink"
+                          href="{{ child_link.url }}"
+                          {% if child_link.current %}
+                            aria-current="page"
+                          {% endif %}
+                        >
+                          {{ child_link.title }}
+                        </a>
+                      </li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </nav>
+      {% endif %}
+    </details>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .menu-block {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    color: var(--menu-text-color);
+    background-color: var(--menu-background);
+    padding:
+      var(--menu-padding-top)
+      var(--menu-padding-right)
+      var(--menu-padding-bottom)
+      var(--menu-padding-left);
+  }
+
+  .menu-block__heading {
+    margin: 0 0 var(--menu-gap);
+    color: inherit;
+  }
+
+  .menu-block--heading-h1 .menu-block__heading {
+    font-family: var(--font-h1-family);
+    font-style: var(--font-h1-style);
+    font-weight: var(--font-h1-weight);
+    font-size: var(--font-h1-size);
+    line-height: var(--font-h1-line-height);
+  }
+
+  .menu-block--heading-h2 .menu-block__heading {
+    font-family: var(--font-h2-family);
+    font-style: var(--font-h2-style);
+    font-weight: var(--font-h2-weight);
+    font-size: var(--font-h2-size);
+    line-height: var(--font-h2-line-height);
+  }
+
+  .menu-block--heading-h3 .menu-block__heading {
+    font-family: var(--font-h2-family);
+    font-style: var(--font-h2-style);
+    font-weight: var(--font-h2-weight);
+    font-size: calc(var(--font-h2-size) * 0.8);
+    line-height: var(--font-h2-line-height);
+  }
+
+  .menu-block__list,
+  .menu-block__sublist {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .menu-block__list {
+    gap: var(--menu-gap);
+  }
+
+  .menu-block__sublist {
+    gap: calc(var(--menu-gap) * 0.75);
+    margin-top: calc(var(--menu-gap) * 0.75);
+    padding-left: 16px;
+  }
+
+  .menu-block__link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .menu-block__link:hover {
+    text-decoration: underline;
+  }
+
+  .menu-block__link[aria-current='page'] {
+    text-decoration: underline;
+  }
+
+  .menu-block--links-paragraph .menu-block__link {
+    font-family: var(--font-paragraph-family);
+    font-style: var(--font-paragraph-style);
+    font-weight: var(--font-paragraph-weight);
+    font-size: var(--font-paragraph-size);
+    line-height: var(--font-paragraph-line-height);
+  }
+
+  .menu-block--links-small .menu-block__link {
+    font-family: var(--font-paragraph-family);
+    font-style: var(--font-paragraph-style);
+    font-weight: var(--font-paragraph-weight);
+    font-size: calc(var(--font-paragraph-size) * 0.875);
+    line-height: var(--font-paragraph-line-height);
+  }
+
+  .menu-block--links-large .menu-block__link {
+    font-family: var(--font-paragraph-family);
+    font-style: var(--font-paragraph-style);
+    font-weight: var(--font-paragraph-weight);
+    font-size: calc(var(--font-paragraph-size) * 1.125);
+    line-height: var(--font-paragraph-line-height);
+  }
+
+  .menu-block__mobile-accordion {
+    display: none;
+  }
+
+  .menu-block__summary {
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: inherit;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-h2-family);
+    font-style: var(--font-h2-style);
+    font-weight: var(--font-h2-weight);
+  }
+
+  .menu-block__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .menu-block__accordion-icon {
+    display: flex;
+    flex: 0 0 auto;
+    transition: transform 200ms ease;
+  }
+
+  .menu-block__mobile-accordion[open] .menu-block__accordion-icon {
+    transform: rotate(180deg);
+  }
+
+  .menu-block__mobile-accordion nav {
+    margin-top: var(--menu-gap);
+  }
+
+  @media screen and (max-width: 749px) {
+    .menu-block__desktop {
+      display: block;
+    }
+
+    .menu-block__mobile-accordion {
+      display: none;
+    }
+
+    .menu-block:has(.menu-block__mobile-accordion) .menu-block__desktop {
+      display: none;
+    }
+
+    .menu-block:has(.menu-block__mobile-accordion) .menu-block__mobile-accordion {
+      display: block;
+    }
+
+    .menu-block__summary {
+      display: flex;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Menü",
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menü"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Überschrift"
+    },
+    {
+      "type": "header",
+      "content": "Erscheinungsbild"
+    },
+    {
+      "type": "range",
+      "id": "vertical_gap",
+      "label": "Vertikaler Abstand",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_accordion",
+      "label": "Auf Mobilgeräten als Akkordeon-Effekt anzeigen",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe"
+    },
+    {
+      "type": "header",
+      "content": "Typografie"
+    },
+    {
+      "type": "select",
+      "id": "heading_preset",
+      "label": "Überschriften-Voreinstellung",
+      "options": [
+        {
+          "value": "h1",
+          "label": "Überschrift 1"
+        },
+        {
+          "value": "h2",
+          "label": "Überschrift 2"
+        },
+        {
+          "value": "h3",
+          "label": "Überschrift 3"
+        }
+      ],
+      "default": "h3",
+      "info": "Die Schrift wird in den Theme-Einstellungen festgelegt."
+    },
+    {
+      "type": "select",
+      "id": "link_preset",
+      "label": "Link-Voreinstellung",
+      "options": [
+        {
+          "value": "paragraph",
+          "label": "Absatz"
+        },
+        {
+          "value": "small",
+          "label": "Klein"
+        },
+        {
+          "value": "large",
+          "label": "Groß"
+        }
+      ],
+      "default": "paragraph",
+      "info": "Die Schrift wird in den Theme-Einstellungen festgelegt."
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Menü"
+    }
+  ]
+}
+{% endschema %}
