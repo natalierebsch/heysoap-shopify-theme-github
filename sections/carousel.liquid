@@ -1,70 +1,42 @@
 <div
   class="
     carousel
-    carousel--{{ section.settings.background_style }}
     carousel--width-{{ section.settings.width }}
+    carousel--navigation-{{ section.settings.navigation_background }}
   "
   style="
-    --carousel-background: {{ section.settings.background_color }};
-    --carousel-gap: {{ section.settings.gap }}px;
-
+    --carousel-background: {{ section.settings.background_color | default: 'transparent' }};
+    --carousel-columns-desktop: {{ section.settings.columns_desktop }};
+    --carousel-columns-mobile: {{ section.settings.columns_mobile }};
+    --carousel-card-gap: {{ section.settings.horizontal_gap }}px;
     --carousel-padding-top: {{ section.settings.padding_top }}px;
     --carousel-padding-bottom: {{ section.settings.padding_bottom }}px;
-    --carousel-padding-left: {{ section.settings.padding_left }}px;
-    --carousel-padding-right: {{ section.settings.padding_right }}px;
-
-    --carousel-border-style: {{ section.settings.border_style }};
-    --carousel-border-width: {{ section.settings.border_width }}px;
-    --carousel-border-color: {{ section.settings.border_color }};
-    --carousel-border-radius: {{ section.settings.border_radius }}px;
   "
 >
   <div class="carousel__inner">
-    {% content_for 'block',
-      type: 'heading',
-      id: 'carousel-heading'
-    %}
-
-    {% content_for 'block',
-      type: 'carousel-content',
-      id: 'carousel-content'
-    %}
+    {% content_for 'block', type: 'heading', id: 'carousel-heading' %}
+    {% content_for 'block', type: 'carousel-content', id: 'carousel-content' %}
   </div>
 </div>
 
 {% stylesheet %}
   .carousel {
     width: 100%;
-    padding:
-      var(--carousel-padding-top)
-      var(--carousel-padding-right)
-      var(--carousel-padding-bottom)
-      var(--carousel-padding-left);
-  }
-
-  .carousel--none {
-    background: transparent;
-  }
-
-  .carousel--solid {
+    padding-block: var(--carousel-padding-top) var(--carousel-padding-bottom);
     background: var(--carousel-background);
   }
 
   .carousel__inner {
     display: flex;
     flex-direction: column;
-    gap: var(--carousel-gap);
+    gap: 24px;
     width: 100%;
     margin-inline: auto;
-    border-width: var(--carousel-border-width);
-    border-style: var(--carousel-border-style);
-    border-color: var(--carousel-border-color);
-    border-radius: var(--carousel-border-radius);
-    overflow: hidden;
   }
 
   .carousel--width-page .carousel__inner {
     max-width: 1200px;
+    padding-inline: 20px;
   }
 
   .carousel--width-full .carousel__inner {
@@ -73,6 +45,21 @@
 
   .carousel__inner > .shopify-block {
     width: 100%;
+  }
+
+  .carousel--navigation-none .carousel-content__arrow {
+    border-color: transparent;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .carousel--navigation-circle .carousel-content__arrow {
+    border-radius: 50%;
+  }
+
+  .carousel--navigation-square .carousel-content__arrow {
+    border-radius: 0;
   }
 {% endstylesheet %}
 
@@ -106,6 +93,31 @@
   "tag": "section",
   "settings": [
     {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Spalten",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Mobile Spalten",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "default": "1"
+    },
+    {
       "type": "select",
       "id": "width",
       "label": "Breite",
@@ -123,117 +135,82 @@
     },
     {
       "type": "range",
-      "id": "gap",
-      "label": "Abstand zwischen Überschrift und Inhalt",
+      "id": "horizontal_gap",
+      "label": "Horizontaler Abstand",
       "min": 0,
-      "max": 80,
+      "max": 60,
       "step": 4,
       "unit": "px",
-      "default": 24
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
     },
     {
       "type": "select",
-      "id": "background_style",
-      "label": "Hintergrundstil",
+      "id": "navigation_symbol",
+      "label": "Symbol",
+      "options": [
+        {
+          "value": "arrows",
+          "label": "Pfeile"
+        },
+        {
+          "value": "chevrons",
+          "label": "Winkel"
+        }
+      ],
+      "default": "arrows"
+    },
+    {
+      "type": "select",
+      "id": "navigation_background",
+      "label": "Symbolhintergrund",
       "options": [
         {
           "value": "none",
           "label": "Keine"
         },
         {
-          "value": "solid",
-          "label": "Einfarbig"
-        }
-      ],
-      "default": "none"
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Hintergrundfarbe",
-      "default": "#f5f5f5"
-    },
-    {
-      "type": "select",
-      "id": "border_style",
-      "label": "Randstil",
-      "options": [
-        {
-          "value": "none",
-          "label": "Kein Rand"
+          "value": "circle",
+          "label": "Kreis"
         },
         {
-          "value": "solid",
-          "label": "Einfarbig"
+          "value": "square",
+          "label": "Quadrat"
         }
       ],
-      "default": "none"
+      "default": "circle"
     },
     {
-      "type": "range",
-      "id": "border_width",
-      "label": "Randbreite",
-      "min": 0,
-      "max": 10,
-      "step": 1,
-      "unit": "px",
-      "default": 1
-    },
-    {
-      "type": "color",
-      "id": "border_color",
-      "label": "Randfarbe",
-      "default": "#dddddd"
-    },
-    {
-      "type": "range",
-      "id": "border_radius",
-      "label": "Eckenradius",
-      "min": 0,
-      "max": 60,
-      "step": 2,
-      "unit": "px",
-      "default": 0
+      "type": "header",
+      "content": "Padding"
     },
     {
       "type": "range",
       "id": "padding_top",
-      "label": "Padding oben",
+      "label": "Oben",
       "min": 0,
       "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 40
+      "default": 48
     },
     {
       "type": "range",
       "id": "padding_bottom",
-      "label": "Padding unten",
+      "label": "Unten",
       "min": 0,
       "max": 160,
       "step": 4,
       "unit": "px",
-      "default": 40
-    },
-    {
-      "type": "range",
-      "id": "padding_left",
-      "label": "Padding links",
-      "min": 0,
-      "max": 160,
-      "step": 4,
-      "unit": "px",
-      "default": 20
-    },
-    {
-      "type": "range",
-      "id": "padding_right",
-      "label": "Padding rechts",
-      "min": 0,
-      "max": 160,
-      "step": 4,
-      "unit": "px",
-      "default": 20
+      "default": 48
     }
   ],
   "presets": [
