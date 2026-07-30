@@ -1,9 +1,13 @@
 {% if block.settings.logo != blank %}
   <div
-    class="logo-block"
+    class="
+      logo-block
+      logo-block--desktop-{{ block.settings.desktop_width }}
+      logo-block--mobile-{{ block.settings.mobile_width }}
+    "
     style="
-      --logo-width-desktop: {{ block.settings.width_desktop }}px;
-      --logo-width-mobile: {{ block.settings.width_mobile }}px;
+      --logo-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
+      --logo-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
       --logo-alignment: {{ block.settings.alignment }};
     "
     {{ block.shopify_attributes }}
@@ -32,18 +36,48 @@
   .logo-block {
     display: flex;
     justify-content: var(--logo-alignment);
+    max-width: 100%;
   }
 
   .logo-block__image {
     display: block;
-    width: var(--logo-width-desktop);
     max-width: 100%;
     height: auto;
   }
 
+  .logo-block--desktop-fit {
+    width: fit-content;
+  }
+
+  .logo-block--desktop-fill {
+    width: 100%;
+  }
+
+  .logo-block--desktop-custom {
+    width: var(--logo-custom-width-desktop);
+  }
+
+  .logo-block--desktop-fill .logo-block__image,
+  .logo-block--desktop-custom .logo-block__image {
+    width: 100%;
+  }
+
   @media screen and (max-width: 749px) {
-    .logo-block__image {
-      width: var(--logo-width-mobile);
+    .logo-block--mobile-fit {
+      width: fit-content;
+    }
+
+    .logo-block--mobile-fill {
+      width: 100%;
+    }
+
+    .logo-block--mobile-custom {
+      width: var(--logo-custom-width-mobile);
+    }
+
+    .logo-block--mobile-fill .logo-block__image,
+    .logo-block--mobile-custom .logo-block__image {
+      width: 100%;
     }
   }
 {% endstylesheet %}
@@ -58,24 +92,66 @@
       "label": "Logo"
     },
     {
-      "type": "range",
-      "id": "width_desktop",
-      "label": "Breite Desktop",
-      "min": 50,
-      "max": 500,
-      "step": 10,
-      "unit": "px",
-      "default": 200
+      "type": "select",
+      "id": "desktop_width",
+      "label": "Desktop-Breite",
+      "options": [
+        {
+          "value": "fit",
+          "label": "Anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Füllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
+        }
+      ],
+      "default": "fit"
     },
     {
       "type": "range",
-      "id": "width_mobile",
-      "label": "Breite Mobil",
-      "min": 50,
-      "max": 300,
-      "step": 10,
-      "unit": "px",
-      "default": 140
+      "id": "custom_width_desktop",
+      "label": "Benutzerdefinierte Desktop-Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 30,
+      "visible_if": "{{ block.settings.desktop_width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "mobile_width",
+      "label": "Mobile Breite",
+      "options": [
+        {
+          "value": "fit",
+          "label": "Anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Füllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
+        }
+      ],
+      "default": "fit"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Benutzerdefinierte Mobile Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 50,
+      "visible_if": "{{ block.settings.mobile_width == 'custom' }}"
     },
     {
       "type": "select",
