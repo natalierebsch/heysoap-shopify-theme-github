@@ -111,8 +111,8 @@
     },
     {
       "type": "select",
-      "id": "width",
-      "label": "Breite",
+      "id": "desktop_width",
+      "label": "Desktop-Breite",
       "options": [
         {
           "value": "fit",
@@ -121,33 +121,55 @@
         {
           "value": "fill",
           "label": "Füllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
         }
       ],
       "default": "fit"
     },
     {
+      "type": "range",
+      "id": "custom_width_desktop",
+      "label": "Benutzerdefinierte Desktop-Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.desktop_width == 'custom' }}"
+    },
+    {
       "type": "select",
-      "id": "max_width",
-      "label": "Max. Breite",
+      "id": "mobile_width",
+      "label": "Mobile Breite",
       "options": [
         {
-          "value": "small",
-          "label": "Schmal"
+          "value": "fit",
+          "label": "Anpassen"
         },
         {
-          "value": "normal",
-          "label": "Normal"
+          "value": "fill",
+          "label": "Füllen"
         },
         {
-          "value": "wide",
-          "label": "Breit"
-        },
-        {
-          "value": "none",
-          "label": "Keine Begrenzung"
+          "value": "custom",
+          "label": "Benutzerdefiniert"
         }
       ],
-      "default": "normal"
+      "default": "fit"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Benutzerdefinierte Mobile Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.mobile_width == 'custom' }}"
     },
     {
       "type": "header",
