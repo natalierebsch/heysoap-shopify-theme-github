@@ -6,7 +6,14 @@
     endif
 %}
 
-<div class="relative bg-white" x-data="{ mobileMenuOpen: false, searchBarOpen: false }" x-cloak>
+<div 
+    class="site-header relative"
+    style="
+        --header-background-color: {{ section.settings.background_color }};
+        --header-text-color: {{ section.settings.text_color }};
+    "
+    x-data="{ mobileMenuOpen: false, searchBarOpen: false }"
+    x-cloak>    
     <div class="mx-auto px-4 sm:px-6">
         <div class="flex justify-center items-center py-6 md:justify-start md:space-x-10">
             <!-- STORE NAME / STORE LOGO -->
@@ -166,10 +173,42 @@
     </div>
 </div>
 
+{% stylesheet %}
+    .site-header,
+    .site-header .bg-white {
+        background-color: var(--header-background-color);
+    }
+
+    .site-header,
+    .site-header a,
+    .site-header button,
+    .site-header h1,
+    .site-header p,
+    .site-header span,
+    .site-header input {
+        color: var(--header-text-color);
+    }
+
+    .site-header svg {
+        color: currentColor;
+    }
+{% endstylesheet %}
 {% schema %}
 {
     "name": "Header",
     "settings": [
+        {
+            "type": "color",
+            "id": "background_color",
+            "label": "Header background color",
+            "default": "#ffffff"
+        },
+        {
+            "type": "color",
+            "id": "text_color",
+            "label": "Header text color",
+            "default": "#374151"
+        },
         {
             "type": "text",
             "id": "mobile_menu_title",
