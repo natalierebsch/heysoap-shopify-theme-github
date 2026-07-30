@@ -30,19 +30,18 @@
             "padding_right": 0
           },
           "blocks": {
-            "image_8mWYdH": {
-              "type": "image",
-              "name": "Bild",
+            "menu_WdF3Ed": {
+              "type": "menu",
+              "name": "Menü",
               "settings": {
-                "link": "",
-                "aspect_ratio": "auto",
-                "desktop_width": "fill",
-                "custom_width_desktop": 100,
-                "mobile_width": "fill",
-                "custom_width_mobile": 100,
-                "height": "adapt",
-                "border_style": "none",
-                "border_radius": 0,
+                "menu": "heysoap",
+                "heading": "",
+                "vertical_gap": 12,
+                "mobile_accordion": false,
+                "background_color": "",
+                "text_color": "#49302F",
+                "heading_preset": "h3",
+                "link_preset": "paragraph",
                 "padding_top": 0,
                 "padding_bottom": 0,
                 "padding_left": 0,
@@ -52,7 +51,7 @@
             }
           },
           "block_order": [
-            "image_8mWYdH"
+            "menu_WdF3Ed"
           ]
         },
         "column_wybckH": {
@@ -71,9 +70,29 @@
             "padding_right": 0
           },
           "blocks": {
+            "menu_9yLVUB": {
+              "type": "menu",
+              "name": "Menü",
+              "settings": {
+                "menu": "hilfe",
+                "heading": "",
+                "vertical_gap": 12,
+                "mobile_accordion": false,
+                "background_color": "",
+                "text_color": "",
+                "heading_preset": "h3",
+                "link_preset": "paragraph",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
+              },
+              "blocks": {}
+            },
             "image_TifBpr": {
               "type": "image",
               "name": "Bild",
+              "disabled": true,
               "settings": {
                 "link": "",
                 "aspect_ratio": "auto",
@@ -93,13 +112,55 @@
             }
           },
           "block_order": [
+            "menu_9yLVUB",
             "image_TifBpr"
+          ]
+        },
+        "column_tgGVA6": {
+          "type": "column",
+          "name": "Spalte",
+          "settings": {
+            "horizontal_alignment": "left",
+            "vertical_alignment": "top",
+            "gap": 16,
+            "background_color": "",
+            "border_style": "none",
+            "border_radius": 0,
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          },
+          "blocks": {
+            "menu_k46CXD": {
+              "type": "menu",
+              "name": "Menü",
+              "settings": {
+                "menu": "kundenkonto",
+                "heading": "",
+                "vertical_gap": 12,
+                "mobile_accordion": false,
+                "background_color": "",
+                "text_color": "",
+                "heading_preset": "h3",
+                "link_preset": "paragraph",
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "menu_k46CXD"
           ]
         }
       },
       "block_order": [
         "column_mnpxbz",
-        "column_wybckH"
+        "column_wybckH",
+        "column_tgGVA6"
       ],
       "name": "Untermenüs",
       "settings": {
