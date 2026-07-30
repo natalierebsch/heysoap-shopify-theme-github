@@ -1,0 +1,128 @@
+<div
+  class="card-block"
+  style="
+    --card-background: {{ block.settings.background_color }};
+    --card-text-color: {{ block.settings.text_color }};
+    --card-border-color: {{ block.settings.border_color }};
+    --card-border-width: {{ block.settings.border_width }}px;
+    --card-border-radius: {{ block.settings.border_radius }}px;
+    --card-padding: {{ block.settings.padding }}px;
+    --card-gap: {{ block.settings.gap }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  <div class="card-block__content">
+    {% content_for 'block', type: 'image', id: 'card-image' %}
+
+    {% content_for 'block', type: 'heading', id: 'card-heading' %}
+
+    {% content_for 'block', type: 'text', id: 'card-text' %}
+
+    {% content_for 'blocks' %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .card-block {
+    width: 100%;
+    padding: var(--card-padding);
+    border: var(--card-border-width) solid var(--card-border-color);
+    border-radius: var(--card-border-radius);
+    background-color: var(--card-background);
+    color: var(--card-text-color);
+    overflow: hidden;
+  }
+
+  .card-block__content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--card-gap);
+  }
+
+  .card-block__content > * {
+    width: 100%;
+  }
+
+  .card-block__content h1,
+  .card-block__content h2,
+  .card-block__content h3,
+  .card-block__content p {
+    color: inherit;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Karte",
+  "blocks": [
+    {
+      "type": "@theme"
+    }
+  ],
+  "settings": [
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Rahmenfarbe",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Rahmenbreite",
+      "min": 0,
+      "max": 10,
+      "step": 1,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Abgerundete Ecken",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding",
+      "label": "Innenabstand",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Abstand zwischen Inhalten",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    }
+  ],
+  "presets": [
+    {
+      "name": "Karte"
+    }
+  ]
+}
+{% endschema %}
