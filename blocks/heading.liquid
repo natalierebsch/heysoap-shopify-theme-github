@@ -8,13 +8,15 @@
 <div
   class="
     heading-block
-    heading-block--width-{{ block.settings.width }}
-    heading-block--max-width-{{ block.settings.max_width }}
+    heading-block--desktop-{{ block.settings.desktop_width }}
+    heading-block--mobile-{{ block.settings.mobile_width }}
     heading-block--background-{{ block.settings.show_background }}
   "
   style="
     --heading-text-color: {{ block.settings.text_color | default: 'inherit' }};
     --heading-background-color: {{ block.settings.background_color | default: 'transparent' }};
+    --heading-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
+    --heading-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
     --heading-padding-top: {{ block.settings.padding_top }}px;
     --heading-padding-bottom: {{ block.settings.padding_bottom }}px;
     --heading-padding-left: {{ block.settings.padding_left }}px;
@@ -43,28 +45,18 @@
       var(--heading-padding-left);
   }
 
-  .heading-block--width-fit {
+  .heading-block--desktop-fit {
     width: fit-content;
+    max-width: 100%;
   }
 
-  .heading-block--width-fill {
+  .heading-block--desktop-fill {
     width: 100%;
   }
 
-  .heading-block--max-width-small {
-    max-width: 480px;
-  }
-
-  .heading-block--max-width-normal {
-    max-width: 720px;
-  }
-
-  .heading-block--max-width-wide {
-    max-width: 1000px;
-  }
-
-  .heading-block--max-width-none {
-    max-width: none;
+  .heading-block--desktop-custom {
+    width: var(--heading-custom-width-desktop);
+    max-width: 100%;
   }
 
   .heading-block--background-true {
@@ -84,6 +76,22 @@
     font-weight: var(--font-h2-weight);
     font-size: calc(var(--font-h2-size) * 0.8);
     line-height: var(--font-h2-line-height);
+  }
+
+  @media screen and (max-width: 749px) {
+    .heading-block--mobile-fit {
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .heading-block--mobile-fill {
+      width: 100%;
+    }
+
+    .heading-block--mobile-custom {
+      width: var(--heading-custom-width-mobile);
+      max-width: 100%;
+    }
   }
 {% endstylesheet %}
 

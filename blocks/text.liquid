@@ -8,14 +8,16 @@
 <div
   class="
     text-block
-    text-block--width-{{ block.settings.width }}
-    text-block--max-width-{{ block.settings.max_width }}
+    text-block--desktop-{{ block.settings.desktop_width }}
+    text-block--mobile-{{ block.settings.mobile_width }}
     text-block--preset-{{ block.settings.preset }}
     text-block--background-{{ block.settings.show_background }}
   "
   style="
     --text-color: {{ block.settings.text_color | default: 'inherit' }};
     --text-background-color: {{ block.settings.background_color | default: 'transparent' }};
+    --text-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
+    --text-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
     --text-padding-top: {{ block.settings.padding_top }}px;
     --text-padding-bottom: {{ block.settings.padding_bottom }}px;
     --text-padding-left: {{ block.settings.padding_left }}px;
@@ -42,28 +44,18 @@
       var(--text-padding-left);
   }
 
-  .text-block--width-fit {
+  .text-block--desktop-fit {
     width: fit-content;
+    max-width: 100%;
   }
 
-  .text-block--width-fill {
+  .text-block--desktop-fill {
     width: 100%;
   }
 
-  .text-block--max-width-small {
-    max-width: 480px;
-  }
-
-  .text-block--max-width-normal {
-    max-width: 720px;
-  }
-
-  .text-block--max-width-wide {
-    max-width: 1000px;
-  }
-
-  .text-block--max-width-none {
-    max-width: none;
+  .text-block--desktop-custom {
+    width: var(--text-custom-width-desktop);
+    max-width: 100%;
   }
 
   .text-block--preset-small,
@@ -97,6 +89,22 @@
 
   .text-block > *:last-child {
     margin-bottom: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .text-block--mobile-fit {
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .text-block--mobile-fill {
+      width: 100%;
+    }
+
+    .text-block--mobile-custom {
+      width: var(--text-custom-width-mobile);
+      max-width: 100%;
+    }
   }
 {% endstylesheet %}
 
