@@ -106,11 +106,11 @@
               "static": true,
               "settings": {
                 "width": "fill",
-                "max_width": "normal",
+                "max_width": "small",
                 "alignment": "center",
                 "type_preset": "custom",
                 "custom_font": "heading",
-                "custom_size": 20,
+                "custom_size": 36,
                 "custom_line_height": "1.5",
                 "custom_letter_spacing": "normal",
                 "custom_case": "none",
@@ -119,10 +119,10 @@
                 "show_background": true,
                 "background_color": "#ff808c",
                 "border_radius": 20,
-                "padding_top": 0,
-                "padding_bottom": 0,
-                "padding_left": 0,
-                "padding_right": 0
+                "padding_top": 5,
+                "padding_bottom": 5,
+                "padding_left": 5,
+                "padding_right": 5
               },
               "blocks": {}
             }
