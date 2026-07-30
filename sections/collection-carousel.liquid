@@ -2,119 +2,27 @@
   class="
     collection-carousel
     collection-carousel--width-{{ section.settings.width }}
-    collection-carousel--placement-{{ section.settings.placement }}
-    collection-carousel--align-{{ section.settings.alignment }}
-    collection-carousel--position-{{ section.settings.vertical_position }}
     collection-carousel--navigation-{{ section.settings.navigation_background }}
-    {% if section.settings.aspect_ratio == 'auto' %}collection-carousel--ratio-auto{% endif %}
-    collection-carousel--border-{{ section.settings.border_style }}
   "
   style="
     --collection-carousel-columns: {{ section.settings.columns_desktop }};
     --collection-carousel-columns-mobile: {{ section.settings.columns_mobile }};
     --collection-carousel-gap: {{ section.settings.gap }}px;
     --collection-carousel-background: {{ section.settings.background_color | default: 'transparent' }};
-    --collection-card-background: {{ section.settings.card_background_color | default: 'transparent' }};
-    --collection-card-text: {{ section.settings.text_color | default: 'inherit' }};
-    --collection-card-overlay: {{ section.settings.overlay_color | default: '#000000' }};
-    --collection-card-overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
-    --collection-card-ratio: {{ section.settings.aspect_ratio }};
-    --collection-card-radius: {{ section.settings.border_radius }}px;
-    --collection-card-border-width: {{ section.settings.border_width }}px;
-    --collection-card-border-color: {{ section.settings.border_color | default: 'currentColor' }};
-    --collection-card-border-opacity: {{ section.settings.border_opacity }}%;
-    --collection-card-padding: {{ section.settings.card_padding }}px;
     --collection-carousel-padding-top: {{ section.settings.padding_top }}px;
     --collection-carousel-padding-bottom: {{ section.settings.padding_bottom }}px;
   "
 >
   <div class="collection-carousel__inner">
-    {% content_for 'block', type: 'heading', id: 'collection-carousel-heading' %}
+    <div class="collection-carousel__additional-content">
+      {% content_for 'blocks' %}
+    </div>
 
-    {% if section.settings.collection_list != blank %}
-      <div class="collection-carousel__stage">
-        <div class="collection-carousel__viewport">
-          <div class="collection-carousel__track" data-collection-carousel-track>
-            {% for collection in section.settings.collection_list %}
-              <article class="collection-carousel__slide">
-                <a
-                  class="collection-carousel__card"
-                  href="{{ collection.url }}"
-                  aria-label="{{ collection.title | escape }}"
-                >
-                  <div class="collection-carousel__media">
-                    {% if collection.image != blank %}
-                      {{
-                        collection.image
-                        | image_url: width: 2000
-                        | image_tag:
-                          class: 'collection-carousel__image',
-                          loading: 'lazy',
-                          widths: '400, 750, 1000, 1500, 2000',
-                          sizes: '(max-width: 749px) 80vw, 33vw',
-                          alt: collection.title
-                      }}
-                    {% else %}
-                      {{ 'collection-1' | placeholder_svg_tag: 'collection-carousel__placeholder' }}
-                    {% endif %}
-
-                    {% if section.settings.placement == 'on_image' %}
-                      <span class="collection-carousel__overlay"></span>
-
-                      <div class="collection-carousel__content">
-                        <h3 class="collection-carousel__title">
-                          {{ collection.title }}
-                        </h3>
-                      </div>
-                    {% endif %}
-                  </div>
-
-                  {% if section.settings.placement == 'below_image' %}
-                    <div class="collection-carousel__content">
-                      <h3 class="collection-carousel__title">
-                        {{ collection.title }}
-                      </h3>
-                    </div>
-                  {% endif %}
-                </a>
-              </article>
-            {% endfor %}
-          </div>
-        </div>
-
-        {% if section.settings.navigation_symbol != 'none' %}
-          <button
-            class="collection-carousel__arrow collection-carousel__arrow--previous"
-            type="button"
-            data-collection-carousel-direction="-1"
-            aria-label="Vorherige Kollektionen"
-          >
-            {% if section.settings.navigation_symbol == 'chevrons' %}
-              &#10094;
-            {% else %}
-              &larr;
-            {% endif %}
-          </button>
-
-          <button
-            class="collection-carousel__arrow collection-carousel__arrow--next"
-            type="button"
-            data-collection-carousel-direction="1"
-            aria-label="Nächste Kollektionen"
-          >
-            {% if section.settings.navigation_symbol == 'chevrons' %}
-              &#10095;
-            {% else %}
-              &rarr;
-            {% endif %}
-          </button>
-        {% endif %}
-      </div>
-    {% else %}
-      <div class="collection-carousel__empty">
-        Wähle in den Section-Einstellungen mindestens eine Kollektion aus.
-      </div>
-    {% endif %}
+    {% content_for 'block',
+      type: '_collection-carousel-content',
+      id: 'collection-carousel-content',
+      collections: section.settings.collection_list
+    %}
   </div>
 </section>
 
