@@ -21,6 +21,7 @@
 
 {% stylesheet %}
   .carousel {
+    box-sizing: border-box;
     width: 100%;
     padding-block: var(--carousel-padding-top) var(--carousel-padding-bottom);
     background: var(--carousel-background);
@@ -40,12 +41,21 @@
   }
 
   .carousel--width-full {
-    width: 100vw;
-    margin-inline: calc(50% - 50vw);
+    width: 100cqw;
+    margin-inline: calc(50% - 50cqw);
   }
 
   .carousel--width-full .carousel__inner {
     max-width: none;
+    box-sizing: border-box;
+    padding-inline: 20px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .carousel--width-page .carousel__inner,
+    .carousel--width-full .carousel__inner {
+      padding-inline: 12px;
+    }
   }
 
   .carousel__inner > .shopify-block {

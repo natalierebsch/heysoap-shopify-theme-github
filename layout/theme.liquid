@@ -70,6 +70,8 @@
       body {
         margin: 0;
         background-color: var(--page-background-color);
+        overflow-x: clip;
+        container-type: inline-size;
         font-family: var(--font-paragraph-family);
         font-style: var(--font-paragraph-style);
         font-weight: var(--font-paragraph-weight);
@@ -78,6 +80,7 @@
       }
 
       .site-main {
+        box-sizing: border-box;
         width: 100%;
         max-width: var(--page-width);
         margin-inline: auto;
