@@ -9,8 +9,8 @@
 <div 
     class="site-header relative"
     style="
-        --header-background-color: {{ section.settings.background_color }};
-        --header-text-color: {{ section.settings.text_color }};
+        --header-background-color: {{ section.settings.background_color | default: 'transparent' }};
+        --header-text-color: {{ section.settings.text_color | default: 'inherit' }};
     "
     x-data="{ mobileMenuOpen: false, searchBarOpen: false }"
     x-cloak>    
@@ -200,14 +200,12 @@
         {
             "type": "color",
             "id": "background_color",
-            "label": "Header background color",
-            "default": "#ffffff"
+            "label": "Header background color"
         },
         {
             "type": "color",
             "id": "text_color",
-            "label": "Header text color",
-            "default": "#374151"
+            "label": "Header text color"
         },
         {
             "type": "text",

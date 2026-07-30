@@ -3,8 +3,8 @@
     class="button-block"
     style="
       --button-alignment: {{ block.settings.alignment }};
-      --button-background: {{ block.settings.background_color }};
-      --button-text: {{ block.settings.text_color }};
+      --button-background: {{ block.settings.background_color | default: 'transparent' }};
+      --button-text: {{ block.settings.text_color | default: 'inherit' }};
       --button-radius: {{ block.settings.border_radius }}px;
     "
     {{ block.shopify_attributes }}
@@ -94,14 +94,12 @@
     {
       "type": "color",
       "id": "background_color",
-      "label": "Buttonfarbe",
-      "default": "#111111"
+      "label": "Buttonfarbe"
     },
     {
       "type": "color",
       "id": "text_color",
-      "label": "Textfarbe",
-      "default": "#ffffff"
+      "label": "Textfarbe"
     },
     {
       "type": "range",

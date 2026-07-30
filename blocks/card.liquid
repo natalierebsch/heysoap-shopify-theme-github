@@ -1,9 +1,9 @@
 <div
   class="card-block"
   style="
-    --card-background: {{ block.settings.background_color }};
-    --card-text-color: {{ block.settings.text_color }};
-    --card-border-color: {{ block.settings.border_color }};
+    --card-background: {{ block.settings.background_color | default: 'transparent' }};
+    --card-text-color: {{ block.settings.text_color | default: 'inherit' }};
+    --card-border-color: {{ block.settings.border_color | default: 'transparent' }};
     --card-border-width: {{ block.settings.border_width }}px;
     --card-border-radius: {{ block.settings.border_radius }}px;
     --card-padding: {{ block.settings.padding }}px;
@@ -63,20 +63,17 @@
     {
       "type": "color",
       "id": "background_color",
-      "label": "Hintergrundfarbe",
-      "default": "#ffffff"
+      "label": "Hintergrundfarbe"
     },
     {
       "type": "color",
       "id": "text_color",
-      "label": "Textfarbe",
-      "default": "#111111"
+      "label": "Textfarbe"
     },
     {
       "type": "color",
       "id": "border_color",
-      "label": "Rahmenfarbe",
-      "default": "#e5e5e5"
+      "label": "Rahmenfarbe"
     },
     {
       "type": "range",
