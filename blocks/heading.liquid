@@ -1,3 +1,10 @@
+{% doc %}
+  Rendert eine konfigurierbare Überschrift.
+
+  @example
+  {% content_for 'block', type: 'heading', id: 'card-heading' %}
+{% enddoc %}
+
 <div
   class="heading-block"
   style="--heading-alignment: {{ block.settings.alignment }};"
