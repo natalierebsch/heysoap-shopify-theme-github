@@ -1,5 +1,8 @@
 {% liquid
-  assign section_background = section.settings.color_scheme.settings.background
+  assign section_background = section.settings.color_scheme.settings.background_gradient
+  if section_background == blank
+    assign section_background = section.settings.color_scheme.settings.background
+  endif
   assign section_text = section.settings.color_scheme.settings.text
 
   if section.settings.background_color != blank
