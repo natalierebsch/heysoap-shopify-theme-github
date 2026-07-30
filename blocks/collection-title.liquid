@@ -64,7 +64,25 @@
     width: 100%;
   }
 
+  .shopify-block:has(> .collection-title) {
+    box-sizing: border-box;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .shopify-block:has(> .collection-title--width-fit) {
+    width: fit-content;
+  }
+
+  .shopify-block:has(> .collection-title--width-fill) {
+    width: 100%;
+  }
+
   .collection-title--max-width-small {
+    max-width: 480px;
+  }
+
+  .shopify-block:has(> .collection-title--max-width-small) {
     max-width: 480px;
   }
 
@@ -72,11 +90,23 @@
     max-width: 720px;
   }
 
+  .shopify-block:has(> .collection-title--max-width-normal) {
+    max-width: 720px;
+  }
+
   .collection-title--max-width-wide {
     max-width: 1000px;
   }
 
+  .shopify-block:has(> .collection-title--max-width-wide) {
+    max-width: 1000px;
+  }
+
   .collection-title--max-width-none {
+    max-width: none;
+  }
+
+  .shopify-block:has(> .collection-title--max-width-none) {
     max-width: none;
   }
 
