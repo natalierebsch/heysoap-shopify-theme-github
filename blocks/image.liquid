@@ -5,48 +5,122 @@
   {% content_for 'block', type: 'image', id: 'card-image' %}
 {% enddoc %}
 
-{% if block.settings.image != blank %}
-  <div
-    class="image-block"
-    style="
-      --image-width: {{ block.settings.width }}px;
-      --image-alignment: {{ block.settings.alignment }};
-      --image-radius: {{ block.settings.border_radius }}px;
-    "
-    {{ block.shopify_attributes }}
-  >
-    {% if block.settings.link != blank %}
-      <a href="{{ block.settings.link }}">
-    {% endif %}
+<div
+  class="
+    image-block
+    image-block--desktop-{{ block.settings.desktop_width }}
+    image-block--mobile-{{ block.settings.mobile_width }}
+    image-block--height-{{ block.settings.height }}
+    image-block--border-{{ block.settings.border_style }}
+  "
+  style="
+    --image-aspect-ratio: {{ block.settings.aspect_ratio }};
+    --image-radius: {{ block.settings.border_radius }}px;
+    --image-padding-top: {{ block.settings.padding_top }}px;
+    --image-padding-bottom: {{ block.settings.padding_bottom }}px;
+    --image-padding-left: {{ block.settings.padding_left }}px;
+    --image-padding-right: {{ block.settings.padding_right }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% if block.settings.link != blank %}
+    <a class="image-block__link" href="{{ block.settings.link }}">
+  {% endif %}
 
-    {{
-      block.settings.image
-      | image_url: width: 2000
-      | image_tag:
-        class: 'image-block__image',
-        loading: 'lazy',
-        widths: '400, 750, 1000, 1500, 2000',
-        sizes: '(max-width: 749px) 100vw, 1200px'
-    }}
-
-    {% if block.settings.link != blank %}
-      </a>
+  <div class="image-block__media">
+    {% if block.settings.image != blank %}
+      {{
+        block.settings.image
+        | image_url: width: 2000
+        | image_tag:
+          class: 'image-block__image',
+          loading: 'lazy',
+          widths: '400, 750, 1000, 1500, 2000',
+          sizes: '(max-width: 749px) 100vw, 1200px'
+      }}
+    {% else %}
+      {{ 'image' | placeholder_svg_tag: 'image-block__placeholder' }}
     {% endif %}
   </div>
-{% endif %}
+
+  {% if block.settings.link != blank %}
+    </a>
+  {% endif %}
+</div>
 
 {% stylesheet %}
   .image-block {
-    display: flex;
-    justify-content: var(--image-alignment);
+    box-sizing: border-box;
+    padding:
+      var(--image-padding-top)
+      var(--image-padding-right)
+      var(--image-padding-bottom)
+      var(--image-padding-left);
   }
 
-  .image-block__image {
+  .image-block--desktop-fit {
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .image-block--desktop-fill {
+    width: 100%;
+  }
+
+  .image-block__link {
     display: block;
     width: 100%;
-    max-width: var(--image-width);
-    height: auto;
+    height: 100%;
+  }
+
+  .image-block__media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: var(--image-aspect-ratio);
     border-radius: var(--image-radius);
+    overflow: hidden;
+  }
+
+  .image-block--border-none .image-block__media {
+    border: 0;
+  }
+
+  .image-block--border-solid .image-block__media {
+    border: 1px solid currentColor;
+  }
+
+  .image-block__image,
+  .image-block__placeholder {
+    display: block;
+    width: 100%;
+    border-radius: inherit;
+  }
+
+  .image-block--height-adapt .image-block__image,
+  .image-block--height-adapt .image-block__placeholder {
+    height: auto;
+  }
+
+  .image-block--height-fill,
+  .image-block--height-fill .image-block__media {
+    height: 100%;
+  }
+
+  .image-block--height-fill .image-block__image,
+  .image-block--height-fill .image-block__placeholder {
+    height: 100%;
+    object-fit: cover;
+  }
+
+  @media screen and (max-width: 749px) {
+    .image-block--mobile-fit {
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .image-block--mobile-fill {
+      width: 100%;
+    }
   }
 {% endstylesheet %}
 
@@ -62,45 +136,163 @@
     {
       "type": "url",
       "id": "link",
-      "label": "Optionaler Link"
+      "label": "Link"
     },
     {
-      "type": "range",
-      "id": "width",
-      "label": "Maximale Breite",
-      "min": 100,
-      "max": 1600,
-      "step": 50,
-      "unit": "px",
-      "default": 800
+      "type": "header",
+      "content": "Größe"
     },
     {
       "type": "select",
-      "id": "alignment",
-      "label": "Ausrichtung",
+      "id": "aspect_ratio",
+      "label": "Seitenverhältnis",
       "options": [
         {
-          "value": "flex-start",
-          "label": "Links"
+          "value": "auto",
+          "label": "Automatisch"
         },
         {
-          "value": "center",
-          "label": "Mittig"
+          "value": "1 / 1",
+          "label": "Quadratisch"
         },
         {
-          "value": "flex-end",
-          "label": "Rechts"
+          "value": "4 / 3",
+          "label": "4:3"
+        },
+        {
+          "value": "3 / 2",
+          "label": "3:2"
+        },
+        {
+          "value": "16 / 9",
+          "label": "16:9"
+        },
+        {
+          "value": "3 / 4",
+          "label": "Hochformat"
         }
       ],
-      "default": "center"
+      "default": "auto"
+    },
+    {
+      "type": "select",
+      "id": "desktop_width",
+      "label": "Desktop-Breite",
+      "options": [
+        {
+          "value": "fit",
+          "label": "Anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Füllen"
+        }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "select",
+      "id": "mobile_width",
+      "label": "Mobile Breite",
+      "options": [
+        {
+          "value": "fit",
+          "label": "Anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Füllen"
+        }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Höhe",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Füllen"
+        }
+      ],
+      "default": "adapt"
+    },
+    {
+      "type": "header",
+      "content": "Ränder"
+    },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Stil",
+      "options": [
+        {
+          "value": "none",
+          "label": "Keine"
+        },
+        {
+          "value": "solid",
+          "label": "Einfarbig"
+        }
+      ],
+      "default": "none"
     },
     {
       "type": "range",
       "id": "border_radius",
-      "label": "Ecken",
+      "label": "Eckenradius",
       "min": 0,
-      "max": 50,
+      "max": 60,
       "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 120,
+      "step": 4,
       "unit": "px",
       "default": 0
     }
