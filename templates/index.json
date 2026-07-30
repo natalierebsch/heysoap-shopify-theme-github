@@ -618,10 +618,91 @@
     },
     "featured-collection": {
       "type": "featured-collection",
+      "blocks": {
+        "featured-collection-heading": {
+          "type": "_featured-collection-heading",
+          "static": true,
+          "settings": {
+            "alignment": "between",
+            "gap": 16,
+            "show_button": true,
+            "button_label": "Alle ansehen",
+            "padding_top": 0,
+            "padding_bottom": 0
+          },
+          "blocks": {}
+        },
+        "featured-product-card": {
+          "type": "_featured-product-card",
+          "static": true,
+          "settings": {
+            "gap": 8,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "background_color": "#FDFDFD",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 20,
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          },
+          "blocks": {
+            "product-card-image": {
+              "type": "_product-card-image",
+              "static": true,
+              "settings": {
+                "aspect_ratio": "1 / 1",
+                "border_radius": 0
+              },
+              "blocks": {}
+            },
+            "product-title": {
+              "type": "product-title",
+              "static": true,
+              "settings": {
+                "type_preset": "h4",
+                "text_color": ""
+              },
+              "blocks": {}
+            },
+            "product-text": {
+              "type": "product-text",
+              "static": true,
+              "settings": {
+                "source": "vendor",
+                "max_words": 15,
+                "type_preset": "paragraph",
+                "text_color": ""
+              },
+              "blocks": {}
+            },
+            "product-price": {
+              "type": "product-price",
+              "static": true,
+              "settings": {},
+              "blocks": {}
+            }
+          },
+          "block_order": []
+        }
+      },
       "settings": {
-        "title": "Featured Collection",
-        "featured_collection": "all",
-        "number_of_products_to_show": 4
+        "product_source": "all",
+        "collection": "",
+        "products_to_show": 8,
+        "columns_desktop": 4,
+        "columns_mobile": "1",
+        "gap": 16,
+        "width": "page",
+        "background_color": "",
+        "padding_top": 48,
+        "padding_bottom": 48
       }
     }
   },
