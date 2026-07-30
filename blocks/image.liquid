@@ -12,6 +12,7 @@
     image-block--mobile-{{ block.settings.mobile_width }}
     image-block--height-{{ block.settings.height }}
     image-block--border-{{ block.settings.border_style }}
+    {% unless block.settings.aspect_ratio == 'auto' %}image-block--fixed-ratio{% endunless %}
   "
   style="
     --image-aspect-ratio: {{ block.settings.aspect_ratio }};
@@ -106,6 +107,13 @@
   .image-block--height-adapt .image-block__image,
   .image-block--height-adapt .image-block__placeholder {
     height: auto;
+  }
+
+  .image-block--fixed-ratio .image-block__image,
+  .image-block--fixed-ratio .image-block__placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   .image-block--height-fill,
