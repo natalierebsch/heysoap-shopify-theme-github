@@ -13,6 +13,7 @@
     collection-carousel--placement-{{ block.settings.placement }}
     collection-carousel--align-{{ block.settings.horizontal_alignment }}
     collection-carousel--position-{{ block.settings.vertical_alignment }}
+    collection-carousel--title-{{ block.settings.title_preset }}
     {% if block.settings.aspect_ratio == 'auto' %}collection-carousel--ratio-auto{% endif %}
     collection-carousel--border-{{ block.settings.border }}
   "
@@ -130,6 +131,27 @@
       "id": "show_title",
       "label": "Kollektionsname anzeigen",
       "default": true
+    },
+    {
+      "type": "select",
+      "id": "title_preset",
+      "label": "Titel-Voreinstellung",
+      "options": [
+        {
+          "value": "h1",
+          "label": "Überschrift 1"
+        },
+        {
+          "value": "h2",
+          "label": "Überschrift 2"
+        },
+        {
+          "value": "h3",
+          "label": "Überschrift 3"
+        }
+      ],
+      "default": "h3",
+      "visible_if": "{{ block.settings.show_title }}"
     },
     {
       "type": "select",
