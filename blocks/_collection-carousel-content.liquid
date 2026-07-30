@@ -11,14 +11,15 @@
   class="
     collection-carousel-content
     collection-carousel--placement-{{ block.settings.placement }}
-    collection-carousel--align-{{ block.settings.alignment }}
-    collection-carousel--position-{{ block.settings.vertical_position }}
+    collection-carousel--align-{{ block.settings.horizontal_alignment }}
+    collection-carousel--position-{{ block.settings.vertical_alignment }}
     {% if block.settings.aspect_ratio == 'auto' %}collection-carousel--ratio-auto{% endif %}
-    collection-carousel--border-{{ block.settings.border_style }}
+    collection-carousel--border-{{ block.settings.border }}
   "
   style="
-    --collection-card-background: {{ block.settings.card_background_color | default: 'transparent' }};
+    --collection-card-background: {{ block.settings.background_color | default: 'transparent' }};
     --collection-card-text: {{ block.settings.text_color | default: 'inherit' }};
+    --collection-card-gap: {{ block.settings.collection_card_gap }}px;
     --collection-card-overlay: {{ block.settings.overlay_color | default: '#000000' }};
     --collection-card-overlay-opacity: {{ block.settings.overlay_opacity | divided_by: 100.0 }};
     --collection-card-ratio: {{ block.settings.aspect_ratio }};
@@ -148,11 +149,11 @@
     },
     {
       "type": "select",
-      "id": "alignment",
-      "label": "Textausrichtung",
+      "id": "horizontal_alignment",
+      "label": "Ausrichtung",
       "options": [
         {
-          "value": "left",
+          "value": "flex-start",
           "label": "Links"
         },
         {
@@ -160,19 +161,19 @@
           "label": "Zentriert"
         },
         {
-          "value": "right",
+          "value": "flex-end",
           "label": "Rechts"
         }
       ],
-      "default": "left"
+      "default": "flex-start"
     },
     {
       "type": "select",
-      "id": "vertical_position",
+      "id": "vertical_alignment",
       "label": "Position",
       "options": [
         {
-          "value": "top",
+          "value": "flex-start",
           "label": "Oben"
         },
         {
@@ -180,12 +181,22 @@
           "label": "Zentriert"
         },
         {
-          "value": "bottom",
+          "value": "flex-end",
           "label": "Unten"
         }
       ],
-      "default": "bottom",
+      "default": "center",
       "visible_if": "{{ block.settings.placement == 'on_image' }}"
+    },
+    {
+      "type": "range",
+      "id": "collection_card_gap",
+      "label": "Vertikaler Abstand",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 8
     },
     {
       "type": "select",
@@ -223,8 +234,8 @@
     },
     {
       "type": "color",
-      "id": "card_background_color",
-      "label": "Kartenhintergrund"
+      "id": "background_color",
+      "label": "Hintergrundfarbe"
     },
     {
       "type": "color",
@@ -254,7 +265,7 @@
     },
     {
       "type": "select",
-      "id": "border_style",
+      "id": "border",
       "label": "Stil",
       "options": [
         {
@@ -272,12 +283,12 @@
       "type": "range",
       "id": "border_width",
       "label": "Stärke",
-      "min": 1,
-      "max": 20,
+      "min": 0,
+      "max": 100,
       "step": 1,
       "unit": "px",
       "default": 1,
-      "visible_if": "{{ block.settings.border_style == 'solid' }}"
+      "visible_if": "{{ block.settings.border != 'none' }}"
     },
     {
       "type": "range",
@@ -288,13 +299,13 @@
       "step": 1,
       "unit": "%",
       "default": 100,
-      "visible_if": "{{ block.settings.border_style == 'solid' }}"
+      "visible_if": "{{ block.settings.border != 'none' }}"
     },
     {
       "type": "color",
       "id": "border_color",
       "label": "Farbe",
-      "visible_if": "{{ block.settings.border_style == 'solid' }}"
+      "visible_if": "{{ block.settings.border != 'none' }}"
     },
     {
       "type": "range",
@@ -302,7 +313,7 @@
       "label": "Eckenradius",
       "min": 0,
       "max": 100,
-      "step": 2,
+      "step": 1,
       "unit": "px",
       "default": 0
     }
