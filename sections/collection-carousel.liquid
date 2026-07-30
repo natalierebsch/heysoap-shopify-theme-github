@@ -64,6 +64,17 @@
     width: 100%;
   }
 
+  .collection-carousel__additional-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .collection-carousel__additional-content:empty {
+    display: none;
+  }
+
   .collection-carousel__stage {
     position: relative;
     min-width: 0;
@@ -302,6 +313,26 @@
 {
   "name": "Kollektionskarussell",
   "tag": "section",
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "heading"
+    },
+    {
+      "type": "text"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "spacer"
+    }
+  ],
   "settings": [
     {
       "type": "collection_list",
@@ -407,186 +438,6 @@
       ],
       "default": "circle",
       "visible_if": "{{ section.settings.navigation_symbol != 'none' }}"
-    },
-    {
-      "type": "header",
-      "content": "Karten"
-    },
-    {
-      "type": "select",
-      "id": "placement",
-      "label": "Titelplatzierung",
-      "options": [
-        {
-          "value": "on_image",
-          "label": "Auf dem Bild"
-        },
-        {
-          "value": "below_image",
-          "label": "Unter dem Bild"
-        }
-      ],
-      "default": "below_image"
-    },
-    {
-      "type": "select",
-      "id": "alignment",
-      "label": "Textausrichtung",
-      "options": [
-        {
-          "value": "left",
-          "label": "Links"
-        },
-        {
-          "value": "center",
-          "label": "Zentriert"
-        },
-        {
-          "value": "right",
-          "label": "Rechts"
-        }
-      ],
-      "default": "left"
-    },
-    {
-      "type": "select",
-      "id": "vertical_position",
-      "label": "Position",
-      "options": [
-        {
-          "value": "top",
-          "label": "Oben"
-        },
-        {
-          "value": "center",
-          "label": "Zentriert"
-        },
-        {
-          "value": "bottom",
-          "label": "Unten"
-        }
-      ],
-      "default": "bottom",
-      "visible_if": "{{ section.settings.placement == 'on_image' }}"
-    },
-    {
-      "type": "select",
-      "id": "aspect_ratio",
-      "label": "Seitenverhältnis",
-      "options": [
-        {
-          "value": "auto",
-          "label": "Automatisch"
-        },
-        {
-          "value": "3 / 4",
-          "label": "Hochformat"
-        },
-        {
-          "value": "4 / 3",
-          "label": "Querformat"
-        },
-        {
-          "value": "1 / 1",
-          "label": "Quadrat"
-        }
-      ],
-      "default": "1 / 1"
-    },
-    {
-      "type": "range",
-      "id": "card_padding",
-      "label": "Innenabstand",
-      "min": 0,
-      "max": 80,
-      "step": 2,
-      "unit": "px",
-      "default": 16
-    },
-    {
-      "type": "color",
-      "id": "card_background_color",
-      "label": "Kartenhintergrund"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Textfarbe"
-    },
-    {
-      "type": "color",
-      "id": "overlay_color",
-      "label": "Überlagerungsfarbe",
-      "visible_if": "{{ section.settings.placement == 'on_image' }}"
-    },
-    {
-      "type": "range",
-      "id": "overlay_opacity",
-      "label": "Überlagerungsdeckkraft",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "%",
-      "default": 20,
-      "visible_if": "{{ section.settings.placement == 'on_image' }}"
-    },
-    {
-      "type": "header",
-      "content": "Kartenränder"
-    },
-    {
-      "type": "select",
-      "id": "border_style",
-      "label": "Stil",
-      "options": [
-        {
-          "value": "none",
-          "label": "Keine"
-        },
-        {
-          "value": "solid",
-          "label": "Einfarbig"
-        }
-      ],
-      "default": "none"
-    },
-    {
-      "type": "range",
-      "id": "border_width",
-      "label": "Stärke",
-      "min": 1,
-      "max": 20,
-      "step": 1,
-      "unit": "px",
-      "default": 1,
-      "visible_if": "{{ section.settings.border_style == 'solid' }}"
-    },
-    {
-      "type": "range",
-      "id": "border_opacity",
-      "label": "Deckkraft",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "%",
-      "default": 100,
-      "visible_if": "{{ section.settings.border_style == 'solid' }}"
-    },
-    {
-      "type": "color",
-      "id": "border_color",
-      "label": "Farbe",
-      "visible_if": "{{ section.settings.border_style == 'solid' }}"
-    },
-    {
-      "type": "range",
-      "id": "border_radius",
-      "label": "Eckenradius",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "unit": "px",
-      "default": 0
     },
     {
       "type": "header",
