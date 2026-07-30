@@ -1,0 +1,129 @@
+{% if block.settings.label != blank %}
+  <div
+    class="button-block"
+    style="
+      --button-alignment: {{ block.settings.alignment }};
+      --button-background: {{ block.settings.background_color }};
+      --button-text: {{ block.settings.text_color }};
+      --button-radius: {{ block.settings.border_radius }}px;
+    "
+    {{ block.shopify_attributes }}
+  >
+    <a
+      href="{{ block.settings.link | default: '#' }}"
+      class="button-block__button button-block__button--{{ block.settings.style }}"
+      {% if block.settings.open_new_tab %}
+        target="_blank"
+        rel="noopener noreferrer"
+      {% endif %}
+    >
+      {{ block.settings.label }}
+    </a>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .button-block {
+    text-align: var(--button-alignment);
+  }
+
+  .button-block__button {
+    display: inline-block;
+    padding: 12px 24px;
+    border: 2px solid var(--button-background);
+    border-radius: var(--button-radius);
+    text-decoration: none;
+    transition:
+      opacity 0.2s ease,
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .button-block__button--solid {
+    background: var(--button-background);
+    color: var(--button-text);
+  }
+
+  .button-block__button--outline {
+    background: transparent;
+    color: var(--button-background);
+  }
+
+  .button-block__button:hover {
+    opacity: 0.8;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Schaltfläche",
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Beschriftung",
+      "default": "Mehr erfahren"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link"
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Stil",
+      "options": [
+        {
+          "value": "solid",
+          "label": "Ausgefüllt"
+        },
+        {
+          "value": "outline",
+          "label": "Kontur"
+        }
+      ],
+      "default": "solid"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "default": "left"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Buttonfarbe",
+      "default": "#111111"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Ecken",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "checkbox",
+      "id": "open_new_tab",
+      "label": "In neuem Tab öffnen",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Schaltfläche"
+    }
+  ]
+}
+{% endschema %}

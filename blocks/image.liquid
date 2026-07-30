@@ -1,0 +1,107 @@
+{% if block.settings.image != blank %}
+  <div
+    class="image-block"
+    style="
+      --image-width: {{ block.settings.width }}px;
+      --image-alignment: {{ block.settings.alignment }};
+      --image-radius: {{ block.settings.border_radius }}px;
+    "
+    {{ block.shopify_attributes }}
+  >
+    {% if block.settings.link != blank %}
+      <a href="{{ block.settings.link }}">
+    {% endif %}
+
+    {{
+      block.settings.image
+      | image_url: width: 2000
+      | image_tag:
+        class: 'image-block__image',
+        loading: 'lazy',
+        widths: '400, 750, 1000, 1500, 2000',
+        sizes: '(max-width: 749px) 100vw, 1200px'
+    }}
+
+    {% if block.settings.link != blank %}
+      </a>
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .image-block {
+    display: flex;
+    justify-content: var(--image-alignment);
+  }
+
+  .image-block__image {
+    display: block;
+    width: 100%;
+    max-width: var(--image-width);
+    height: auto;
+    border-radius: var(--image-radius);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Bild",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Bild"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Optionaler Link"
+    },
+    {
+      "type": "range",
+      "id": "width",
+      "label": "Maximale Breite",
+      "min": 100,
+      "max": 1600,
+      "step": 50,
+      "unit": "px",
+      "default": 800
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Links"
+        },
+        {
+          "value": "center",
+          "label": "Mittig"
+        },
+        {
+          "value": "flex-end",
+          "label": "Rechts"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Ecken",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bild"
+    }
+  ]
+}
+{% endschema %}
