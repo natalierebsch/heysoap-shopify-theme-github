@@ -71,7 +71,7 @@
 
   .block-carousel__container {
     position: relative;
-    width: min(100%, var(--carousel-max-width));
+    width: 100%;
     margin-inline: auto;
     border-width: var(--carousel-border-width);
     border-style: var(--carousel-border-style);
@@ -79,6 +79,14 @@
     border-radius: var(--carousel-border-radius);
     overflow: hidden;
   }
+
+  .block-carousel--width-page .block-carousel__container {
+  max-width: 1200px;
+  }
+
+.block-carousel--width-full .block-carousel__container {
+  max-width: none;
+}
 
   .block-carousel__viewport {
     width: 100%;
@@ -301,14 +309,20 @@
       "default": "flex-start"
     },
     {
-      "type": "range",
-      "id": "max_width",
-      "label": "Maximale Breite",
-      "min": 800,
-      "max": 1600,
-      "step": 50,
-      "unit": "px",
-      "default": 1200
+      "type": "select",
+      "id": "width",
+      "label": "Breite",
+      "options": [
+        {
+          "value": "page",
+          "label": "Seite"
+        },
+        {
+          "value": "full",
+          "label": "Vollständig"
+        }
+      ],
+      "default": "page"
     },
     {
       "type": "header",
