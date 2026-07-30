@@ -15,6 +15,8 @@
   "
   style="
     --image-aspect-ratio: {{ block.settings.aspect_ratio }};
+    --image-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
+    --image-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
     --image-radius: {{ block.settings.border_radius }}px;
     --image-padding-top: {{ block.settings.padding_top }}px;
     --image-padding-bottom: {{ block.settings.padding_bottom }}px;
@@ -65,6 +67,11 @@
 
   .image-block--desktop-fill {
     width: 100%;
+  }
+
+  .image-block--desktop-custom {
+    width: var(--image-custom-width-desktop);
+    max-width: 100%;
   }
 
   .image-block__link {
@@ -121,6 +128,11 @@
     .image-block--mobile-fill {
       width: 100%;
     }
+
+    .image-block--mobile-custom {
+      width: var(--image-custom-width-mobile);
+      max-width: 100%;
+    }
   }
 {% endstylesheet %}
 
@@ -152,24 +164,16 @@
           "label": "Automatisch"
         },
         {
-          "value": "1 / 1",
-          "label": "Quadratisch"
+          "value": "3 / 4",
+          "label": "Hochformat"
         },
         {
           "value": "4 / 3",
-          "label": "4:3"
+          "label": "Querformat"
         },
         {
-          "value": "3 / 2",
-          "label": "3:2"
-        },
-        {
-          "value": "16 / 9",
-          "label": "16:9"
-        },
-        {
-          "value": "3 / 4",
-          "label": "Hochformat"
+          "value": "1 / 1",
+          "label": "Quadrat"
         }
       ],
       "default": "auto"
@@ -186,9 +190,24 @@
         {
           "value": "fill",
           "label": "Füllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
         }
       ],
       "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_desktop",
+      "label": "Benutzerdefinierte Desktop-Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.desktop_width == 'custom' }}"
     },
     {
       "type": "select",
@@ -202,9 +221,24 @@
         {
           "value": "fill",
           "label": "Füllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
         }
       ],
       "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Benutzerdefinierte Mobile Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.mobile_width == 'custom' }}"
     },
     {
       "type": "select",
