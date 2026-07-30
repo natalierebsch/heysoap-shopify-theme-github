@@ -1,0 +1,73 @@
+{% doc %}
+  Rendert Hersteller oder Beschreibung des nächstgelegenen Produkts.
+{% enddoc %}
+
+{% assign text_product = closest.product %}
+
+{% if text_product != blank %}
+  <div
+    class="featured-product-text typography-style"
+    style="
+      --featured-product-text-color: {{ block.settings.text_color | default: 'inherit' }};
+      {% render 'typography-variables', preset: block.settings.type_preset %}
+    "
+    {{ block.shopify_attributes }}
+  >
+    {% if block.settings.source == 'description' %}
+      {{ text_product.description | strip_html | truncatewords: block.settings.max_words }}
+    {% else %}
+      {{ text_product.vendor }}
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .featured-product-text {
+    color: var(--featured-product-text-color);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Text",
+  "settings": [
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Inhalt",
+      "options": [
+        { "value": "vendor", "label": "Hersteller" },
+        { "value": "description", "label": "Beschreibung" }
+      ],
+      "default": "vendor"
+    },
+    {
+      "type": "range",
+      "id": "max_words",
+      "label": "Maximale Wörter",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "default": 15,
+      "visible_if": "{{ block.settings.source == 'description' }}"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "Voreinstellung",
+      "options": [
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "h4", "label": "Überschrift 4" },
+        { "value": "h5", "label": "Überschrift 5" },
+        { "value": "h6", "label": "Überschrift 6" }
+      ],
+      "default": "paragraph"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,142 @@
+{% doc %}
+  Rendert den Titel und den Kollektionslink einer Featured Collection.
+{% enddoc %}
+
+{% assign featured_collection = closest.collection %}
+
+<div
+  class="featured-collection-heading featured-collection-heading--{{ block.settings.alignment }}"
+  style="
+    --featured-heading-gap: {{ block.settings.gap }}px;
+    --featured-heading-padding-top: {{ block.settings.padding_top }}px;
+    --featured-heading-padding-bottom: {{ block.settings.padding_bottom }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% if featured_collection != blank %}
+    <h2 class="featured-collection-heading__title">
+      {{ featured_collection.title }}
+    </h2>
+
+    {% if block.settings.show_button %}
+      <a class="featured-collection-heading__button" href="{{ featured_collection.url }}">
+        {{ block.settings.button_label }}
+      </a>
+    {% endif %}
+  {% else %}
+    <h2 class="featured-collection-heading__title">Kollektion auswählen</h2>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .featured-collection-heading {
+    display: flex;
+    align-items: center;
+    gap: var(--featured-heading-gap);
+    width: 100%;
+    padding-block:
+      var(--featured-heading-padding-top)
+      var(--featured-heading-padding-bottom);
+  }
+
+  .featured-collection-heading--left {
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .featured-collection-heading--center {
+    justify-content: center;
+    text-align: center;
+  }
+
+  .featured-collection-heading--right {
+    justify-content: flex-end;
+    text-align: right;
+  }
+
+  .featured-collection-heading--between {
+    justify-content: space-between;
+  }
+
+  .featured-collection-heading__title {
+    margin: 0;
+  }
+
+  .featured-collection-heading__button {
+    color: inherit;
+  }
+
+  @media screen and (max-width: 749px) {
+    .featured-collection-heading {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Header",
+  "settings": [
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Zentriert" },
+        { "value": "right", "label": "Rechts" },
+        { "value": "between", "label": "Abstand dazwischen" }
+      ],
+      "default": "between"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Abstand",
+      "min": 0,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "checkbox",
+      "id": "show_button",
+      "label": "Schaltfläche anzeigen",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Beschriftung",
+      "default": "Alle ansehen",
+      "visible_if": "{{ block.settings.show_button }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 120,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}

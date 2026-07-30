@@ -1,0 +1,97 @@
+{% doc %}
+  Rendert das Bild des nächstgelegenen Produkts.
+{% enddoc %}
+
+{% assign card_product = closest.product %}
+
+<div
+  class="featured-product-image {% if block.settings.aspect_ratio == 'auto' %}featured-product-image--auto{% endif %}"
+  style="
+    --featured-product-ratio: {{ block.settings.aspect_ratio }};
+    --featured-product-image-radius: {{ block.settings.border_radius }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% if card_product != blank %}
+    <a href="{{ card_product.url }}" aria-label="{{ card_product.title | escape }}">
+      {% if card_product.featured_image != blank %}
+        {{
+          card_product.featured_image
+          | image_url: width: 1600
+          | image_tag:
+            class: 'featured-product-image__image',
+            loading: 'lazy',
+            widths: '300, 500, 750, 1000, 1600',
+            sizes: '(max-width: 749px) 80vw, 25vw',
+            alt: card_product.title
+        }}
+      {% else %}
+        {{ 'product-1' | placeholder_svg_tag: 'featured-product-image__placeholder' }}
+      {% endif %}
+    </a>
+  {% else %}
+    {{ 'product-1' | placeholder_svg_tag: 'featured-product-image__placeholder' }}
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .featured-product-image {
+    width: 100%;
+    aspect-ratio: var(--featured-product-ratio);
+    overflow: hidden;
+    border-radius: var(--featured-product-image-radius);
+  }
+
+  .featured-product-image--auto {
+    aspect-ratio: auto;
+  }
+
+  .featured-product-image a {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .featured-product-image__image,
+  .featured-product-image__placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .featured-product-image--auto .featured-product-image__image,
+  .featured-product-image--auto .featured-product-image__placeholder {
+    height: auto;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Produktbild",
+  "settings": [
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "label": "Seitenverhältnis",
+      "options": [
+        { "value": "auto", "label": "Automatisch" },
+        { "value": "3 / 4", "label": "Hochformat" },
+        { "value": "4 / 3", "label": "Querformat" },
+        { "value": "1 / 1", "label": "Quadrat" }
+      ],
+      "default": "1 / 1"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}
