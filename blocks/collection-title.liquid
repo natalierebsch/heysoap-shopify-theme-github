@@ -1,0 +1,188 @@
+{% doc %}
+  Rendert den Titel der nächstgelegenen Kollektion.
+{% enddoc %}
+
+{% assign title_collection = closest.collection %}
+
+{% if title_collection != blank %}
+  <div
+    class="
+      collection-title
+      collection-title--{{ block.settings.title_preset }}
+      collection-title--background-{{ block.settings.show_background }}
+    "
+    style="
+      --collection-title-color: {{ block.settings.text_color | default: 'inherit' }};
+      --collection-title-background: {{ block.settings.background_color | default: 'transparent' }};
+      --collection-title-radius: {{ block.settings.border_radius }}px;
+      --collection-title-padding-top: {{ block.settings.padding_top }}px;
+      --collection-title-padding-bottom: {{ block.settings.padding_bottom }}px;
+      --collection-title-padding-left: {{ block.settings.padding_left }}px;
+      --collection-title-padding-right: {{ block.settings.padding_right }}px;
+    "
+    {{ block.shopify_attributes }}
+  >
+    <h3>
+      <a href="{{ title_collection.url }}">
+        {{ title_collection.title }}
+      </a>
+    </h3>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .collection-title {
+    box-sizing: border-box;
+    width: fit-content;
+    max-width: 100%;
+    color: var(--collection-title-color);
+    border-radius: var(--collection-title-radius);
+    padding:
+      var(--collection-title-padding-top)
+      var(--collection-title-padding-right)
+      var(--collection-title-padding-bottom)
+      var(--collection-title-padding-left);
+  }
+
+  .collection-title--background-true {
+    background: var(--collection-title-background);
+  }
+
+  .collection-title h3 {
+    margin: 0;
+    color: inherit;
+  }
+
+  .collection-title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .collection-title a:hover {
+    text-decoration: underline;
+  }
+
+  .collection-title--h1 h3 {
+    font-family: var(--font-h1-family);
+    font-style: var(--font-h1-style);
+    font-weight: var(--font-h1-weight);
+    font-size: var(--font-h1-size);
+    line-height: var(--font-h1-line-height);
+  }
+
+  .collection-title--h2 h3 {
+    font-family: var(--font-h2-family);
+    font-style: var(--font-h2-style);
+    font-weight: var(--font-h2-weight);
+    font-size: var(--font-h2-size);
+    line-height: var(--font-h2-line-height);
+  }
+
+  .collection-title--h3 h3 {
+    font-family: var(--font-h2-family);
+    font-style: var(--font-h2-style);
+    font-weight: var(--font-h2-weight);
+    font-size: calc(var(--font-h2-size) * 0.7);
+    line-height: var(--font-h2-line-height);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Kollektionstitel",
+  "settings": [
+    {
+      "type": "select",
+      "id": "title_preset",
+      "label": "Voreinstellung",
+      "options": [
+        {
+          "value": "h1",
+          "label": "Überschrift 1"
+        },
+        {
+          "value": "h2",
+          "label": "Überschrift 2"
+        },
+        {
+          "value": "h3",
+          "label": "Überschrift 3"
+        }
+      ],
+      "default": "h3"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_background",
+      "label": "Hintergrund anzeigen",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe",
+      "visible_if": "{{ block.settings.show_background }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.show_background }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ]
+}
+{% endschema %}
