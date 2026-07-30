@@ -114,12 +114,24 @@
     text-align: left;
   }
 
+  .shopify-block:has(> .collection-title--alignment-left) {
+    align-self: flex-start;
+  }
+
   .collection-title--alignment-center {
     text-align: center;
   }
 
+  .shopify-block:has(> .collection-title--alignment-center) {
+    align-self: center;
+  }
+
   .collection-title--alignment-right {
     text-align: right;
+  }
+
+  .shopify-block:has(> .collection-title--alignment-right) {
+    align-self: flex-end;
   }
 
   .collection-title--background-true {
