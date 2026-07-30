@@ -21,7 +21,8 @@
   {% content_for 'block',
     type: 'collection-title',
     id: 'collection-title',
-    closest.collection: card_collection
+    closest.collection: card_collection,
+    parent_block_id: block.id
   %}
 {% endcapture %}
 
