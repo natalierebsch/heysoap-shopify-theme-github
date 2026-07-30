@@ -8,13 +8,50 @@
  * ------------------------------------------------------------
  */
 {
-    "sections": {
-        "featured-collection": {
-            "type": "featured-collection",
-            "settings": {
-                "featured_collection": "all"
-            }
-        }
+  "sections": {
+    "featured-collection": {
+      "type": "featured-collection",
+      "settings": {
+        "title": "Featured Collection",
+        "featured_collection": "all",
+        "number_of_products_to_show": 4
+      }
     },
-    "order": ["featured-collection"]
+    "banner_slider_wXEUYL": {
+      "type": "banner-slider",
+      "blocks": {
+        "slide_NgTKBA": {
+          "type": "slide",
+          "settings": {
+            "heading": "Banner-Überschrift",
+            "text": "<p>Beschreibe hier dein Angebot.</p>",
+            "button_label": "Mehr erfahren",
+            "button_link": ""
+          }
+        },
+        "slide_hFVEYA": {
+          "type": "slide",
+          "settings": {
+            "heading": "Banner-Überschrift",
+            "text": "<p>Beschreibe hier dein Angebot.</p>",
+            "button_label": "Mehr erfahren",
+            "button_link": ""
+          }
+        }
+      },
+      "block_order": [
+        "slide_NgTKBA",
+        "slide_hFVEYA"
+      ],
+      "name": "Banner-Slider",
+      "settings": {
+        "height_desktop": 600,
+        "height_mobile": 450
+      }
+    }
+  },
+  "order": [
+    "banner_slider_wXEUYL",
+    "featured-collection"
+  ]
 }
