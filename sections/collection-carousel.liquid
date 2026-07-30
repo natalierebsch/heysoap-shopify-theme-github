@@ -4,6 +4,7 @@
     collection-carousel--width-{{ section.settings.width }}
     collection-carousel--placement-{{ section.settings.placement }}
     collection-carousel--align-{{ section.settings.alignment }}
+    collection-carousel--position-{{ section.settings.vertical_position }}
     collection-carousel--navigation-{{ section.settings.navigation_background }}
     {% if section.settings.aspect_ratio == 'auto' %}collection-carousel--ratio-auto{% endif %}
     collection-carousel--border-{{ section.settings.border_style }}
@@ -260,6 +261,17 @@
   .collection-carousel--placement-on_image .collection-carousel__content {
     position: absolute;
     inset: 0;
+  }
+
+  .collection-carousel--position-top .collection-carousel__content {
+    align-items: flex-start;
+  }
+
+  .collection-carousel--position-center .collection-carousel__content {
+    align-items: center;
+  }
+
+  .collection-carousel--position-bottom .collection-carousel__content {
     align-items: flex-end;
   }
 
@@ -527,6 +539,27 @@
         }
       ],
       "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "vertical_position",
+      "label": "Position",
+      "options": [
+        {
+          "value": "top",
+          "label": "Oben"
+        },
+        {
+          "value": "center",
+          "label": "Zentriert"
+        },
+        {
+          "value": "bottom",
+          "label": "Unten"
+        }
+      ],
+      "default": "bottom",
+      "visible_if": "{{ section.settings.placement == 'on_image' }}"
     },
     {
       "type": "select",
