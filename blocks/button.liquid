@@ -1,17 +1,36 @@
+{% liquid
+  assign button_background = block.settings.background_color
+  assign button_text = block.settings.text_color
+  assign button_border = block.settings.border_color
+
+  if block.settings.style == 'solid'
+    assign button_background = button_background | default: '#111111'
+    assign button_text = button_text | default: '#ffffff'
+    assign button_border = button_border | default: button_background
+  elsif block.settings.style == 'outline'
+    assign button_background = button_background | default: 'transparent'
+    assign button_text = button_text | default: '#111111'
+    assign button_border = button_border | default: button_text
+  endif
+%}
+
 {% if block.settings.label != blank %}
   <div
-    class="button-block"
+    class="button-block button-block--{{ block.settings.style }}"
     style="
       --button-alignment: {{ block.settings.alignment }};
-      --button-background: {{ block.settings.background_color | default: 'transparent' }};
-      --button-text: {{ block.settings.text_color | default: 'inherit' }};
+      --button-background: {{ button_background }};
+      --button-text: {{ button_text }};
+      --button-border: {{ button_border }};
       --button-radius: {{ block.settings.border_radius }}px;
+      --button-width: {% if block.settings.width == 'custom' %}{{ block.settings.custom_width }}%{% else %}{{ block.settings.width }}{% endif %};
+      --button-width-mobile: {% if block.settings.width_mobile == 'custom' %}{{ block.settings.custom_width_mobile }}%{% else %}{{ block.settings.width_mobile }}{% endif %};
     "
     {{ block.shopify_attributes }}
   >
     <a
       href="{{ block.settings.link | default: '#' }}"
-      class="button-block__button button-block__button--{{ block.settings.style }}"
+      class="button-block__button"
       {% if block.settings.open_new_tab %}
         target="_blank"
         rel="noopener noreferrer"
@@ -28,10 +47,18 @@
   }
 
   .button-block__button {
-    display: inline-block;
+    display: inline-flex;
+    box-sizing: border-box;
+    width: var(--button-width);
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
     padding: 12px 24px;
-    border: 2px solid var(--button-background);
+    border: 1px solid var(--button-border);
     border-radius: var(--button-radius);
+    background: var(--button-background);
+    color: var(--button-text);
+    text-align: center;
     text-decoration: none;
     transition:
       opacity 0.2s ease,
@@ -39,24 +66,31 @@
       color 0.2s ease;
   }
 
-  .button-block__button--solid {
-    background: var(--button-background);
-    color: var(--button-text);
-  }
-
-  .button-block__button--outline {
+  .button-block--link .button-block__button {
+    min-height: auto;
+    padding: 0;
+    border: 0;
     background: transparent;
-    color: var(--button-background);
+    color: var(--button-text, inherit);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
   }
 
   .button-block__button:hover {
     opacity: 0.8;
+  }
+
+  @media screen and (max-width: 749px) {
+    .button-block__button {
+      width: var(--button-width-mobile);
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "Schaltfläche",
+  "tag": null,
   "settings": [
     {
       "type": "text",
@@ -70,20 +104,68 @@
       "label": "Link"
     },
     {
+      "type": "checkbox",
+      "id": "open_new_tab",
+      "label": "In neuem Tab öffnen",
+      "default": false
+    },
+    {
       "type": "select",
       "id": "style",
       "label": "Stil",
       "options": [
         {
           "value": "solid",
-          "label": "Ausgefüllt"
+          "label": "Primär"
         },
         {
           "value": "outline",
-          "label": "Kontur"
+          "label": "Sekundär"
+        },
+        {
+          "value": "link",
+          "label": "Link"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
         }
       ],
       "default": "solid"
+    },
+    {
+      "type": "header",
+      "content": "Benutzerdefinierte Farben",
+      "visible_if": "{{ block.settings.style == 'custom' }}"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe",
+      "visible_if": "{{ block.settings.style == 'custom' }}"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe",
+      "visible_if": "{{ block.settings.style == 'custom' or block.settings.style == 'link' }}"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Randfarbe",
+      "visible_if": "{{ block.settings.style == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 4,
+      "visible_if": "{{ block.settings.style != 'link' }}"
     },
     {
       "type": "text_alignment",
@@ -92,30 +174,70 @@
       "default": "left"
     },
     {
-      "type": "color",
-      "id": "background_color",
-      "label": "Buttonfarbe"
+      "type": "header",
+      "content": "Größe"
     },
     {
-      "type": "color",
-      "id": "text_color",
-      "label": "Textfarbe"
+      "type": "select",
+      "id": "width",
+      "label": "Desktop-Breite",
+      "options": [
+        {
+          "value": "fit-content",
+          "label": "Anpassen"
+        },
+        {
+          "value": "100%",
+          "label": "Füllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
+        }
+      ],
+      "default": "fit-content"
     },
     {
       "type": "range",
-      "id": "border_radius",
-      "label": "Ecken",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "unit": "px",
-      "default": 4
+      "id": "custom_width",
+      "label": "Benutzerdefinierte Desktop-Breite",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.width == 'custom' }}"
     },
     {
-      "type": "checkbox",
-      "id": "open_new_tab",
-      "label": "In neuem Tab öffnen",
-      "default": false
+      "type": "select",
+      "id": "width_mobile",
+      "label": "Mobile Breite",
+      "options": [
+        {
+          "value": "fit-content",
+          "label": "Anpassen"
+        },
+        {
+          "value": "100%",
+          "label": "Füllen"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
+        }
+      ],
+      "default": "fit-content"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Benutzerdefinierte mobile Breite",
+      "min": 1,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.width_mobile == 'custom' }}"
     }
   ],
   "presets": [

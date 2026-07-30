@@ -5,6 +5,12 @@
   {% content_for 'block', type: 'image', id: 'card-image' %}
 {% enddoc %}
 
+{% liquid
+  assign image_border_alpha = block.settings.border_opacity | divided_by: 100.0
+  assign image_border_color = block.settings.border_color | default: '#000000'
+  assign image_border_color = image_border_color | color_modify: 'alpha', image_border_alpha
+%}
+
 <div
   class="
     image-block
@@ -19,6 +25,8 @@
     --image-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
     --image-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
     --image-radius: {{ block.settings.border_radius }}px;
+    --image-border-width: {{ block.settings.border_width }}px;
+    --image-border-color: {{ image_border_color }};
     --image-padding-top: {{ block.settings.padding_top }}px;
     --image-padding-bottom: {{ block.settings.padding_bottom }}px;
     --image-padding-left: {{ block.settings.padding_left }}px;
@@ -94,7 +102,7 @@
   }
 
   .image-block--border-solid .image-block__media {
-    border: 1px solid currentColor;
+    border: var(--image-border-width) solid var(--image-border-color);
   }
 
   .image-block__image,
@@ -283,6 +291,34 @@
         }
       ],
       "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Stärke",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.border_style == 'solid' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "label": "Deckkraft",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.border_style == 'solid' }}"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Farbe",
+      "visible_if": "{{ block.settings.border_style == 'solid' }}"
     },
     {
       "type": "range",
