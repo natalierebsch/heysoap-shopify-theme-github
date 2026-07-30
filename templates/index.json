@@ -44,27 +44,53 @@
     "collection_carousel_attbtg": {
       "type": "collection-carousel",
       "blocks": {
-        "collection-carousel-content": {
-          "type": "_collection-carousel-content",
+        "collection-card": {
+          "type": "_collection-card",
           "static": true,
           "settings": {
-            "show_title": true,
-            "placement": "below_image",
-            "alignment": "left",
-            "vertical_position": "bottom",
-            "aspect_ratio": "1 / 1",
-            "card_padding": 16,
-            "card_background_color": "",
-            "text_color": "",
-            "overlay_color": "",
-            "overlay_opacity": 20,
-            "border_style": "none",
-            "border_width": 1,
+            "placement": "on_image",
+            "horizontal_alignment": "center",
+            "vertical_alignment": "flex-end",
+            "collection_card_gap": 8,
+            "background_color": "#FBE9E2",
+            "border": "none",
+            "border_width": 20,
             "border_opacity": 100,
             "border_color": "",
             "border_radius": 0
           },
-          "blocks": {}
+          "blocks": {
+            "collection-card-image": {
+              "type": "_collection-card-image",
+              "static": true,
+              "settings": {
+                "image_ratio": "3 / 4",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 20
+              },
+              "blocks": {}
+            },
+            "collection-title": {
+              "type": "collection-title",
+              "static": true,
+              "settings": {
+                "title_preset": "h3",
+                "text_color": "#FDFDFD",
+                "show_background": true,
+                "background_color": "#FF808C",
+                "border_radius": 20,
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": []
         }
       },
       "name": "Kollektionskarussell",
