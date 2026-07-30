@@ -1,0 +1,87 @@
+<details
+  class="accordion-item"
+  {% if block.settings.open %}
+    open
+  {% endif %}
+  {{ block.shopify_attributes }}
+>
+  <summary class="accordion-item__summary">
+    <span>{{ block.settings.heading }}</span>
+    <span class="accordion-item__icon" aria-hidden="true">+</span>
+  </summary>
+
+  <div class="accordion-item__content">
+    {{ block.settings.content }}
+  </div>
+</details>
+
+{% stylesheet %}
+  .accordion-item {
+    border-bottom: 1px solid currentColor;
+  }
+
+  .accordion-item__summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 18px 0;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .accordion-item__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .accordion-item__icon {
+    transition: transform 0.2s ease;
+  }
+
+  .accordion-item[open] .accordion-item__icon {
+    transform: rotate(45deg);
+  }
+
+  .accordion-item__content {
+    padding-bottom: 20px;
+  }
+
+  .accordion-item__content > *:first-child {
+    margin-top: 0;
+  }
+
+  .accordion-item__content > *:last-child {
+    margin-bottom: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Akkordeon-Eintrag",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Überschrift",
+      "default": "Frage oder Überschrift"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Inhalt",
+      "default": "<p>Füge hier deine Antwort oder deinen Inhalt ein.</p>"
+    },
+    {
+      "type": "checkbox",
+      "id": "open",
+      "label": "Standardmäßig geöffnet",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Akkordeon-Eintrag"
+    }
+  ]
+}
+{% endschema %}
