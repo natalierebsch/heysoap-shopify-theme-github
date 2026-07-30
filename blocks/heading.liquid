@@ -1,0 +1,74 @@
+<div
+  class="heading-block"
+  style="--heading-alignment: {{ block.settings.alignment }};"
+  {{ block.shopify_attributes }}
+>
+  {% case block.settings.level %}
+    {% when 'h1' %}
+      <h1>{{ block.settings.heading }}</h1>
+
+    {% when 'h3' %}
+      <h3>{{ block.settings.heading }}</h3>
+
+    {% else %}
+      <h2>{{ block.settings.heading }}</h2>
+  {% endcase %}
+</div>
+
+{% stylesheet %}
+  .heading-block {
+    text-align: var(--heading-alignment);
+  }
+
+  .heading-block h1,
+  .heading-block h2,
+  .heading-block h3 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Überschrift",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Überschrift",
+      "default": "Neue Überschrift"
+    },
+    {
+      "type": "select",
+      "id": "level",
+      "label": "Überschriftenebene",
+      "options": [
+        {
+          "value": "h1",
+          "label": "H1"
+        },
+        {
+          "value": "h2",
+          "label": "H2"
+        },
+        {
+          "value": "h3",
+          "label": "H3"
+        }
+      ],
+      "default": "h2"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "default": "left"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Überschrift"
+    }
+  ]
+}
+{% endschema %}
