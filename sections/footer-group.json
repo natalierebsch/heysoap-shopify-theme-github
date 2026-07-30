@@ -166,7 +166,7 @@
       "settings": {
         "direction": "horizontal",
         "stack_mobile": true,
-        "alignment": "center",
+        "alignment": "evenly",
         "position": "top",
         "gap": 0,
         "width": "page",
