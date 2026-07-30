@@ -2,7 +2,24 @@
   Rendert den Titel der nächstgelegenen Kollektion.
 {% enddoc %}
 
-{% assign title_collection = closest.collection %}
+{% liquid
+  assign title_collection = closest.collection
+  assign title_tag = 'h3'
+  case block.settings.type_preset
+    when 'h1'
+      assign title_tag = 'h1'
+    when 'h2'
+      assign title_tag = 'h2'
+    when 'h3'
+      assign title_tag = 'h3'
+    when 'h4'
+      assign title_tag = 'h4'
+    when 'h5'
+      assign title_tag = 'h5'
+    when 'h6'
+      assign title_tag = 'h6'
+  endcase
+%}
 
 {% if title_collection != blank %}
   <div
@@ -34,11 +51,11 @@
     "
     {{ block.shopify_attributes }}
   >
-    <h3>
+    <{{ title_tag }} class="collection-title__heading">
       <a href="{{ title_collection.url }}">
         {{ title_collection.title }}
       </a>
-    </h3>
+    </{{ title_tag }}>
   </div>
 {% endif %}
 
@@ -138,7 +155,7 @@
     background: var(--collection-title-background);
   }
 
-  .collection-title h3 {
+  .collection-title__heading {
     margin: 0;
     color: inherit;
   }
@@ -157,6 +174,7 @@
 {% schema %}
 {
   "name": "Kollektionstitel",
+  "tag": null,
   "settings": [
     {
       "type": "header",

@@ -1,23 +1,34 @@
-{% if block.settings.logo != blank %}
-  <div
-    class="
-      logo-block
-      logo-block--desktop-{{ block.settings.desktop_width }}
-      logo-block--mobile-{{ block.settings.mobile_width }}
-    "
-    style="
-      --logo-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
-      --logo-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
-      --logo-alignment: {{ block.settings.alignment }};
-    "
-    {{ block.shopify_attributes }}
-  >
-    {% if block.settings.link_to_home %}
-      <a href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
-    {% endif %}
+{% liquid
+  assign logo_image = block.settings.logo
+  if block.settings.use_alternate_logo and block.settings.alternate_logo != blank
+    assign logo_image = block.settings.alternate_logo
+  endif
+%}
 
+<div
+  class="
+    logo-block
+    logo-block--desktop-{{ block.settings.desktop_width }}
+    logo-block--mobile-{{ block.settings.mobile_width }}
+  "
+  style="
+    --logo-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
+    --logo-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
+    --logo-alignment: {{ block.settings.alignment }};
+    --logo-padding-top: {{ block.settings.padding_top }}px;
+    --logo-padding-bottom: {{ block.settings.padding_bottom }}px;
+    --logo-padding-left: {{ block.settings.padding_left }}px;
+    --logo-padding-right: {{ block.settings.padding_right }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% if block.settings.link_to_home %}
+    <a class="logo-block__link" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }}">
+  {% endif %}
+
+  {% if logo_image != blank %}
     {{
-      block.settings.logo
+      logo_image
       | image_url: width: 1000
       | image_tag:
         class: 'logo-block__image',
@@ -25,24 +36,48 @@
         widths: '100, 200, 300, 400, 600, 800, 1000',
         alt: shop.name
     }}
+  {% else %}
+    <span class="logo-block__text">{{ shop.name }}</span>
+  {% endif %}
 
-    {% if block.settings.link_to_home %}
-      </a>
-    {% endif %}
-  </div>
-{% endif %}
+  {% if block.settings.link_to_home %}
+    </a>
+  {% endif %}
+</div>
 
 {% stylesheet %}
   .logo-block {
+    box-sizing: border-box;
     display: flex;
     justify-content: var(--logo-alignment);
     max-width: 100%;
+    padding:
+      var(--logo-padding-top)
+      var(--logo-padding-right)
+      var(--logo-padding-bottom)
+      var(--logo-padding-left);
+  }
+
+  .logo-block__link {
+    display: flex;
+    width: 100%;
+    justify-content: inherit;
+    color: inherit;
+    text-decoration: none;
   }
 
   .logo-block__image {
     display: block;
     max-width: 100%;
     height: auto;
+  }
+
+  .logo-block__text {
+    font-family: var(--font-h1-family);
+    font-style: var(--font-h1-style);
+    font-weight: var(--font-h1-weight);
+    font-size: var(--font-h2-size);
+    line-height: var(--font-h2-line-height);
   }
 
   .logo-block--desktop-fit {
@@ -85,11 +120,24 @@
 {% schema %}
 {
   "name": "Logo",
+  "tag": null,
   "settings": [
     {
       "type": "image_picker",
       "id": "logo",
       "label": "Logo"
+    },
+    {
+      "type": "image_picker",
+      "id": "alternate_logo",
+      "label": "Alternatives Logo"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_alternate_logo",
+      "label": "Alternatives Logo verwenden",
+      "default": false,
+      "visible_if": "{{ block.settings.alternate_logo != blank }}"
     },
     {
       "type": "select",
@@ -178,6 +226,50 @@
       "id": "link_to_home",
       "label": "Mit Startseite verlinken",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
     }
   ],
   "presets": [

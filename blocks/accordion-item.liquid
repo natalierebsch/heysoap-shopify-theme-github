@@ -7,7 +7,7 @@
 >
   <summary class="accordion-item__summary">
     <span>{{ block.settings.heading }}</span>
-    <span class="accordion-item__icon" aria-hidden="true">+</span>
+    <span class="accordion-item__icon" aria-hidden="true"></span>
   </summary>
 
   <div class="accordion-item__content">
@@ -35,11 +35,30 @@
   }
 
   .accordion-item__icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 1em;
+    height: 1em;
     transition: transform 0.2s ease;
   }
 
-  .accordion-item[open] .accordion-item__icon {
+  .accordion-block--icon-plus .accordion-item__icon::before {
+    content: '+';
+  }
+
+  .accordion-block--icon-caret .accordion-item__icon::before {
+    content: '⌄';
+    line-height: 0.7;
+  }
+
+  .accordion-block--icon-plus .accordion-item[open] .accordion-item__icon {
     transform: rotate(45deg);
+  }
+
+  .accordion-block--icon-caret .accordion-item[open] .accordion-item__icon {
+    transform: rotate(180deg);
   }
 
   .accordion-item__content {

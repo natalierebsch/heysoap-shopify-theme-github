@@ -2,55 +2,337 @@
   Rendert den Titel des nächstgelegenen Produkts.
 {% enddoc %}
 
-{% assign title_product = closest.product %}
+{% liquid
+  assign title_product = closest.product
+  assign title_tag = 'h3'
+  case block.settings.type_preset
+    when 'h1'
+      assign title_tag = 'h1'
+    when 'h2'
+      assign title_tag = 'h2'
+    when 'h3'
+      assign title_tag = 'h3'
+    when 'h4'
+      assign title_tag = 'h4'
+    when 'h5'
+      assign title_tag = 'h5'
+    when 'h6'
+      assign title_tag = 'h6'
+  endcase
+%}
 
 {% if title_product != blank %}
   <div
-    class="featured-product-title typography-style"
+    class="
+      product-title
+      typography-style
+      product-title--width-{{ block.settings.width }}
+      product-title--max-width-{{ block.settings.max_width }}
+      product-title--alignment-{{ block.settings.alignment }}
+      product-title--background-{{ block.settings.show_background }}
+    "
     style="
-      --featured-product-title-color: {{ block.settings.text_color | default: 'inherit' }};
-      {% render 'typography-variables', preset: block.settings.type_preset %}
+      --product-title-color: {{ block.settings.text_color | default: 'inherit' }};
+      --product-title-background: {{ block.settings.background_color | default: 'transparent' }};
+      --product-title-radius: {{ block.settings.border_radius }}px;
+      --product-title-padding-top: {{ block.settings.padding_top }}px;
+      --product-title-padding-bottom: {{ block.settings.padding_bottom }}px;
+      --product-title-padding-left: {{ block.settings.padding_left }}px;
+      --product-title-padding-right: {{ block.settings.padding_right }}px;
+      {% render 'typography-variables',
+        preset: block.settings.type_preset,
+        custom_font: block.settings.custom_font,
+        custom_size: block.settings.custom_size,
+        custom_line_height: block.settings.custom_line_height,
+        custom_letter_spacing: block.settings.custom_letter_spacing,
+        custom_case: block.settings.custom_case,
+        custom_wrap: block.settings.custom_wrap
+      %}
     "
     {{ block.shopify_attributes }}
   >
-    <a href="{{ title_product.url }}">{{ title_product.title }}</a>
+    <{{ title_tag }} class="product-title__heading">
+      <a href="{{ title_product.url }}">{{ title_product.title }}</a>
+    </{{ title_tag }}>
   </div>
 {% endif %}
 
 {% stylesheet %}
-  .featured-product-title {
-    color: var(--featured-product-title-color);
+  .product-title {
+    box-sizing: border-box;
+    width: fit-content;
+    max-width: 100%;
+    color: var(--product-title-color);
+    border-radius: var(--product-title-radius);
+    padding:
+      var(--product-title-padding-top)
+      var(--product-title-padding-right)
+      var(--product-title-padding-bottom)
+      var(--product-title-padding-left);
   }
 
-  .featured-product-title a {
+  .product-title--width-fit {
+    width: fit-content;
+  }
+
+  .product-title--width-fill {
+    width: 100%;
+  }
+
+  .product-title--max-width-small {
+    max-width: 480px;
+  }
+
+  .product-title--max-width-normal {
+    max-width: 720px;
+  }
+
+  .product-title--max-width-wide {
+    max-width: 1000px;
+  }
+
+  .product-title--max-width-none {
+    max-width: none;
+  }
+
+  .product-title--alignment-left {
+    text-align: left;
+  }
+
+  .product-title--alignment-center {
+    text-align: center;
+  }
+
+  .product-title--alignment-right {
+    text-align: right;
+  }
+
+  .product-title--background-true {
+    background: var(--product-title-background);
+  }
+
+  .product-title__heading {
+    margin: 0;
+    color: inherit;
+  }
+
+  .product-title a {
     color: inherit;
     text-decoration: none;
+  }
+
+  .product-title a:hover {
+    text-decoration: underline;
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "Text",
+  "name": "Produkttitel",
+  "tag": null,
   "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Breite",
+      "options": [
+        { "value": "fit", "label": "Anpassen" },
+        { "value": "fill", "label": "Füllen" }
+      ],
+      "default": "fit"
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "Max. Breite",
+      "options": [
+        { "value": "small", "label": "Schmal" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "wide", "label": "Breit" },
+        { "value": "none", "label": "Keine Begrenzung" }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Typografie"
+    },
     {
       "type": "select",
       "id": "type_preset",
       "label": "Voreinstellung",
       "options": [
+        { "value": "standard", "label": "Standard" },
         { "value": "paragraph", "label": "Absatz" },
         { "value": "h1", "label": "Überschrift 1" },
         { "value": "h2", "label": "Überschrift 2" },
         { "value": "h3", "label": "Überschrift 3" },
         { "value": "h4", "label": "Überschrift 4" },
         { "value": "h5", "label": "Überschrift 5" },
-        { "value": "h6", "label": "Überschrift 6" }
+        { "value": "h6", "label": "Überschrift 6" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
       ],
-      "default": "h4"
+      "default": "h4",
+      "info": "Voreinstellungen können in den Theme-Einstellungen bearbeitet werden."
+    },
+    {
+      "type": "select",
+      "id": "custom_font",
+      "label": "Schriftart",
+      "options": [
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "heading", "label": "Überschrift" },
+        { "value": "heading_1", "label": "Überschrift 1" }
+      ],
+      "default": "heading",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "custom_size",
+      "label": "Größe",
+      "min": 8,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 20,
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_line_height",
+      "label": "Zeilenhöhe",
+      "options": [
+        { "value": "1", "label": "Eng" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "1.5", "label": "Weit" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_letter_spacing",
+      "label": "Zeichenabstand",
+      "options": [
+        { "value": "-0.02em", "label": "Eng" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "0.05em", "label": "Weit" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_case",
+      "label": "Schreibweise",
+      "options": [
+        { "value": "none", "label": "Standard" },
+        { "value": "uppercase", "label": "Großbuchstaben" },
+        { "value": "lowercase", "label": "Kleinbuchstaben" },
+        { "value": "capitalize", "label": "Wortanfänge groß" }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_wrap",
+      "label": "Umbruch",
+      "options": [
+        { "value": "wrap", "label": "Standard" },
+        { "value": "pretty", "label": "Hübsch" },
+        { "value": "balance", "label": "Ausgeglichen" },
+        { "value": "nowrap", "label": "Kein Umbruch" }
+      ],
+      "default": "pretty",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Erscheinungsbild"
     },
     {
       "type": "color",
       "id": "text_color",
       "label": "Textfarbe"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_background",
+      "label": "Hintergrund anzeigen",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe",
+      "visible_if": "{{ block.settings.show_background }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.show_background }}"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
     }
   ]
 }
