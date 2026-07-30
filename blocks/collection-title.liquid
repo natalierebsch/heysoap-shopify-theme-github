@@ -8,7 +8,10 @@
   <div
     class="
       collection-title
-      collection-title--{{ block.settings.title_preset }}
+      typography-style
+      collection-title--width-{{ block.settings.width }}
+      collection-title--max-width-{{ block.settings.max_width }}
+      collection-title--alignment-{{ block.settings.alignment }}
       collection-title--background-{{ block.settings.show_background }}
     "
     style="
@@ -19,6 +22,15 @@
       --collection-title-padding-bottom: {{ block.settings.padding_bottom }}px;
       --collection-title-padding-left: {{ block.settings.padding_left }}px;
       --collection-title-padding-right: {{ block.settings.padding_right }}px;
+      {% render 'typography-variables',
+        preset: block.settings.type_preset,
+        custom_font: block.settings.custom_font,
+        custom_size: block.settings.custom_size,
+        custom_line_height: block.settings.custom_line_height,
+        custom_letter_spacing: block.settings.custom_letter_spacing,
+        custom_case: block.settings.custom_case,
+        custom_wrap: block.settings.custom_wrap
+      %}
     "
     {{ block.shopify_attributes }}
   >
@@ -44,6 +56,42 @@
       var(--collection-title-padding-left);
   }
 
+  .collection-title--width-fit {
+    width: fit-content;
+  }
+
+  .collection-title--width-fill {
+    width: 100%;
+  }
+
+  .collection-title--max-width-small {
+    max-width: 480px;
+  }
+
+  .collection-title--max-width-normal {
+    max-width: 720px;
+  }
+
+  .collection-title--max-width-wide {
+    max-width: 1000px;
+  }
+
+  .collection-title--max-width-none {
+    max-width: none;
+  }
+
+  .collection-title--alignment-left {
+    text-align: left;
+  }
+
+  .collection-title--alignment-center {
+    text-align: center;
+  }
+
+  .collection-title--alignment-right {
+    text-align: right;
+  }
+
   .collection-title--background-true {
     background: var(--collection-title-background);
   }
@@ -62,29 +110,6 @@
     text-decoration: underline;
   }
 
-  .collection-title--h1 h3 {
-    font-family: var(--font-h1-family);
-    font-style: var(--font-h1-style);
-    font-weight: var(--font-h1-weight);
-    font-size: var(--font-h1-size);
-    line-height: var(--font-h1-line-height);
-  }
-
-  .collection-title--h2 h3 {
-    font-family: var(--font-h2-family);
-    font-style: var(--font-h2-style);
-    font-weight: var(--font-h2-weight);
-    font-size: var(--font-h2-size);
-    line-height: var(--font-h2-line-height);
-  }
-
-  .collection-title--h3 h3 {
-    font-family: var(--font-h2-family);
-    font-style: var(--font-h2-style);
-    font-weight: var(--font-h2-weight);
-    font-size: calc(var(--font-h2-size) * 0.7);
-    line-height: var(--font-h2-line-height);
-  }
 {% endstylesheet %}
 
 {% schema %}
@@ -92,10 +117,72 @@
   "name": "Kollektionstitel",
   "settings": [
     {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
       "type": "select",
-      "id": "title_preset",
+      "id": "width",
+      "label": "Breite",
+      "options": [
+        {
+          "value": "fit",
+          "label": "Anpassen"
+        },
+        {
+          "value": "fill",
+          "label": "Füllen"
+        }
+      ],
+      "default": "fit"
+    },
+    {
+      "type": "select",
+      "id": "max_width",
+      "label": "Max. Breite",
+      "options": [
+        {
+          "value": "small",
+          "label": "Schmal"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "wide",
+          "label": "Breit"
+        },
+        {
+          "value": "none",
+          "label": "Keine Begrenzung"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Typografie"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
       "label": "Voreinstellung",
       "options": [
+        {
+          "value": "standard",
+          "label": "Standard"
+        },
+        {
+          "value": "paragraph",
+          "label": "Absatz"
+        },
         {
           "value": "h1",
           "label": "Überschrift 1"
@@ -107,9 +194,150 @@
         {
           "value": "h3",
           "label": "Überschrift 3"
+        },
+        {
+          "value": "h4",
+          "label": "Überschrift 4"
+        },
+        {
+          "value": "h5",
+          "label": "Überschrift 5"
+        },
+        {
+          "value": "h6",
+          "label": "Überschrift 6"
+        },
+        {
+          "value": "custom",
+          "label": "Benutzerdefiniert"
         }
       ],
-      "default": "h3"
+      "default": "h3",
+      "info": "Voreinstellungen können in den Theme-Einstellungen bearbeitet werden."
+    },
+    {
+      "type": "select",
+      "id": "custom_font",
+      "label": "Schriftart",
+      "options": [
+        {
+          "value": "paragraph",
+          "label": "Absatz"
+        },
+        {
+          "value": "heading",
+          "label": "Überschrift"
+        },
+        {
+          "value": "heading_1",
+          "label": "Überschrift 1"
+        }
+      ],
+      "default": "heading",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "custom_size",
+      "label": "Größe",
+      "min": 8,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 20,
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_line_height",
+      "label": "Zeilenhöhe",
+      "options": [
+        {
+          "value": "1",
+          "label": "Eng"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "1.5",
+          "label": "Weit"
+        }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_letter_spacing",
+      "label": "Zeichenabstand",
+      "options": [
+        {
+          "value": "-0.02em",
+          "label": "Eng"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "0.05em",
+          "label": "Weit"
+        }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_case",
+      "label": "Schreibweise",
+      "options": [
+        {
+          "value": "none",
+          "label": "Standard"
+        },
+        {
+          "value": "uppercase",
+          "label": "Großbuchstaben"
+        },
+        {
+          "value": "lowercase",
+          "label": "Kleinbuchstaben"
+        },
+        {
+          "value": "capitalize",
+          "label": "Wortanfänge groß"
+        }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_wrap",
+      "label": "Umbruch",
+      "options": [
+        {
+          "value": "wrap",
+          "label": "Standard"
+        },
+        {
+          "value": "pretty",
+          "label": "Hübsch"
+        },
+        {
+          "value": "balance",
+          "label": "Ausgeglichen"
+        },
+        {
+          "value": "nowrap",
+          "label": "Kein Umbruch"
+        }
+      ],
+      "default": "pretty",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
     },
     {
       "type": "color",

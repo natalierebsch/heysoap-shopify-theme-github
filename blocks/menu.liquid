@@ -6,6 +6,28 @@
 {% enddoc %}
 
 {% assign menu_heading = block.settings.heading | default: block.settings.menu.title %}
+{% capture menu_heading_typography %}
+  {% render 'typography-variables',
+    preset: block.settings.heading_preset,
+    custom_font: block.settings.custom_font,
+    custom_size: block.settings.custom_size,
+    custom_line_height: block.settings.custom_line_height,
+    custom_letter_spacing: block.settings.custom_letter_spacing,
+    custom_case: block.settings.custom_case,
+    custom_wrap: block.settings.custom_wrap
+  %}
+{% endcapture %}
+{% capture menu_link_typography %}
+  {% render 'typography-variables',
+    preset: block.settings.link_preset,
+    custom_font: block.settings.custom_font,
+    custom_size: block.settings.custom_size,
+    custom_line_height: block.settings.custom_line_height,
+    custom_letter_spacing: block.settings.custom_letter_spacing,
+    custom_case: block.settings.custom_case,
+    custom_wrap: block.settings.custom_wrap
+  %}
+{% endcapture %}
 
 <div
   class="
@@ -32,24 +54,28 @@
     {% if menu_heading != blank %}
       {% case block.settings.heading_preset %}
         {% when 'h1' %}
-          <h1 class="menu-block__heading">
+          <h1 class="menu-block__heading typography-style" style="{{ menu_heading_typography | strip }}">
             {{ menu_heading }}
           </h1>
 
         {% when 'h2' %}
-          <h2 class="menu-block__heading">
+          <h2 class="menu-block__heading typography-style" style="{{ menu_heading_typography | strip }}">
             {{ menu_heading }}
           </h2>
 
         {% else %}
-          <h3 class="menu-block__heading">
+          <h3 class="menu-block__heading typography-style" style="{{ menu_heading_typography | strip }}">
             {{ menu_heading }}
           </h3>
       {% endcase %}
     {% endif %}
 
     {% if block.settings.menu != blank %}
-      <nav aria-label="{{ menu_heading | escape }}">
+      <nav
+        class="typography-style"
+        style="{{ menu_link_typography | strip }}"
+        aria-label="{{ menu_heading | escape }}"
+      >
         <ul class="menu-block__list" role="list">
           {% for link in block.settings.menu.links %}
             <li class="menu-block__item">
@@ -93,7 +119,10 @@
 
   {% if block.settings.mobile_accordion %}
     <details class="menu-block__mobile-accordion">
-      <summary class="menu-block__summary">
+      <summary
+        class="menu-block__summary typography-style"
+        style="{{ menu_heading_typography | strip }}"
+      >
         <span>
           {{ menu_heading }}
         </span>
@@ -113,7 +142,11 @@
       </summary>
 
       {% if block.settings.menu != blank %}
-        <nav aria-label="{{ menu_heading | escape }}">
+        <nav
+          class="typography-style"
+          style="{{ menu_link_typography | strip }}"
+          aria-label="{{ menu_heading | escape }}"
+        >
           <ul class="menu-block__list" role="list">
             {% for link in block.settings.menu.links %}
               <li class="menu-block__item">
@@ -362,18 +395,15 @@
       "id": "heading_preset",
       "label": "Überschriften-Voreinstellung",
       "options": [
-        {
-          "value": "h1",
-          "label": "Überschrift 1"
-        },
-        {
-          "value": "h2",
-          "label": "Überschrift 2"
-        },
-        {
-          "value": "h3",
-          "label": "Überschrift 3"
-        }
+        { "value": "standard", "label": "Standard" },
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "h1", "label": "Überschrift 1" },
+        { "value": "h2", "label": "Überschrift 2" },
+        { "value": "h3", "label": "Überschrift 3" },
+        { "value": "h4", "label": "Überschrift 4" },
+        { "value": "h5", "label": "Überschrift 5" },
+        { "value": "h6", "label": "Überschrift 6" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
       ],
       "default": "h3",
       "info": "Die Schrift wird in den Theme-Einstellungen festgelegt."
@@ -383,21 +413,91 @@
       "id": "link_preset",
       "label": "Link-Voreinstellung",
       "options": [
-        {
-          "value": "paragraph",
-          "label": "Absatz"
-        },
-        {
-          "value": "small",
-          "label": "Klein"
-        },
-        {
-          "value": "large",
-          "label": "Groß"
-        }
+        { "value": "standard", "label": "Standard" },
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "h1", "label": "Überschrift 1" },
+        { "value": "h2", "label": "Überschrift 2" },
+        { "value": "h3", "label": "Überschrift 3" },
+        { "value": "h4", "label": "Überschrift 4" },
+        { "value": "h5", "label": "Überschrift 5" },
+        { "value": "h6", "label": "Überschrift 6" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
       ],
       "default": "paragraph",
       "info": "Die Schrift wird in den Theme-Einstellungen festgelegt."
+    },
+    {
+      "type": "select",
+      "id": "custom_font",
+      "label": "Schriftart",
+      "options": [
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "heading", "label": "Überschrift" },
+        { "value": "heading_1", "label": "Überschrift 1" }
+      ],
+      "default": "paragraph",
+      "visible_if": "{{ block.settings.heading_preset == 'custom' or block.settings.link_preset == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "custom_size",
+      "label": "Größe",
+      "min": 8,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 16,
+      "visible_if": "{{ block.settings.heading_preset == 'custom' or block.settings.link_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_line_height",
+      "label": "Zeilenhöhe",
+      "options": [
+        { "value": "1", "label": "Eng" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "1.5", "label": "Weit" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.heading_preset == 'custom' or block.settings.link_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_letter_spacing",
+      "label": "Zeichenabstand",
+      "options": [
+        { "value": "-0.02em", "label": "Eng" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "0.05em", "label": "Weit" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.heading_preset == 'custom' or block.settings.link_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_case",
+      "label": "Schreibweise",
+      "options": [
+        { "value": "none", "label": "Standard" },
+        { "value": "uppercase", "label": "Großbuchstaben" },
+        { "value": "lowercase", "label": "Kleinbuchstaben" },
+        { "value": "capitalize", "label": "Wortanfänge groß" }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.heading_preset == 'custom' or block.settings.link_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_wrap",
+      "label": "Umbruch",
+      "options": [
+        { "value": "wrap", "label": "Standard" },
+        { "value": "pretty", "label": "Hübsch" },
+        { "value": "balance", "label": "Ausgeglichen" },
+        { "value": "nowrap", "label": "Kein Umbruch" }
+      ],
+      "default": "pretty",
+      "visible_if": "{{ block.settings.heading_preset == 'custom' or block.settings.link_preset == 'custom' }}"
     },
     {
       "type": "header",
