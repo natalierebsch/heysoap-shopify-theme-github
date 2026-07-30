@@ -57,27 +57,51 @@
           "static": true,
           "settings": {
             "heading": "heysoap Philisophie",
-            "level": "h2",
-            "alignment": "left"
+            "width": "fit",
+            "max_width": "normal",
+            "preset": "h3",
+            "text_color": "",
+            "show_background": false,
+            "background_color": "",
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
           },
           "blocks": {}
         },
         "carousel-content": {
           "type": "carousel-content",
           "static": true,
-          "settings": {},
+          "settings": {
+            "background_color": "",
+            "card_height": "adapt",
+            "position": "flex-start",
+            "border_style": "none",
+            "border_radius": 0,
+            "padding_top": 0,
+            "padding_bottom": 0,
+            "padding_left": 0,
+            "padding_right": 0
+          },
           "blocks": {
             "card_aHzafD": {
               "type": "card",
               "name": "Karte",
               "settings": {
+                "direction": "vertical",
+                "alignment": "flex-start",
+                "position": "center",
+                "gap": 16,
+                "background_media": "none",
                 "background_color": "#ffffff",
-                "text_color": "#111111",
-                "border_color": "#e5e5e5",
-                "border_width": 1,
-                "border_radius": 8,
-                "padding": 20,
-                "gap": 16
+                "media_overlay": false,
+                "link": "",
+                "open_new_tab": false,
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
               },
               "blocks": {
                 "card-image": {
@@ -86,9 +110,16 @@
                   "settings": {
                     "image": "shopify://shop_images/LiquidSoapRefill.png",
                     "link": "",
-                    "width": 800,
-                    "alignment": "center",
-                    "border_radius": 0
+                    "aspect_ratio": "auto",
+                    "desktop_width": "fit",
+                    "mobile_width": "fit",
+                    "height": "adapt",
+                    "border_style": "none",
+                    "border_radius": 0,
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
                   },
                   "blocks": {}
                 },
@@ -97,8 +128,16 @@
                   "static": true,
                   "settings": {
                     "heading": "Neue Überschrift",
-                    "level": "h2",
-                    "alignment": "left"
+                    "width": "fit",
+                    "max_width": "normal",
+                    "preset": "h3",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
                   },
                   "blocks": {}
                 },
@@ -107,7 +146,16 @@
                   "static": true,
                   "settings": {
                     "text": "<p>Gib hier deinen Text ein.</p>",
-                    "alignment": "left"
+                    "width": "fit",
+                    "max_width": "normal",
+                    "preset": "standard",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
                   },
                   "blocks": {}
                 }
@@ -118,13 +166,19 @@
               "type": "card",
               "name": "Karte",
               "settings": {
+                "direction": "vertical",
+                "alignment": "flex-start",
+                "position": "center",
+                "gap": 16,
+                "background_media": "none",
                 "background_color": "#ffffff",
-                "text_color": "#111111",
-                "border_color": "#e5e5e5",
-                "border_width": 1,
-                "border_radius": 8,
-                "padding": 20,
-                "gap": 16
+                "media_overlay": false,
+                "link": "",
+                "open_new_tab": false,
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
               },
               "blocks": {
                 "card-image": {
@@ -133,9 +187,16 @@
                   "settings": {
                     "image": "shopify://shop_images/Spender_Ablagen_Kollektion.png",
                     "link": "",
-                    "width": 800,
-                    "alignment": "center",
-                    "border_radius": 0
+                    "aspect_ratio": "auto",
+                    "desktop_width": "fill",
+                    "mobile_width": "fill",
+                    "height": "adapt",
+                    "border_style": "none",
+                    "border_radius": 0,
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
                   },
                   "blocks": {}
                 },
@@ -144,8 +205,16 @@
                   "static": true,
                   "settings": {
                     "heading": "Neue Überschrift",
-                    "level": "h2",
-                    "alignment": "left"
+                    "width": "fit",
+                    "max_width": "normal",
+                    "preset": "h3",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
                   },
                   "blocks": {}
                 },
@@ -154,7 +223,16 @@
                   "static": true,
                   "settings": {
                     "text": "<p>Gib hier deinen Text ein.</p>",
-                    "alignment": "left"
+                    "width": "fit",
+                    "max_width": "normal",
+                    "preset": "standard",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
                   },
                   "blocks": {}
                 }
@@ -165,13 +243,19 @@
               "type": "card",
               "name": "Karte",
               "settings": {
+                "direction": "vertical",
+                "alignment": "flex-start",
+                "position": "center",
+                "gap": 16,
+                "background_media": "none",
                 "background_color": "#ffffff",
-                "text_color": "#111111",
-                "border_color": "#e5e5e5",
-                "border_width": 1,
-                "border_radius": 8,
-                "padding": 20,
-                "gap": 16
+                "media_overlay": false,
+                "link": "",
+                "open_new_tab": false,
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
               },
               "blocks": {
                 "card-image": {
@@ -180,9 +264,16 @@
                   "settings": {
                     "image": "shopify://shop_images/ChatGPT_Image_23._Juli_2026_08_51_13_7.png",
                     "link": "",
-                    "width": 800,
-                    "alignment": "center",
-                    "border_radius": 0
+                    "aspect_ratio": "auto",
+                    "desktop_width": "fill",
+                    "mobile_width": "fill",
+                    "height": "adapt",
+                    "border_style": "none",
+                    "border_radius": 0,
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
                   },
                   "blocks": {}
                 },
@@ -191,8 +282,16 @@
                   "static": true,
                   "settings": {
                     "heading": "Neue Überschrift",
-                    "level": "h2",
-                    "alignment": "left"
+                    "width": "fit",
+                    "max_width": "normal",
+                    "preset": "h3",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
                   },
                   "blocks": {}
                 },
@@ -201,7 +300,16 @@
                   "static": true,
                   "settings": {
                     "text": "<p>Gib hier deinen Text ein.</p>",
-                    "alignment": "left"
+                    "width": "fit",
+                    "max_width": "normal",
+                    "preset": "standard",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
                   },
                   "blocks": {}
                 }
@@ -212,13 +320,19 @@
               "type": "card",
               "name": "Karte",
               "settings": {
+                "direction": "vertical",
+                "alignment": "flex-start",
+                "position": "center",
+                "gap": 16,
+                "background_media": "none",
                 "background_color": "#ffffff",
-                "text_color": "#111111",
-                "border_color": "#e5e5e5",
-                "border_width": 1,
-                "border_radius": 8,
-                "padding": 20,
-                "gap": 16
+                "media_overlay": false,
+                "link": "",
+                "open_new_tab": false,
+                "padding_top": 0,
+                "padding_bottom": 0,
+                "padding_left": 0,
+                "padding_right": 0
               },
               "blocks": {
                 "card-image": {
@@ -227,9 +341,16 @@
                   "settings": {
                     "image": "shopify://shop_images/hey_soap_fluessigseife_handlotion_unterlage_set_rosa.png",
                     "link": "",
-                    "width": 800,
-                    "alignment": "center",
-                    "border_radius": 0
+                    "aspect_ratio": "auto",
+                    "desktop_width": "fill",
+                    "mobile_width": "fill",
+                    "height": "adapt",
+                    "border_style": "none",
+                    "border_radius": 0,
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
                   },
                   "blocks": {}
                 },
@@ -238,8 +359,16 @@
                   "static": true,
                   "settings": {
                     "heading": "Neue Überschrift",
-                    "level": "h2",
-                    "alignment": "left"
+                    "width": "fit",
+                    "max_width": "normal",
+                    "preset": "h3",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
                   },
                   "blocks": {}
                 },
@@ -248,7 +377,16 @@
                   "static": true,
                   "settings": {
                     "text": "<p>Gib hier deinen Text ein.</p>",
-                    "alignment": "left"
+                    "width": "fit",
+                    "max_width": "normal",
+                    "preset": "standard",
+                    "text_color": "",
+                    "show_background": false,
+                    "background_color": "",
+                    "padding_top": 0,
+                    "padding_bottom": 0,
+                    "padding_left": 0,
+                    "padding_right": 0
                   },
                   "blocks": {}
                 }
