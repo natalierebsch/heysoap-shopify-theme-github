@@ -11,13 +11,22 @@
   assign card_padding_bottom = block.settings.padding_bottom | default: 0
   assign card_padding_left = block.settings.padding_left | default: 0
   assign card_padding_right = block.settings.padding_right | default: 0
+  assign card_border_alpha = block.settings.border_opacity | divided_by: 100.0
+  assign card_border_color = block.settings.border_color | default: '#000000'
+  assign card_border_color = card_border_color | color_modify: 'alpha', card_border_alpha
 %}
 
 <div
   class="
     card-block
     card-block--{{ block.settings.direction }}
+    card-block--desktop-{{ block.settings.desktop_width }}
+    card-block--mobile-{{ block.settings.mobile_width }}
+    card-block--height-{{ block.settings.height }}
+    card-block--border-{{ block.settings.border }}
     card-block--media-{{ block.settings.background_media }}
+    card-block--media-fit-{{ block.settings.media_fit }}
+    {% if block.settings.vertical_on_mobile %}card-block--vertical-mobile{% endif %}
     {% if block.settings.link != blank %}card-block--linked{% endif %}
   "
   style="
@@ -26,6 +35,14 @@
     --card-position: {{ card_position }};
     --card-gap: {{ card_gap }}px;
     --card-background: {{ block.settings.background_color | default: 'transparent' }};
+    --card-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
+    --card-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
+    --card-custom-height: {{ block.settings.custom_height }}%;
+    --card-overlay-color: {{ block.settings.overlay_color | default: '#00000026' }};
+    --card-gradient-direction: {{ block.settings.gradient_direction }};
+    --card-border-width: {{ block.settings.border_width }}px;
+    --card-border-color: {{ card_border_color }};
+    --card-border-radius: {{ block.settings.border_radius }}px;
     --card-padding-top: {{ card_padding_top }}px;
     --card-padding-bottom: {{ card_padding_bottom }}px;
     --card-padding-left: {{ card_padding_left }}px;
@@ -60,7 +77,10 @@
   {% endif %}
 
   {% if block.settings.media_overlay %}
-    <div class="card-block__media-overlay" aria-hidden="true"></div>
+    <div
+      class="card-block__media-overlay card-block__media-overlay--{{ block.settings.overlay_style }}"
+      aria-hidden="true"
+    ></div>
   {% endif %}
 
   {% if block.settings.link != blank %}
@@ -96,6 +116,34 @@
     box-sizing: border-box;
     height: 100%;
     overflow: hidden;
+    border-radius: var(--card-border-radius);
+  }
+
+  .card-block--desktop-fit {
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .card-block--desktop-custom {
+    width: var(--card-custom-width-desktop);
+    max-width: 100%;
+  }
+
+  .card-block--height-fit {
+    height: fit-content;
+  }
+
+  .card-block--height-fill {
+    height: 100%;
+  }
+
+  .card-block--height-custom {
+    height: var(--card-custom-height);
+    min-height: 1px;
+  }
+
+  .card-block--border-solid {
+    border: var(--card-border-width) solid var(--card-border-color);
   }
 
   .card-block__background-media {
@@ -107,12 +155,20 @@
     object-fit: cover;
   }
 
+  .card-block--media-fit-contain .card-block__background-media {
+    object-fit: contain;
+  }
+
   .card-block__media-overlay {
     position: absolute;
     z-index: 1;
     inset: 0;
-    background: rgb(0 0 0 / 35%);
+    background: var(--card-overlay-color);
     pointer-events: none;
+  }
+
+  .card-block__media-overlay--gradient {
+    background: linear-gradient(var(--card-gradient-direction), transparent, var(--card-overlay-color));
   }
 
   .card-block__link-overlay {
@@ -163,12 +219,26 @@
   }
 
   @media screen and (max-width: 749px) {
-    .card-block--horizontal .card-block__content {
+    .card-block--horizontal.card-block--vertical-mobile .card-block__content {
       flex-direction: column;
     }
 
-    .card-block--horizontal .card-block__content > .shopify-block {
+    .card-block--horizontal.card-block--vertical-mobile .card-block__content > .shopify-block {
       width: 100%;
+    }
+
+    .card-block--mobile-fit {
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .card-block--mobile-fill {
+      width: 100%;
+    }
+
+    .card-block--mobile-custom {
+      width: var(--card-custom-width-mobile);
+      max-width: 100%;
     }
   }
 {% endstylesheet %}
@@ -176,6 +246,7 @@
 {% schema %}
 {
   "name": "Karte",
+  "tag": null,
   "blocks": [
     {
       "type": "@theme"
@@ -201,6 +272,13 @@
         }
       ],
       "default": "vertical"
+    },
+    {
+      "type": "checkbox",
+      "id": "vertical_on_mobile",
+      "label": "Vertikal auf Mobilgeräten",
+      "default": true,
+      "visible_if": "{{ block.settings.direction == 'horizontal' }}"
     },
     {
       "type": "select",
@@ -255,10 +333,80 @@
       "id": "gap",
       "label": "Abstand",
       "min": 0,
-      "max": 60,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Größe"
+    },
+    {
+      "type": "select",
+      "id": "desktop_width",
+      "label": "Desktop-Breite",
+      "options": [
+        { "value": "fit", "label": "Anpassen" },
+        { "value": "fill", "label": "Füllen" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_desktop",
+      "label": "Benutzerdefinierte Desktop-Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.desktop_width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "mobile_width",
+      "label": "Mobile Breite",
+      "options": [
+        { "value": "fit", "label": "Anpassen" },
+        { "value": "fill", "label": "Füllen" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Benutzerdefinierte mobile Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.mobile_width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Höhe",
+      "options": [
+        { "value": "fit", "label": "Anpassen" },
+        { "value": "fill", "label": "Füllen" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_height",
+      "label": "Benutzerdefinierte Höhe",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.height == 'custom' }}"
     },
     {
       "type": "header",
@@ -285,6 +433,17 @@
       "default": "none"
     },
     {
+      "type": "select",
+      "id": "media_fit",
+      "label": "Medienanpassung",
+      "options": [
+        { "value": "cover", "label": "Ausfüllen" },
+        { "value": "contain", "label": "Einpassen" }
+      ],
+      "default": "cover",
+      "visible_if": "{{ block.settings.background_media != 'none' }}"
+    },
+    {
       "type": "image_picker",
       "id": "background_image",
       "label": "Hintergrundbild",
@@ -308,6 +467,36 @@
       "default": false
     },
     {
+      "type": "color",
+      "id": "overlay_color",
+      "label": "Farbe der Überlagerung",
+      "default": "#00000026",
+      "alpha": true,
+      "visible_if": "{{ block.settings.media_overlay }}"
+    },
+    {
+      "type": "select",
+      "id": "overlay_style",
+      "label": "Stil der Überlagerung",
+      "options": [
+        { "value": "solid", "label": "Einfarbig" },
+        { "value": "gradient", "label": "Verlauf" }
+      ],
+      "default": "solid",
+      "visible_if": "{{ block.settings.media_overlay }}"
+    },
+    {
+      "type": "select",
+      "id": "gradient_direction",
+      "label": "Verlaufsrichtung",
+      "options": [
+        { "value": "to top", "label": "Nach oben" },
+        { "value": "to bottom", "label": "Nach unten" }
+      ],
+      "default": "to top",
+      "visible_if": "{{ block.settings.media_overlay and block.settings.overlay_style == 'gradient' }}"
+    },
+    {
       "type": "header",
       "content": "Block-Link"
     },
@@ -324,6 +513,58 @@
     },
     {
       "type": "header",
+      "content": "Ränder"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "Stil",
+      "options": [
+        { "value": "none", "label": "Keine" },
+        { "value": "solid", "label": "Einfarbig" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Stärke",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "label": "Deckkraft",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Farbe",
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
       "content": "Padding"
     },
     {
@@ -331,8 +572,8 @@
       "id": "padding_top",
       "label": "Oben",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     },
@@ -341,8 +582,8 @@
       "id": "padding_bottom",
       "label": "Unten",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     },
@@ -351,8 +592,8 @@
       "id": "padding_left",
       "label": "Links",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     },
@@ -361,8 +602,8 @@
       "id": "padding_right",
       "label": "Rechts",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     }
