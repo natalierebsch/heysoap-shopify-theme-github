@@ -1,27 +1,22 @@
-{% doc %}
-  Rendert Hersteller oder Beschreibung des nächstgelegenen Produkts.
-{% enddoc %}
+{% liquid
+  assign sku_product = closest.product
+  assign sku_variant = sku_product.selected_or_first_available_variant
+%}
 
-{% assign text_product = closest.product %}
-
-{% if text_product != blank %}
+{% if sku_product != blank %}
   <div
     class="
-      product-text-block
+      product-sku-block
       typography-style
-      product-text-block--width-{{ block.settings.width }}
-      product-text-block--max-width-{{ block.settings.max_width }}
-      product-text-block--alignment-{{ block.settings.alignment }}
-      product-text-block--background-{{ block.settings.show_background }}
+      product-sku-block--width-{{ block.settings.width }}
+      product-sku-block--alignment-{{ block.settings.alignment }}
     "
     style="
-      --product-text-color: {{ block.settings.text_color | default: 'inherit' }};
-      --product-text-background: {{ block.settings.background_color | default: 'transparent' }};
-      --product-text-radius: {{ block.settings.border_radius }}px;
-      --product-text-padding-top: {{ block.settings.padding_top }}px;
-      --product-text-padding-bottom: {{ block.settings.padding_bottom }}px;
-      --product-text-padding-left: {{ block.settings.padding_left }}px;
-      --product-text-padding-right: {{ block.settings.padding_right }}px;
+      --product-sku-color: {{ block.settings.text_color | default: 'inherit' }};
+      --product-sku-padding-top: {{ block.settings.padding_top }}px;
+      --product-sku-padding-bottom: {{ block.settings.padding_bottom }}px;
+      --product-sku-padding-left: {{ block.settings.padding_left }}px;
+      --product-sku-padding-right: {{ block.settings.padding_right }}px;
       {% render 'typography-variables',
         preset: block.settings.type_preset,
         custom_font: block.settings.custom_font,
@@ -32,103 +27,77 @@
         custom_wrap: block.settings.custom_wrap
       %}
     "
+    {% if sku_variant.sku == blank %}
+      hidden
+    {% endif %}
     {{ block.shopify_attributes }}
   >
-    {% case block.settings.source %}
-      {% when 'description' %}
-        {{ text_product.description | strip_html | truncatewords: block.settings.max_words }}
-      {% when 'product_type' %}
-        {{ text_product.type }}
-      {% else %}
-        {{ text_product.vendor }}
-    {% endcase %}
+    {% if block.settings.show_label %}
+      <span class="product-sku-block__label">{{ block.settings.label }}</span>
+    {% endif %}
+    <span class="product-sku-block__value">{{ sku_variant.sku }}</span>
   </div>
 {% endif %}
 
 {% stylesheet %}
-  .product-text-block {
+  .product-sku-block {
     box-sizing: border-box;
+    color: var(--product-sku-color);
+    padding:
+      var(--product-sku-padding-top)
+      var(--product-sku-padding-right)
+      var(--product-sku-padding-bottom)
+      var(--product-sku-padding-left);
+  }
+
+  .product-sku-block[hidden] {
+    display: none;
+  }
+
+  .product-sku-block--width-fit {
     width: fit-content;
     max-width: 100%;
-    color: var(--product-text-color);
-    border-radius: var(--product-text-radius);
-    padding:
-      var(--product-text-padding-top)
-      var(--product-text-padding-right)
-      var(--product-text-padding-bottom)
-      var(--product-text-padding-left);
   }
 
-  .product-text-block--width-fit {
-    width: fit-content;
-  }
-
-  .product-text-block--width-fill {
+  .product-sku-block--width-fill {
     width: 100%;
   }
 
-  .product-text-block--max-width-small {
-    max-width: 480px;
-  }
-
-  .product-text-block--max-width-normal {
-    max-width: 720px;
-  }
-
-  .product-text-block--max-width-wide {
-    max-width: 1000px;
-  }
-
-  .product-text-block--max-width-none {
-    max-width: none;
-  }
-
-  .product-text-block--alignment-left {
+  .product-sku-block--alignment-left {
     text-align: left;
   }
 
-  .product-text-block--alignment-center {
+  .product-sku-block--alignment-center {
     text-align: center;
   }
 
-  .product-text-block--alignment-right {
+  .product-sku-block--alignment-right {
     text-align: right;
   }
 
-  .product-text-block--background-true {
-    background: var(--product-text-background);
+  .product-sku-block__label {
+    margin-right: 0.35em;
+    font-weight: 600;
   }
 {% endstylesheet %}
 
 {% schema %}
 {
-  "name": "Produkttext",
+  "name": "Produkt-SKU",
   "tag": null,
   "settings": [
     {
-      "type": "select",
-      "id": "source",
-      "label": "Inhalt",
-      "options": [
-        { "value": "vendor", "label": "Hersteller" },
-        { "value": "description", "label": "Beschreibung" },
-        { "value": "product_type", "label": "Produkttyp" }
-      ],
-      "default": "vendor"
+      "type": "checkbox",
+      "id": "show_label",
+      "label": "Beschriftung anzeigen",
+      "default": true
     },
     {
-      "type": "range",
-      "id": "max_words",
-      "label": "Maximale Wörter",
-      "min": 5,
-      "max": 50,
-      "step": 1,
-      "default": 15,
-      "visible_if": "{{ block.settings.source == 'description' }}"
-    },
-    {
-      "type": "header",
-      "content": "Layout"
+      "type": "text",
+      "id": "label",
+      "label": "Beschriftung",
+      "default": "SKU:",
+      "visible_if": "{{ block.settings.show_label }}"
     },
     {
       "type": "select",
@@ -138,19 +107,7 @@
         { "value": "fit", "label": "Anpassen" },
         { "value": "fill", "label": "Füllen" }
       ],
-      "default": "fit"
-    },
-    {
-      "type": "select",
-      "id": "max_width",
-      "label": "Max. Breite",
-      "options": [
-        { "value": "small", "label": "Schmal" },
-        { "value": "normal", "label": "Normal" },
-        { "value": "wide", "label": "Breit" },
-        { "value": "none", "label": "Keine Begrenzung" }
-      ],
-      "default": "normal"
+      "default": "fill"
     },
     {
       "type": "text_alignment",
@@ -177,8 +134,7 @@
         { "value": "h6", "label": "Überschrift 6" },
         { "value": "custom", "label": "Benutzerdefiniert" }
       ],
-      "default": "paragraph",
-      "info": "Voreinstellungen können in den Theme-Einstellungen bearbeitet werden."
+      "default": "paragraph"
     },
     {
       "type": "select",
@@ -200,7 +156,7 @@
       "max": 120,
       "step": 2,
       "unit": "px",
-      "default": 16,
+      "default": 14,
       "visible_if": "{{ block.settings.type_preset == 'custom' }}"
     },
     {
@@ -233,9 +189,7 @@
       "label": "Schreibweise",
       "options": [
         { "value": "none", "label": "Standard" },
-        { "value": "uppercase", "label": "Großbuchstaben" },
-        { "value": "lowercase", "label": "Kleinbuchstaben" },
-        { "value": "capitalize", "label": "Wortanfänge groß" }
+        { "value": "uppercase", "label": "Großbuchstaben" }
       ],
       "default": "none",
       "visible_if": "{{ block.settings.type_preset == 'custom' }}"
@@ -254,36 +208,9 @@
       "visible_if": "{{ block.settings.type_preset == 'custom' }}"
     },
     {
-      "type": "header",
-      "content": "Erscheinungsbild"
-    },
-    {
       "type": "color",
       "id": "text_color",
       "label": "Textfarbe"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_background",
-      "label": "Hintergrund anzeigen",
-      "default": false
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "Hintergrundfarbe",
-      "visible_if": "{{ block.settings.show_background }}"
-    },
-    {
-      "type": "range",
-      "id": "border_radius",
-      "label": "Eckenradius",
-      "min": 0,
-      "max": 50,
-      "step": 1,
-      "unit": "px",
-      "default": 0,
-      "visible_if": "{{ block.settings.show_background }}"
     },
     {
       "type": "header",
@@ -328,6 +255,11 @@
       "step": 1,
       "unit": "px",
       "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Produkt-SKU"
     }
   ]
 }
