@@ -1,0 +1,368 @@
+{% liquid
+  assign settings = block.settings
+  assign block_width = '100%'
+  if settings.width == 'custom'
+    assign block_width = settings.custom_width | append: '%'
+  endif
+%}
+
+<div
+  class="email-signup email-signup--{{ settings.alignment }}"
+  style="
+    --email-width: {{ block_width }};
+    --email-heading-color: {{ settings.heading_color | default: 'inherit' }};
+    --email-input-background: {{ settings.input_background_color | default: 'transparent' }};
+    --email-input-color: {{ settings.input_text_color | default: 'inherit' }};
+    --email-border-color: {{ settings.input_border_color | default: 'currentColor' }};
+    --email-border-width: {{ settings.border_width }}px;
+    --email-radius: {{ settings.border_radius }}px;
+    --email-button-background: {{ settings.button_background | default: '#111111' }};
+    --email-button-color: {{ settings.button_text_color | default: '#ffffff' }};
+    --email-button-border: {{ settings.button_border_color | default: settings.button_background | default: '#111111' }};
+    --email-padding-top: {{ settings.padding_top }}px;
+    --email-padding-bottom: {{ settings.padding_bottom }}px;
+    --email-padding-left: {{ settings.padding_left }}px;
+    --email-padding-right: {{ settings.padding_right }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% if settings.heading != blank %}
+    <div class="email-signup__heading {{ settings.heading_preset }}">
+      {{ settings.heading | escape }}
+    </div>
+  {% endif %}
+
+  {% form 'customer', class: 'email-signup__form' %}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+
+    <div class="
+      email-signup__input-group
+      email-signup__input-group--{{ settings.border_style }}
+      {% if settings.integrated_button %}email-signup__input-group--integrated{% endif %}
+    ">
+      <label class="visually-hidden" for="EmailInput-{{ block.id }}">E-Mail-Adresse</label>
+      <input
+        id="EmailInput-{{ block.id }}"
+        class="email-signup__input {{ settings.input_type_preset }}"
+        type="email"
+        name="contact[email]"
+        autocomplete="email"
+        autocorrect="off"
+        autocapitalize="off"
+        placeholder="{{ settings.placeholder }}"
+        required
+        {% if form.errors %}aria-invalid="true"{% endif %}
+      >
+
+      <button
+        class="email-signup__button email-signup__button--{{ settings.button_style }} email-signup__button--{{ settings.display_type }} {{ settings.button_type_preset }}"
+        type="submit"
+        {% if settings.display_type == 'arrow' %}aria-label="{{ settings.button_label }}"{% endif %}
+      >
+        {% if settings.display_type == 'arrow' %}
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        {% else %}
+          {{ settings.button_label }}
+        {% endif %}
+      </button>
+    </div>
+
+    {% if form.errors %}
+      <div class="email-signup__message email-signup__message--error" role="alert">
+        {{ form.errors | default_errors }}
+      </div>
+    {% endif %}
+
+    {% if form.posted_successfully? %}
+      <p class="email-signup__message email-signup__message--success" role="status">
+        {{ settings.success_text }}
+      </p>
+    {% endif %}
+  {% endform %}
+</div>
+
+{% stylesheet %}
+  .email-signup {
+    box-sizing: border-box;
+    width: min(100%, var(--email-width));
+    padding: var(--email-padding-top) var(--email-padding-right) var(--email-padding-bottom) var(--email-padding-left);
+  }
+
+  .email-signup--center { margin-inline: auto; text-align: center; }
+  .email-signup--right { margin-left: auto; text-align: right; }
+
+  .email-signup__heading {
+    margin-bottom: 12px;
+    color: var(--email-heading-color);
+  }
+
+  .email-signup__form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .email-signup__input-group {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .email-signup__input {
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    min-width: 0;
+    min-height: 48px;
+    padding: 12px 16px;
+    border: var(--email-border-width) solid var(--email-border-color);
+    border-radius: var(--email-radius);
+    background: var(--email-input-background);
+    color: var(--email-input-color);
+    font: inherit;
+  }
+
+  .email-signup__input::placeholder {
+    color: currentColor;
+    opacity: .65;
+  }
+
+  .email-signup__input-group--underline {
+    gap: 0;
+    border-bottom: var(--email-border-width) solid var(--email-border-color);
+  }
+
+  .email-signup__input-group--underline .email-signup__input {
+    border: 0;
+    border-radius: 0;
+    padding-inline: 0;
+  }
+
+  .email-signup__input-group--none .email-signup__input {
+    border: 0;
+  }
+
+  .email-signup__input-group--integrated:not(.email-signup__input-group--underline) {
+    gap: 0;
+    overflow: hidden;
+    border: var(--email-border-width) solid var(--email-border-color);
+    border-radius: var(--email-radius);
+    background: var(--email-input-background);
+  }
+
+  .email-signup__input-group--integrated:not(.email-signup__input-group--underline) .email-signup__input {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .email-signup__button {
+    box-sizing: border-box;
+    min-height: 48px;
+    padding: 12px 22px;
+    border-radius: var(--email-radius);
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .email-signup__button--primary {
+    border: var(--email-border-width) solid var(--email-button-border);
+    background: var(--email-button-background);
+    color: var(--email-button-color);
+  }
+
+  .email-signup__button--secondary {
+    border: var(--email-border-width) solid var(--email-button-border);
+    background: transparent;
+    color: var(--email-button-background);
+  }
+
+  .email-signup__button--link {
+    border: 0;
+    background: transparent;
+    color: var(--email-input-color);
+    text-decoration: underline;
+  }
+
+  .email-signup__button--arrow {
+    flex: 0 0 48px;
+    width: 48px;
+    padding: 10px;
+  }
+
+  .email-signup__button--arrow svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .email-signup__input-group--integrated .email-signup__button {
+    margin: 4px;
+    min-height: 40px;
+  }
+
+  .email-signup__input-group--underline .email-signup__button {
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .email-signup__message { margin: 0; text-align: left; }
+  .email-signup__message--error { color: #b42318; }
+  .email-signup__message--success { color: #16803c; }
+
+  @media screen and (max-width: 749px) {
+    .email-signup { width: 100%; }
+
+    .email-signup__input-group:not(.email-signup__input-group--integrated):not(.email-signup__input-group--underline) {
+      flex-direction: column;
+    }
+
+    .email-signup__input-group:not(.email-signup__input-group--integrated):not(.email-signup__input-group--underline) .email-signup__button {
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Newsletter-Anmeldung",
+  "tag": null,
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Anmeldungen werden als Kundenprofile mit dem Tag „newsletter“ gespeichert."
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Breite",
+      "options": [
+        { "value": "fill", "label": "Füllen" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width",
+      "label": "Benutzerdefinierte Breite",
+      "min": 20,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "center", "label": "Zentriert" },
+        { "value": "right", "label": "Rechts" }
+      ],
+      "default": "left"
+    },
+    { "type": "header", "content": "Überschrift" },
+    { "type": "text", "id": "heading", "label": "Text", "default": "Newsletter" },
+    { "type": "color", "id": "heading_color", "label": "Farbe" },
+    {
+      "type": "select",
+      "id": "heading_preset",
+      "label": "Typografie",
+      "options": [
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "h1", "label": "Überschrift 1" },
+        { "value": "h2", "label": "Überschrift 2" },
+        { "value": "h3", "label": "Überschrift 3" },
+        { "value": "h4", "label": "Überschrift 4" },
+        { "value": "h5", "label": "Überschrift 5" },
+        { "value": "h6", "label": "Überschrift 6" }
+      ],
+      "default": "h3"
+    },
+    { "type": "header", "content": "Eingabefeld" },
+    { "type": "text", "id": "placeholder", "label": "Platzhalter", "default": "E-Mail-Adresse" },
+    {
+      "type": "select",
+      "id": "border_style",
+      "label": "Rand",
+      "options": [
+        { "value": "all", "label": "Rundherum" },
+        { "value": "underline", "label": "Unterstrichen" },
+        { "value": "none", "label": "Keiner" }
+      ],
+      "default": "all"
+    },
+    { "type": "range", "id": "border_width", "label": "Randstärke", "min": 0, "max": 4, "step": 0.5, "unit": "px", "default": 1 },
+    { "type": "range", "id": "border_radius", "label": "Eckenradius", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 100 },
+    { "type": "color", "id": "input_background_color", "label": "Hintergrundfarbe" },
+    { "type": "color", "id": "input_text_color", "label": "Textfarbe" },
+    { "type": "color", "id": "input_border_color", "label": "Randfarbe" },
+    {
+      "type": "select",
+      "id": "input_type_preset",
+      "label": "Typografie",
+      "options": [
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "h5", "label": "Überschrift 5" },
+        { "value": "h4", "label": "Überschrift 4" }
+      ],
+      "default": "paragraph"
+    },
+    { "type": "header", "content": "Button" },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Stil",
+      "options": [
+        { "value": "primary", "label": "Primär" },
+        { "value": "secondary", "label": "Sekundär" },
+        { "value": "link", "label": "Link" }
+      ],
+      "default": "primary"
+    },
+    {
+      "type": "select",
+      "id": "display_type",
+      "label": "Anzeige",
+      "options": [
+        { "value": "text", "label": "Text" },
+        { "value": "arrow", "label": "Pfeil" }
+      ],
+      "default": "text"
+    },
+    { "type": "text", "id": "button_label", "label": "Beschriftung", "default": "Anmelden" },
+    { "type": "checkbox", "id": "integrated_button", "label": "Button in Eingabefeld integrieren", "default": false },
+    {
+      "type": "select",
+      "id": "button_type_preset",
+      "label": "Typografie",
+      "options": [
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "h5", "label": "Überschrift 5" },
+        { "value": "h4", "label": "Überschrift 4" }
+      ],
+      "default": "paragraph"
+    },
+    { "type": "color", "id": "button_background", "label": "Hintergrundfarbe", "default": "#111111" },
+    { "type": "color", "id": "button_text_color", "label": "Textfarbe", "default": "#ffffff" },
+    { "type": "color", "id": "button_border_color", "label": "Randfarbe", "default": "#111111" },
+    { "type": "text", "id": "success_text", "label": "Erfolgsmeldung", "default": "Vielen Dank für deine Anmeldung." },
+    { "type": "header", "content": "Padding" },
+    { "type": "range", "id": "padding_top", "label": "Oben", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding_bottom", "label": "Unten", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding_left", "label": "Links", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 0 },
+    { "type": "range", "id": "padding_right", "label": "Rechts", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 0 }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter-Anmeldung",
+      "category": "Formulare"
+    }
+  ]
+}
+{% endschema %}

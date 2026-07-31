@@ -1,0 +1,213 @@
+{% assign gallery_product = closest.product %}
+
+{% if gallery_product != blank %}
+  <div
+    class="
+      product-gallery-block
+      product-gallery-block--{{ block.settings.layout }}
+      product-gallery-block--ratio-{{ block.settings.aspect_ratio }}
+    "
+    style="
+      --product-gallery-gap: {{ block.settings.gap }}px;
+      --product-gallery-radius: {{ block.settings.border_radius }}px;
+      --product-gallery-padding-top: {{ block.settings.padding_top }}px;
+      --product-gallery-padding-bottom: {{ block.settings.padding_bottom }}px;
+    "
+    {{ block.shopify_attributes }}
+  >
+    {% for media in gallery_product.media %}
+      <div class="product-gallery-block__item" data-media-id="{{ media.id }}">
+        {% case media.media_type %}
+          {% when 'image' %}
+            {{
+              media
+              | image_url: width: 2400
+              | image_tag:
+                class: 'product-gallery-block__media',
+                loading: 'lazy',
+                widths: '400, 750, 1000, 1500, 2000, 2400',
+                sizes: '(max-width: 749px) 100vw, 60vw'
+            }}
+          {% when 'video' %}
+            {{
+              media
+              | video_tag:
+                class: 'product-gallery-block__media',
+                controls: true,
+                loop: block.settings.loop_videos,
+                playsinline: true,
+                image_size: '1600x'
+            }}
+          {% when 'external_video' %}
+            {{
+              media
+              | external_video_url: loop: block.settings.loop_videos
+              | external_video_tag: class: 'product-gallery-block__media'
+            }}
+          {% when 'model' %}
+            {{ media | model_viewer_tag: class: 'product-gallery-block__media', reveal: 'interaction', toggleable: true }}
+        {% endcase %}
+      </div>
+    {% else %}
+      {{ 'product-1' | placeholder_svg_tag: 'product-gallery-block__placeholder' }}
+    {% endfor %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .product-gallery-block {
+    box-sizing: border-box;
+    display: grid;
+    gap: var(--product-gallery-gap);
+    width: 100%;
+    min-width: 0;
+    padding-top: var(--product-gallery-padding-top);
+    padding-bottom: var(--product-gallery-padding-bottom);
+  }
+
+  .product-gallery-block--grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .product-gallery-block--slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+  }
+
+  .product-gallery-block--slider .product-gallery-block__item {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+  }
+
+  .product-gallery-block__item {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: var(--product-gallery-radius);
+    background: rgb(0 0 0 / 4%);
+  }
+
+  .product-gallery-block--ratio-square .product-gallery-block__item {
+    aspect-ratio: 1 / 1;
+  }
+
+  .product-gallery-block--ratio-portrait .product-gallery-block__item {
+    aspect-ratio: 4 / 5;
+  }
+
+  .product-gallery-block--ratio-landscape .product-gallery-block__item {
+    aspect-ratio: 4 / 3;
+  }
+
+  .product-gallery-block__media,
+  .product-gallery-block__placeholder,
+  .product-gallery-block model-viewer,
+  .product-gallery-block iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    object-fit: cover;
+  }
+
+  .product-gallery-block--ratio-auto .product-gallery-block__media {
+    height: auto;
+  }
+
+  @media screen and (max-width: 749px) {
+    .product-gallery-block--grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+    }
+
+    .product-gallery-block--grid .product-gallery-block__item {
+      flex: 0 0 90%;
+      scroll-snap-align: start;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Produktgalerie",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Desktop-Layout",
+      "options": [
+        { "value": "grid", "label": "Raster" },
+        { "value": "slider", "label": "Karussell" }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "select",
+      "id": "aspect_ratio",
+      "label": "Seitenverhältnis",
+      "options": [
+        { "value": "auto", "label": "Automatisch" },
+        { "value": "portrait", "label": "Hochformat" },
+        { "value": "square", "label": "Quadrat" },
+        { "value": "landscape", "label": "Querformat" }
+      ],
+      "default": "portrait"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop_videos",
+      "label": "Videos wiederholen",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Abstand",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Produktgalerie"
+    }
+  ]
+}
+{% endschema %}

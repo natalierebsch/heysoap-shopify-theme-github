@@ -1,0 +1,171 @@
+{% liquid
+  assign review_product = closest.product
+  assign rating_value = review_product.metafields.reviews.rating.value.rating
+  assign rating_scale = review_product.metafields.reviews.rating.value.scale_max | default: 5
+  assign rating_count = review_product.metafields.reviews.rating_count.value | default: 0
+  assign rating_percent = rating_value | divided_by: rating_scale | times: 100
+%}
+
+{% if review_product != blank %}
+  {% if rating_value != blank or block.settings.show_empty %}
+  <div
+    class="review-block review-block--{{ block.settings.alignment }}"
+    style="
+      --review-color: {{ block.settings.star_color }};
+      --review-empty-color: {{ block.settings.empty_star_color }};
+      --review-size: {{ block.settings.star_size }}px;
+      --review-fill: {{ rating_percent }}%;
+      --review-padding-top: {{ block.settings.padding_top }}px;
+      --review-padding-bottom: {{ block.settings.padding_bottom }}px;
+    "
+    {{ block.shopify_attributes }}
+  >
+    {% if rating_value != blank %}
+      <span class="review-block__stars" aria-label="{{ rating_value }} von {{ rating_scale }} Sternen">
+        <span class="review-block__stars-empty">★★★★★</span>
+        <span class="review-block__stars-filled">★★★★★</span>
+      </span>
+      {% if block.settings.show_rating %}
+        <span>{{ rating_value | round: 1 }}</span>
+      {% endif %}
+      {% if block.settings.show_count %}
+        <span>({{ rating_count }})</span>
+      {% endif %}
+    {% else %}
+      <span>{{ block.settings.empty_text }}</span>
+    {% endif %}
+  </div>
+  {% endif %}
+{% endif %}
+
+{% stylesheet %}
+  .review-block {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding-top: var(--review-padding-top);
+    padding-bottom: var(--review-padding-bottom);
+  }
+
+  .review-block--left {
+    justify-content: flex-start;
+  }
+
+  .review-block--center {
+    justify-content: center;
+  }
+
+  .review-block--right {
+    justify-content: flex-end;
+  }
+
+  .review-block__stars {
+    position: relative;
+    display: inline-block;
+    font-size: var(--review-size);
+    line-height: 1;
+    letter-spacing: 0.08em;
+  }
+
+  .review-block__stars-empty {
+    color: var(--review-empty-color);
+  }
+
+  .review-block__stars-filled {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--review-fill);
+    overflow: hidden;
+    color: var(--review-color);
+    white-space: nowrap;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Produktbewertung",
+  "tag": null,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Bewertungswert anzeigen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "Anzahl anzeigen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_empty",
+      "label": "Auch ohne Bewertungen anzeigen",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "empty_text",
+      "label": "Text ohne Bewertungen",
+      "default": "Noch keine Bewertungen",
+      "visible_if": "{{ block.settings.show_empty }}"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "default": "left"
+    },
+    {
+      "type": "color",
+      "id": "star_color",
+      "label": "Sternfarbe",
+      "default": "#f5a623"
+    },
+    {
+      "type": "color",
+      "id": "empty_star_color",
+      "label": "Farbe leerer Sterne",
+      "default": "#d9d9d9"
+    },
+    {
+      "type": "range",
+      "id": "star_size",
+      "label": "Sterngröße",
+      "min": 10,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Produktbewertung"
+    }
+  ]
+}
+{% endschema %}

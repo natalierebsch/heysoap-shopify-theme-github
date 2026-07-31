@@ -62,6 +62,25 @@
               {% endunless %}
             >
             <span>
+              {% if block.settings.show_swatches %}
+                {% assign first_option_name = variant.options.first %}
+                {% for option_value in variant_product.options_with_values.first.values %}
+                  {% if option_value.name == first_option_name and option_value.swatch != blank %}
+                    <i
+                      class="variant-picker-block__swatch"
+                      style="
+                        {% if option_value.swatch.image %}
+                          --variant-swatch-image: url({{ option_value.swatch.image | image_url: width: 80 }});
+                        {% elsif option_value.swatch.color %}
+                          --variant-swatch-color: {{ option_value.swatch.color }};
+                        {% endif %}
+                      "
+                      aria-hidden="true"
+                    ></i>
+                    {% break %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
               {{ variant.title }}
               {% unless variant.available %} – Ausverkauft{% endunless %}
             </span>
@@ -84,6 +103,9 @@
             "id": {{ variant.id | json }},
             "available": {{ variant.available | json }},
             "sku": {{ variant.sku | json }},
+            "inventoryQuantity": {{ variant.inventory_quantity | json }},
+            "inventoryPolicy": {{ variant.inventory_policy | json }},
+            "inventoryManagement": {{ variant.inventory_management | json }},
             "price": {{ variant.price | money | json }},
             "comparePrice": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | json }}{% else %}null{% endif %},
             "discount": {{ variant_discount | json }}
@@ -166,6 +188,20 @@
     border-radius: var(--variant-radius);
     background: var(--variant-background);
     color: var(--variant-color);
+    gap: 8px;
+  }
+
+  .variant-picker-block__swatch {
+    display: block;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    border: 1px solid rgb(0 0 0 / 20%);
+    border-radius: 50%;
+    background-color: var(--variant-swatch-color, transparent);
+    background-image: var(--variant-swatch-image, none);
+    background-position: center;
+    background-size: cover;
   }
 
   .variant-picker-block__button input:checked + span {
@@ -206,6 +242,13 @@
       "id": "show_label",
       "label": "Beschriftung anzeigen",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_swatches",
+      "label": "Farbmuster anzeigen",
+      "default": true,
+      "visible_if": "{{ block.settings.style == 'buttons' }}"
     },
     {
       "type": "text",

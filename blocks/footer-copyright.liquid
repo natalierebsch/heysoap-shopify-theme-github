@@ -1,0 +1,25 @@
+<p class="footer-copyright-block footer-copyright-block--{{ block.settings.alignment }}" {{ block.shopify_attributes }}>
+  &copy; {{ 'now' | date: '%Y' }}
+  {% if block.settings.show_shop_name %}{{ shop.name }}{% endif %}
+  {% if block.settings.text != blank %}{{ block.settings.text }}{% endif %}
+</p>
+
+{% stylesheet %}
+  .footer-copyright-block { width: 100%; margin: 0; }
+  .footer-copyright-block--left { text-align: left; }
+  .footer-copyright-block--center { text-align: center; }
+  .footer-copyright-block--right { text-align: right; }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer-Copyright",
+  "tag": null,
+  "settings": [
+    { "type": "checkbox", "id": "show_shop_name", "label": "Shopname anzeigen", "default": true },
+    { "type": "text", "id": "text", "label": "Zusätzlicher Text" },
+    { "type": "text_alignment", "id": "alignment", "label": "Ausrichtung", "default": "left" }
+  ],
+  "presets": [{ "name": "Footer-Copyright" }]
+}
+{% endschema %}

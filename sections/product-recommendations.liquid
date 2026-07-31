@@ -1,0 +1,198 @@
+<script src="{{ 'product-recommendations.js' | asset_url }}" defer="defer"></script>
+
+<heysoap-product-recommendations
+  class="product-recommendations product-recommendations--{{ section.settings.width }}"
+  data-loaded="{% if section.settings.product_source == 'manual' %}true{% else %}{{ recommendations.performed }}{% endif %}"
+  {% if section.settings.product_source == 'automatic' %}
+    data-url="{{ routes.product_recommendations_url }}?limit={{ section.settings.products_to_show }}&product_id={{ product.id }}&section_id={{ section.id }}"
+  {% endif %}
+  style="
+    --recommendation-columns: {{ section.settings.columns_desktop }};
+    --recommendation-columns-mobile: {{ section.settings.columns_mobile }};
+    --recommendation-gap: {{ section.settings.gap }}px;
+    --recommendation-background: {{ section.settings.background_color | default: 'transparent' }};
+    --recommendation-padding-top: {{ section.settings.padding_top }}px;
+    --recommendation-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  {% liquid
+    if section.settings.product_source == 'manual'
+      assign displayed_products = section.settings.products
+    elsif recommendations.performed
+      assign displayed_products = recommendations.products
+    endif
+  %}
+
+  {% if displayed_products != blank %}
+    <div class="product-recommendations__inner">
+      {% if section.settings.heading != blank %}
+        <h2 class="product-recommendations__heading">{{ section.settings.heading }}</h2>
+      {% endif %}
+
+      <div class="product-recommendations__grid">
+        {% for recommended_product in displayed_products limit: section.settings.products_to_show %}
+          <div class="product-recommendations__item">
+            {% content_for 'block',
+              type: '_featured-product-card',
+              id: 'recommended-product-card',
+              closest.product: recommended_product
+            %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</heysoap-product-recommendations>
+
+{% stylesheet %}
+  .product-recommendations {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    background: var(--recommendation-background);
+    padding-top: var(--recommendation-padding-top);
+    padding-bottom: var(--recommendation-padding-bottom);
+  }
+
+  .product-recommendations__inner {
+    width: 100%;
+    margin-inline: auto;
+  }
+
+  .product-recommendations--page .product-recommendations__inner {
+    max-width: var(--page-width);
+    padding-inline: 24px;
+  }
+
+  .product-recommendations__heading {
+    margin: 0 0 24px;
+  }
+
+  .product-recommendations__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--recommendation-columns), minmax(0, 1fr));
+    gap: var(--recommendation-gap);
+  }
+
+  .product-recommendations__item {
+    min-width: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .product-recommendations--page .product-recommendations__inner {
+      padding-inline: 12px;
+    }
+
+    .product-recommendations__grid {
+      grid-template-columns: repeat(var(--recommendation-columns-mobile), minmax(0, 1fr));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Produktempfehlungen",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Überschrift",
+      "default": "Das könnte dir auch gefallen"
+    },
+    {
+      "type": "select",
+      "id": "product_source",
+      "label": "Produktauswahl",
+      "options": [
+        { "value": "manual", "label": "Produkte selbst auswählen" },
+        { "value": "automatic", "label": "Automatische Empfehlungen" }
+      ],
+      "default": "manual"
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Produkte auswählen",
+      "limit": 12
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "label": "Maximale Anzahl",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Spalten Desktop",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Spalten Mobil",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Breite",
+      "options": [
+        { "value": "page", "label": "Seite" },
+        { "value": "full", "label": "Vollständig" }
+      ],
+      "default": "page"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Abstand",
+      "min": 0,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Padding oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Padding unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 48
+    }
+  ],
+  "presets": [
+    {
+      "name": "Produktempfehlungen"
+    }
+  ]
+}
+{% endschema %}

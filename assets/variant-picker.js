@@ -42,6 +42,9 @@ if (!customElements.get('heysoap-variant-picker')) {
       const badge = context.querySelector('.product-price-block__badge');
       const skuBlock = context.querySelector('.product-sku-block');
       const skuValue = context.querySelector('.product-sku-block__value');
+      const inventoryBlock = context.querySelector('.product-inventory-block');
+      const inventoryText = context.querySelector('.product-inventory-block__text');
+      const inventoryDot = context.querySelector('.product-inventory-block__dot');
 
       if (currentPrice) currentPrice.textContent = variant.price;
 
@@ -60,6 +63,34 @@ if (!customElements.get('heysoap-variant-picker')) {
       if (skuBlock && skuValue) {
         skuValue.textContent = variant.sku || '';
         skuBlock.hidden = !variant.sku;
+      }
+
+      if (inventoryBlock && inventoryText && inventoryDot) {
+        const threshold = Number(inventoryBlock.dataset.threshold || 10);
+        const showQuantity = inventoryBlock.dataset.showQuantity === 'true';
+        let status = 'in-stock';
+        let label = inventoryBlock.dataset.inStockLabel;
+
+        if (
+          variant.inventoryManagement === 'shopify' &&
+          variant.inventoryQuantity <= 0 &&
+          variant.inventoryPolicy !== 'continue'
+        ) {
+          status = 'out-of-stock';
+          label = inventoryBlock.dataset.outOfStockLabel;
+        } else if (
+          variant.inventoryManagement === 'shopify' &&
+          variant.inventoryQuantity > 0 &&
+          variant.inventoryQuantity <= threshold
+        ) {
+          status = 'low';
+          label = showQuantity
+            ? `${variant.inventoryQuantity} ${inventoryBlock.dataset.lowCountLabel}`
+            : inventoryBlock.dataset.lowLabel;
+        }
+
+        inventoryText.textContent = label;
+        inventoryDot.dataset.status = status;
       }
 
       this.dispatchEvent(
