@@ -1,0 +1,379 @@
+{% assign variant_product = closest.product %}
+
+<script src="{{ 'variant-picker.js' | asset_url }}" defer="defer"></script>
+
+{% if variant_product != blank and variant_product.has_only_default_variant == false %}
+  <heysoap-variant-picker
+    class="
+      variant-picker-block
+      variant-picker-block--{{ block.settings.style }}
+      variant-picker-block--{{ block.settings.alignment }}
+    "
+    style="
+      --variant-gap: {{ block.settings.gap }}px;
+      --variant-background: {{ block.settings.button_background | default: 'transparent' }};
+      --variant-color: {{ block.settings.button_text_color | default: 'currentColor' }};
+      --variant-border: {{ block.settings.button_border_color | default: 'currentColor' }};
+      --variant-selected-background: {{ block.settings.selected_background | default: '#111111' }};
+      --variant-selected-color: {{ block.settings.selected_text_color | default: '#ffffff' }};
+      --variant-selected-border: {{ block.settings.selected_border_color | default: '#111111' }};
+      --variant-radius: {{ block.settings.border_radius }}px;
+      --variant-padding-top: {{ block.settings.padding_top }}px;
+      --variant-padding-bottom: {{ block.settings.padding_bottom }}px;
+      --variant-padding-left: {{ block.settings.padding_left }}px;
+      --variant-padding-right: {{ block.settings.padding_right }}px;
+    "
+    {{ block.shopify_attributes }}
+  >
+    {% if block.settings.show_label %}
+      <div class="variant-picker-block__label">{{ block.settings.label }}</div>
+    {% endif %}
+
+    {% if block.settings.style == 'dropdown' %}
+      <select class="variant-picker-block__select" aria-label="{{ block.settings.label | escape }}">
+        {% for variant in variant_product.variants %}
+          <option
+            value="{{ variant.id }}"
+            {% if variant.id == variant_product.selected_or_first_available_variant.id %}
+              selected
+            {% endif %}
+            {% unless variant.available %}
+              disabled
+            {% endunless %}
+          >
+            {{ variant.title }}
+            {% unless variant.available %} – Ausverkauft{% endunless %}
+          </option>
+        {% endfor %}
+      </select>
+    {% else %}
+      <div class="variant-picker-block__buttons">
+        {% for variant in variant_product.variants %}
+          <label class="variant-picker-block__button">
+            <input
+              type="radio"
+              name="variant-{{ block.id }}"
+              value="{{ variant.id }}"
+              {% if variant.id == variant_product.selected_or_first_available_variant.id %}
+                checked
+              {% endif %}
+              {% unless variant.available %}
+                disabled
+              {% endunless %}
+            >
+            <span>
+              {% if block.settings.show_swatches %}
+                {% assign first_option_name = variant.options.first %}
+                {% for option_value in variant_product.options_with_values.first.values %}
+                  {% if option_value.name == first_option_name and option_value.swatch != blank %}
+                    <i
+                      class="variant-picker-block__swatch"
+                      style="
+                        {% if option_value.swatch.image %}
+                          --variant-swatch-image: url({{ option_value.swatch.image | image_url: width: 80 }});
+                        {% elsif option_value.swatch.color %}
+                          --variant-swatch-color: {{ option_value.swatch.color }};
+                        {% endif %}
+                      "
+                      aria-hidden="true"
+                    ></i>
+                    {% break %}
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+              {{ variant.title }}
+              {% unless variant.available %} – Ausverkauft{% endunless %}
+            </span>
+          </label>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <script type="application/json">
+      [
+        {% for variant in variant_product.variants %}
+          {% liquid
+            assign variant_discount = 0
+            if variant.compare_at_price > variant.price and variant.compare_at_price > 0
+              assign variant_discount_amount = variant.compare_at_price | minus: variant.price
+              assign variant_discount = variant_discount_amount | times: 100.0 | divided_by: variant.compare_at_price | round
+            endif
+          %}
+          {
+            "id": {{ variant.id | json }},
+            "available": {{ variant.available | json }},
+            "sku": {{ variant.sku | json }},
+            "inventoryQuantity": {{ variant.inventory_quantity | json }},
+            "inventoryPolicy": {{ variant.inventory_policy | json }},
+            "inventoryManagement": {{ variant.inventory_management | json }},
+            "price": {{ variant.price | money | json }},
+            "comparePrice": {% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | json }}{% else %}null{% endif %},
+            "discount": {{ variant_discount | json }}
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      ]
+    </script>
+  </heysoap-variant-picker>
+{% endif %}
+
+{% stylesheet %}
+  .variant-picker-block {
+    box-sizing: border-box;
+    display: grid;
+    gap: var(--variant-gap);
+    width: 100%;
+    padding:
+      var(--variant-padding-top)
+      var(--variant-padding-right)
+      var(--variant-padding-bottom)
+      var(--variant-padding-left);
+  }
+
+  .variant-picker-block--left {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .variant-picker-block--center {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .variant-picker-block--right {
+    justify-items: end;
+    text-align: right;
+  }
+
+  .variant-picker-block__label {
+    font-weight: 600;
+  }
+
+  .variant-picker-block__select {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 36px 8px 12px;
+    border: 1px solid var(--variant-border);
+    border-radius: var(--variant-radius);
+    background: var(--variant-background);
+    color: var(--variant-color);
+    font: inherit;
+  }
+
+  .variant-picker-block__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: inherit;
+    gap: var(--variant-gap);
+  }
+
+  .variant-picker-block__button {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .variant-picker-block__button input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .variant-picker-block__button span {
+    display: inline-flex;
+    min-height: 40px;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 14px;
+    border: 1px solid var(--variant-border);
+    border-radius: var(--variant-radius);
+    background: var(--variant-background);
+    color: var(--variant-color);
+    gap: 8px;
+  }
+
+  .variant-picker-block__swatch {
+    display: block;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 auto;
+    border: 1px solid rgb(0 0 0 / 20%);
+    border-radius: 50%;
+    background-color: var(--variant-swatch-color, transparent);
+    background-image: var(--variant-swatch-image, none);
+    background-position: center;
+    background-size: cover;
+  }
+
+  .variant-picker-block__button input:checked + span {
+    border-color: var(--variant-selected-border);
+    background: var(--variant-selected-background);
+    color: var(--variant-selected-color);
+  }
+
+  .variant-picker-block__button input:disabled + span {
+    cursor: not-allowed;
+    opacity: 0.45;
+    text-decoration: line-through;
+  }
+
+  .variant-picker-block__button input:focus-visible + span {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Variantenwähler",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Stil",
+      "options": [
+        { "value": "buttons", "label": "Schaltflächen" },
+        { "value": "dropdown", "label": "Dropdown" }
+      ],
+      "default": "buttons"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_label",
+      "label": "Beschriftung anzeigen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_swatches",
+      "label": "Farbmuster anzeigen",
+      "default": true,
+      "visible_if": "{{ block.settings.style == 'buttons' }}"
+    },
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Beschriftung",
+      "default": "Variante",
+      "visible_if": "{{ block.settings.show_label }}"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Abstand",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Normale Variante"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Hintergrund"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Rand"
+    },
+    {
+      "type": "header",
+      "content": "Ausgewählte Variante",
+      "visible_if": "{{ block.settings.style == 'buttons' }}"
+    },
+    {
+      "type": "color",
+      "id": "selected_background",
+      "label": "Hintergrund",
+      "visible_if": "{{ block.settings.style == 'buttons' }}"
+    },
+    {
+      "type": "color",
+      "id": "selected_text_color",
+      "label": "Text",
+      "visible_if": "{{ block.settings.style == 'buttons' }}"
+    },
+    {
+      "type": "color",
+      "id": "selected_border_color",
+      "label": "Rand",
+      "visible_if": "{{ block.settings.style == 'buttons' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Variantenwähler"
+    }
+  ]
+}
+{% endschema %}

@@ -19,6 +19,7 @@
     multicolumn-section--width-{{ section.settings.width }}
     multicolumn-section--direction-{{ section.settings.direction }}
     multicolumn-section--alignment-{{ section.settings.alignment }}
+    multicolumn-section--mobile-alignment-{{ section.settings.mobile_alignment }}
     multicolumn-section--position-{{ section.settings.position }}
     multicolumn-section--height-{{ section.settings.height }}
     multicolumn-section--border-{{ section.settings.border_style }}
@@ -239,6 +240,91 @@
       flex-basis: auto;
       width: 100%;
     }
+
+    .multicolumn-section--direction-horizontal:not(.multicolumn-section--stack-mobile)
+      .multicolumn-section__content {
+      justify-content: flex-start;
+    }
+
+    .multicolumn-section--direction-horizontal:not(.multicolumn-section--stack-mobile).multicolumn-section--mobile-alignment-center
+      .multicolumn-section__content {
+      justify-content: center;
+    }
+
+    .multicolumn-section--direction-horizontal:not(.multicolumn-section--stack-mobile).multicolumn-section--mobile-alignment-right
+      .multicolumn-section__content {
+      justify-content: flex-end;
+    }
+
+    .multicolumn-section--direction-horizontal:not(.multicolumn-section--stack-mobile).multicolumn-section--mobile-alignment-between
+      .multicolumn-section__content {
+      justify-content: space-between;
+    }
+
+    .multicolumn-section--direction-horizontal:not(.multicolumn-section--stack-mobile).multicolumn-section--mobile-alignment-evenly
+      .multicolumn-section__content {
+      justify-content: space-evenly;
+    }
+
+    .multicolumn-section--direction-vertical.multicolumn-section--mobile-alignment-left
+      .multicolumn-section__content,
+    .multicolumn-section--direction-horizontal.multicolumn-section--stack-mobile.multicolumn-section--mobile-alignment-left
+      .multicolumn-section__content {
+      align-items: flex-start;
+    }
+
+    .multicolumn-section--direction-vertical.multicolumn-section--mobile-alignment-center
+      .multicolumn-section__content,
+    .multicolumn-section--direction-horizontal.multicolumn-section--stack-mobile.multicolumn-section--mobile-alignment-center
+      .multicolumn-section__content {
+      align-items: center;
+    }
+
+    .multicolumn-section--direction-vertical.multicolumn-section--mobile-alignment-right
+      .multicolumn-section__content,
+    .multicolumn-section--direction-horizontal.multicolumn-section--stack-mobile.multicolumn-section--mobile-alignment-right
+      .multicolumn-section__content {
+      align-items: flex-end;
+    }
+
+    .multicolumn-section--direction-vertical.multicolumn-section--mobile-alignment-between
+      .multicolumn-section__content,
+    .multicolumn-section--direction-horizontal.multicolumn-section--stack-mobile.multicolumn-section--mobile-alignment-between
+      .multicolumn-section__content {
+      justify-content: space-between;
+    }
+
+    .multicolumn-section--direction-vertical.multicolumn-section--mobile-alignment-evenly
+      .multicolumn-section__content,
+    .multicolumn-section--direction-horizontal.multicolumn-section--stack-mobile.multicolumn-section--mobile-alignment-evenly
+      .multicolumn-section__content {
+      justify-content: space-evenly;
+    }
+
+    .multicolumn-section--direction-horizontal.multicolumn-section--stack-mobile.multicolumn-section--position-top
+      .multicolumn-section__content {
+      justify-content: flex-start;
+    }
+
+    .multicolumn-section--direction-horizontal.multicolumn-section--stack-mobile.multicolumn-section--position-center
+      .multicolumn-section__content {
+      justify-content: center;
+    }
+
+    .multicolumn-section--direction-horizontal.multicolumn-section--stack-mobile.multicolumn-section--position-bottom
+      .multicolumn-section__content {
+      justify-content: flex-end;
+    }
+
+    .multicolumn-section--direction-horizontal.multicolumn-section--stack-mobile.multicolumn-section--mobile-alignment-between
+      .multicolumn-section__content {
+      justify-content: space-between;
+    }
+
+    .multicolumn-section--direction-horizontal.multicolumn-section--stack-mobile.multicolumn-section--mobile-alignment-evenly
+      .multicolumn-section__content {
+      justify-content: space-evenly;
+    }
   }
 {% endstylesheet %}
 
@@ -282,7 +368,35 @@
     {
       "type": "select",
       "id": "alignment",
-      "label": "Ausrichtung",
+      "label": "Desktop-Ausrichtung",
+      "options": [
+        {
+          "value": "left",
+          "label": "Links"
+        },
+        {
+          "value": "center",
+          "label": "Zentriert"
+        },
+        {
+          "value": "right",
+          "label": "Rechts"
+        },
+        {
+          "value": "between",
+          "label": "Abstand dazwischen"
+        },
+        {
+          "value": "evenly",
+          "label": "Gleichmäßig verteilt"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "mobile_alignment",
+      "label": "Mobile Ausrichtung",
       "options": [
         {
           "value": "left",

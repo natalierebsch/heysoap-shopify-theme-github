@@ -1,59 +1,75 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "template": {
       "type": "template-product",
       "blocks": {
         "vendor": {
-          "type": "vendor",
-          "settings": {}
+          "type": "product-text",
+          "settings": {
+            "source": "vendor",
+            "type_preset": "paragraph"
+          }
         },
         "title": {
-          "type": "title",
+          "type": "product-title",
+          "settings": {
+            "type_preset": "h1",
+            "width": "fill"
+          }
+        },
+        "review": {
+          "type": "review",
           "settings": {}
         },
         "price": {
-          "type": "price",
+          "type": "product-price",
           "settings": {}
         },
-        "variant_selector": {
-          "type": "variant_selector",
+        "inventory": {
+          "type": "product-inventory",
           "settings": {}
         },
-        "quantity": {
-          "type": "quantity",
+        "sku": {
+          "type": "product-sku",
+          "settings": {}
+        },
+        "variant_picker": {
+          "type": "variant-picker",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy-buttons",
           "settings": {}
         },
         "description": {
-          "type": "description",
-          "settings": {}
-        },
-        "checkout_buttons": {
-          "type": "checkout_buttons",
-          "settings": {}
+          "type": "product-text",
+          "settings": {
+            "source": "description",
+            "max_words": 50,
+            "width": "fill"
+          }
         }
       },
       "block_order": [
         "vendor",
         "title",
+        "review",
         "price",
-        "variant_selector",
-        "quantity",
-        "description",
-        "checkout_buttons"
+        "inventory",
+        "sku",
+        "variant_picker",
+        "buy_buttons",
+        "description"
       ],
+      "settings": {}
+    },
+    "recommendations": {
+      "type": "product-recommendations",
       "settings": {}
     }
   },
   "order": [
-    "template"
+    "template",
+    "recommendations"
   ]
 }

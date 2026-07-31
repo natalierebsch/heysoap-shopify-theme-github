@@ -1,0 +1,125 @@
+<div
+  class="divider-block divider-block--{{ block.settings.alignment }}"
+  style="
+    --divider-width: {{ block.settings.width_percent }}%;
+    --divider-thickness: {{ block.settings.thickness }}px;
+    --divider-color: {{ block.settings.divider_color | default: 'currentColor' }};
+    --divider-radius: {% if block.settings.corner_radius == 'rounded' %}999px{% else %}0{% endif %};
+    --divider-padding-top: {{ block.settings.padding_top }}px;
+    --divider-padding-bottom: {{ block.settings.padding_bottom }}px;
+  "
+  {{ block.shopify_attributes }}
+  aria-hidden="true"
+>
+  <span class="divider-block__line"></span>
+</div>
+
+{% stylesheet %}
+  .divider-block {
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    padding-top: var(--divider-padding-top);
+    padding-bottom: var(--divider-padding-bottom);
+  }
+
+  .divider-block--left {
+    justify-content: flex-start;
+  }
+
+  .divider-block--center {
+    justify-content: center;
+  }
+
+  .divider-block--right {
+    justify-content: flex-end;
+  }
+
+  .divider-block__line {
+    display: block;
+    width: var(--divider-width);
+    height: var(--divider-thickness);
+    border-radius: var(--divider-radius);
+    background: var(--divider-color);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Trennlinie",
+  "tag": null,
+  "settings": [
+    {
+      "type": "range",
+      "id": "thickness",
+      "label": "Stärke",
+      "min": 0.5,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 1
+    },
+    {
+      "type": "select",
+      "id": "corner_radius",
+      "label": "Ecken",
+      "options": [
+        { "value": "square", "label": "Eckig" },
+        { "value": "rounded", "label": "Abgerundet" }
+      ],
+      "default": "square",
+      "visible_if": "{{ block.settings.thickness > 1 }}"
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Farbe"
+    },
+    {
+      "type": "range",
+      "id": "width_percent",
+      "label": "Länge",
+      "min": 5,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Trennlinie"
+    }
+  ]
+}
+{% endschema %}

@@ -18,6 +18,7 @@
   style="
     --text-color: {{ block.settings.text_color | default: 'inherit' }};
     --text-background-color: {{ block.settings.background_color | default: 'transparent' }};
+    --text-corner-radius: {{ block.settings.corner_radius }}px;
     --text-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
     --text-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
     --text-padding-top: {{ block.settings.padding_top }}px;
@@ -99,6 +100,7 @@
 
   .text-block--background-true {
     background-color: var(--text-background-color);
+    border-radius: var(--text-corner-radius);
   }
 
   .text-block p,
@@ -143,6 +145,7 @@
 {% schema %}
 {
   "name": "Text",
+  "tag": null,
   "settings": [
     {
       "type": "richtext",
@@ -351,6 +354,17 @@
       "visible_if": "{{ block.settings.show_background }}"
     },
     {
+      "type": "range",
+      "id": "corner_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 0,
+      "visible_if": "{{ block.settings.show_background }}"
+    },
+    {
       "type": "header",
       "content": "Padding"
     },
@@ -359,8 +373,8 @@
       "id": "padding_top",
       "label": "Oben",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     },
@@ -369,8 +383,8 @@
       "id": "padding_bottom",
       "label": "Unten",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     },
@@ -379,8 +393,8 @@
       "id": "padding_left",
       "label": "Links",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     },
@@ -389,8 +403,8 @@
       "id": "padding_right",
       "label": "Rechts",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     }

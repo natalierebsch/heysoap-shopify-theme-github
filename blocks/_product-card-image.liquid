@@ -2,13 +2,33 @@
   Rendert das Bild des nächstgelegenen Produkts.
 {% enddoc %}
 
-{% assign card_product = closest.product %}
+{% liquid
+  assign card_product = closest.product
+  assign image_border_alpha = block.settings.border_opacity | divided_by: 100.0
+  assign image_border_color = block.settings.border_color | default: '#000000'
+  assign image_border_color = image_border_color | color_modify: 'alpha', image_border_alpha
+%}
 
 <div
-  class="featured-product-image {% if block.settings.aspect_ratio == 'auto' %}featured-product-image--auto{% endif %}"
+  class="
+    featured-product-image
+    {% if block.settings.aspect_ratio == 'auto' %}featured-product-image--auto{% endif %}
+    featured-product-image--border-{{ block.settings.border }}
+    featured-product-image--desktop-{{ block.settings.desktop_width }}
+    featured-product-image--mobile-{{ block.settings.mobile_width }}
+    featured-product-image--height-{{ block.settings.height }}
+  "
   style="
     --featured-product-ratio: {{ block.settings.aspect_ratio }};
     --featured-product-image-radius: {{ block.settings.border_radius }}px;
+    --featured-product-border-width: {{ block.settings.border_width }}px;
+    --featured-product-border-color: {{ image_border_color }};
+    --featured-product-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
+    --featured-product-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
+    --featured-product-padding-top: {{ block.settings.padding_top }}px;
+    --featured-product-padding-bottom: {{ block.settings.padding_bottom }}px;
+    --featured-product-padding-left: {{ block.settings.padding_left }}px;
+    --featured-product-padding-right: {{ block.settings.padding_right }}px;
   "
   {{ block.shopify_attributes }}
 >
@@ -36,10 +56,29 @@
 
 {% stylesheet %}
   .featured-product-image {
+    box-sizing: border-box;
     width: 100%;
     aspect-ratio: var(--featured-product-ratio);
-    overflow: hidden;
     border-radius: var(--featured-product-image-radius);
+    padding:
+      var(--featured-product-padding-top)
+      var(--featured-product-padding-right)
+      var(--featured-product-padding-bottom)
+      var(--featured-product-padding-left);
+  }
+
+  .featured-product-image--desktop-fit {
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .featured-product-image--desktop-custom {
+    width: var(--featured-product-custom-width-desktop);
+    max-width: 100%;
+  }
+
+  .featured-product-image--border-solid {
+    border: var(--featured-product-border-width) solid var(--featured-product-border-color);
   }
 
   .featured-product-image--auto {
@@ -58,11 +97,34 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    overflow: hidden;
+    border-radius: var(--featured-product-image-radius);
   }
 
   .featured-product-image--auto .featured-product-image__image,
   .featured-product-image--auto .featured-product-image__placeholder {
     height: auto;
+  }
+
+  .featured-product-image--height-fill,
+  .featured-product-image--height-fill a {
+    height: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .featured-product-image--mobile-fit {
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .featured-product-image--mobile-fill {
+      width: 100%;
+    }
+
+    .featured-product-image--mobile-custom {
+      width: var(--featured-product-custom-width-mobile);
+      max-width: 100%;
+    }
   }
 {% endstylesheet %}
 
@@ -83,12 +145,152 @@
       "default": "1 / 1"
     },
     {
+      "type": "select",
+      "id": "desktop_width",
+      "label": "Desktop-Breite",
+      "options": [
+        { "value": "fit", "label": "Anpassen" },
+        { "value": "fill", "label": "Füllen" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_desktop",
+      "label": "Benutzerdefinierte Desktop-Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.desktop_width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "mobile_width",
+      "label": "Mobile Breite",
+      "options": [
+        { "value": "fit", "label": "Anpassen" },
+        { "value": "fill", "label": "Füllen" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Benutzerdefinierte mobile Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.mobile_width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Höhe",
+      "options": [
+        { "value": "adapt", "label": "Anpassen" },
+        { "value": "fill", "label": "Füllen" }
+      ],
+      "default": "adapt"
+    },
+    {
+      "type": "header",
+      "content": "Ränder"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "Stil",
+      "options": [
+        { "value": "none", "label": "Keine" },
+        { "value": "solid", "label": "Einfarbig" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Stärke",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "label": "Deckkraft",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Farbe",
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
       "type": "range",
       "id": "border_radius",
       "label": "Eckenradius",
       "min": 0,
       "max": 100,
-      "step": 2,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     }

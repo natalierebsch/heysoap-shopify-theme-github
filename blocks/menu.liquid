@@ -5,7 +5,24 @@
   {% content_for 'block', type: 'menu', id: 'footer-menu' %}
 {% enddoc %}
 
-{% assign menu_heading = block.settings.heading | default: block.settings.menu.title %}
+{% liquid
+  assign menu_heading = block.settings.heading | default: block.settings.menu.title
+  assign menu_heading_tag = 'h3'
+  case block.settings.heading_preset
+    when 'h1'
+      assign menu_heading_tag = 'h1'
+    when 'h2'
+      assign menu_heading_tag = 'h2'
+    when 'h3'
+      assign menu_heading_tag = 'h3'
+    when 'h4'
+      assign menu_heading_tag = 'h4'
+    when 'h5'
+      assign menu_heading_tag = 'h5'
+    when 'h6'
+      assign menu_heading_tag = 'h6'
+  endcase
+%}
 {% capture menu_heading_typography %}
   {% render 'typography-variables',
     preset: block.settings.heading_preset,
@@ -34,6 +51,7 @@
     menu-block
     menu-block--heading-{{ block.settings.heading_preset }}
     menu-block--links-{{ block.settings.link_preset }}
+    {% if block.settings.mobile_accordion and block.settings.accordion_dividers %}menu-block--dividers{% endif %}
   "
   style="
     --menu-gap: {{ block.settings.vertical_gap }}px;
@@ -52,22 +70,12 @@
 
   <div class="menu-block__desktop">
     {% if menu_heading != blank %}
-      {% case block.settings.heading_preset %}
-        {% when 'h1' %}
-          <h1 class="menu-block__heading typography-style" style="{{ menu_heading_typography | strip }}">
-            {{ menu_heading }}
-          </h1>
-
-        {% when 'h2' %}
-          <h2 class="menu-block__heading typography-style" style="{{ menu_heading_typography | strip }}">
-            {{ menu_heading }}
-          </h2>
-
-        {% else %}
-          <h3 class="menu-block__heading typography-style" style="{{ menu_heading_typography | strip }}">
-            {{ menu_heading }}
-          </h3>
-      {% endcase %}
+      <{{ menu_heading_tag }}
+        class="menu-block__heading typography-style"
+        style="{{ menu_heading_typography | strip }}"
+      >
+        {{ menu_heading }}
+      </{{ menu_heading_tag }}>
     {% endif %}
 
     {% if block.settings.menu != blank %}
@@ -128,16 +136,30 @@
         </span>
 
         <span class="menu-block__accordion-icon" aria-hidden="true">
-          <svg
-            viewBox="0 0 20 20"
-            width="16"
-            height="16"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="1.5"
-          >
-            <path d="M5 7.5L10 12.5L15 7.5"></path>
-          </svg>
+          {% if block.settings.accordion_icon == 'plus' %}
+            <svg
+              class="menu-block__accordion-icon-plus"
+              viewBox="0 0 20 20"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M10 4V16M4 10H16"></path>
+            </svg>
+          {% else %}
+            <svg
+              viewBox="0 0 20 20"
+              width="16"
+              height="16"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M5 7.5L10 12.5L15 7.5"></path>
+            </svg>
+          {% endif %}
         </span>
       </summary>
 
@@ -315,6 +337,10 @@
     transform: rotate(180deg);
   }
 
+  .menu-block__mobile-accordion[open] .menu-block__accordion-icon-plus {
+    transform: rotate(45deg);
+  }
+
   .menu-block__mobile-accordion nav {
     margin-top: var(--menu-gap);
   }
@@ -339,12 +365,21 @@
     .menu-block__summary {
       display: flex;
     }
+
+    .menu-block--dividers .menu-block__mobile-accordion {
+      border-bottom: 1px solid currentColor;
+    }
+
+    .menu-block--dividers .menu-block__summary {
+      padding-bottom: var(--menu-gap);
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "Menü",
+  "tag": null,
   "settings": [
     {
       "type": "link_list",
@@ -365,8 +400,8 @@
       "id": "vertical_gap",
       "label": "Vertikaler Abstand",
       "min": 0,
-      "max": 60,
-      "step": 2,
+      "max": 50,
+      "step": 1,
       "unit": "px",
       "default": 12
     },
@@ -375,6 +410,30 @@
       "id": "mobile_accordion",
       "label": "Auf Mobilgeräten als Akkordeon-Effekt anzeigen",
       "default": false
+    },
+    {
+      "type": "select",
+      "id": "accordion_icon",
+      "label": "Symbol",
+      "options": [
+        {
+          "value": "caret",
+          "label": "Pfeil"
+        },
+        {
+          "value": "plus",
+          "label": "Plus"
+        }
+      ],
+      "default": "caret",
+      "visible_if": "{{ block.settings.mobile_accordion }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "accordion_dividers",
+      "label": "Trennlinie anzeigen",
+      "default": false,
+      "visible_if": "{{ block.settings.mobile_accordion }}"
     },
     {
       "type": "color",
@@ -508,8 +567,8 @@
       "id": "padding_top",
       "label": "Oben",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     },
@@ -518,8 +577,8 @@
       "id": "padding_bottom",
       "label": "Unten",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     },
@@ -528,8 +587,8 @@
       "id": "padding_left",
       "label": "Links",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     },
@@ -538,8 +597,8 @@
       "id": "padding_right",
       "label": "Rechts",
       "min": 0,
-      "max": 120,
-      "step": 4,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 0
     }

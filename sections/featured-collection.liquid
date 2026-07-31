@@ -11,11 +11,18 @@
 %}
 
 <section
-  class="featured-collection featured-collection--{{ section.settings.width }}"
+  class="
+    featured-collection
+    featured-collection--{{ section.settings.width }}
+    featured-collection--{{ section.settings.layout_type }}
+    {% if section.settings.carousel_on_mobile %}featured-collection--mobile-carousel{% endif %}
+  "
   style="
     --featured-columns-desktop: {{ section.settings.columns_desktop }};
     --featured-columns-mobile: {{ section.settings.columns_mobile }};
-    --featured-grid-gap: {{ section.settings.gap }}px;
+    --featured-column-gap: {{ section.settings.column_gap }}px;
+    --featured-row-gap: {{ section.settings.row_gap }}px;
+    --featured-mobile-card-width: {{ section.settings.mobile_card_width }}%;
     --featured-section-background: {{ section.settings.background_color | default: 'transparent' }};
     --featured-padding-top: {{ section.settings.padding_top }}px;
     --featured-padding-bottom: {{ section.settings.padding_bottom }}px;
@@ -46,6 +53,12 @@
           </div>
         {% endfor %}
       </div>
+      {% if section.settings.layout_type == 'carousel' %}
+        <div class="featured-collection__navigation" aria-label="Karussell-Navigation">
+          <button type="button" class="featured-collection__previous" aria-label="Zurück">←</button>
+          <button type="button" class="featured-collection__next" aria-label="Weiter">→</button>
+        </div>
+      {% endif %}
     {% else %}
       <div class="featured-collection__empty">
         Wähle in den Section-Einstellungen eine Kollektion aus.
@@ -99,7 +112,8 @@
   .featured-collection__grid {
     display: grid;
     grid-template-columns: repeat(var(--featured-columns-desktop), minmax(0, 1fr));
-    gap: var(--featured-grid-gap);
+    column-gap: var(--featured-column-gap);
+    row-gap: var(--featured-row-gap);
   }
 
   .featured-collection__item {
@@ -116,6 +130,58 @@
     text-align: center;
   }
 
+  .featured-collection--carousel .featured-collection__grid {
+    display: flex;
+    gap: var(--featured-column-gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .featured-collection--carousel .featured-collection__grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .featured-collection--carousel .featured-collection__item {
+    flex: 0 0 calc(
+      (100% - (var(--featured-columns-desktop) - 1) * var(--featured-column-gap))
+      / var(--featured-columns-desktop)
+    );
+    scroll-snap-align: start;
+  }
+
+  .featured-collection--editorial .featured-collection__grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .featured-collection--editorial .featured-collection__item {
+    grid-column: span 4;
+  }
+
+  .featured-collection--editorial .featured-collection__item:nth-child(5n + 1),
+  .featured-collection--editorial .featured-collection__item:nth-child(5n + 2) {
+    grid-column: span 6;
+  }
+
+  .featured-collection__navigation {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .featured-collection__navigation button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
   @media screen and (max-width: 749px) {
     .featured-collection--page .featured-collection__inner,
     .featured-collection--full .featured-collection__inner {
@@ -125,8 +191,47 @@
     .featured-collection__grid {
       grid-template-columns: repeat(var(--featured-columns-mobile), minmax(0, 1fr));
     }
+
+    .featured-collection--editorial .featured-collection__item {
+      grid-column: span 6;
+    }
+
+    .featured-collection--carousel .featured-collection__item,
+    .featured-collection--mobile-carousel .featured-collection__item {
+      flex: 0 0 var(--featured-mobile-card-width);
+    }
+
+    .featured-collection--mobile-carousel .featured-collection__grid {
+      display: flex;
+      gap: var(--featured-column-gap);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+
+    .featured-collection--mobile-carousel .featured-collection__grid::-webkit-scrollbar {
+      display: none;
+    }
+
+    .featured-collection--mobile-carousel .featured-collection__item {
+      scroll-snap-align: start;
+    }
   }
 {% endstylesheet %}
+
+{% javascript %}
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('.featured-collection__previous, .featured-collection__next');
+    if (!button) return;
+
+    const section = button.closest('.featured-collection');
+    const grid = section?.querySelector('.featured-collection__grid');
+    if (!grid) return;
+
+    const direction = button.classList.contains('featured-collection__next') ? 1 : -1;
+    grid.scrollBy({ left: direction * grid.clientWidth * 0.8, behavior: 'smooth' });
+  });
+{% endjavascript %}
 
 {% schema %}
 {
@@ -173,6 +278,23 @@
       "default": 4
     },
     {
+      "type": "select",
+      "id": "layout_type",
+      "label": "Darstellung",
+      "options": [
+        { "value": "grid", "label": "Raster" },
+        { "value": "carousel", "label": "Karussell" },
+        { "value": "editorial", "label": "Editorial" }
+      ],
+      "default": "grid"
+    },
+    {
+      "type": "checkbox",
+      "id": "carousel_on_mobile",
+      "label": "Auf Mobilgeräten als Karussell",
+      "default": false
+    },
+    {
       "type": "range",
       "id": "columns_desktop",
       "label": "Spalten Desktop",
@@ -193,13 +315,33 @@
     },
     {
       "type": "range",
-      "id": "gap",
-      "label": "Abstand",
+      "id": "column_gap",
+      "label": "Horizontaler Abstand",
       "min": 0,
-      "max": 80,
-      "step": 2,
+      "max": 100,
+      "step": 1,
       "unit": "px",
       "default": 16
+    },
+    {
+      "type": "range",
+      "id": "row_gap",
+      "label": "Vertikaler Abstand",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "mobile_card_width",
+      "label": "Kartenbreite Mobil",
+      "min": 40,
+      "max": 95,
+      "step": 1,
+      "unit": "%",
+      "default": 75
     },
     {
       "type": "select",

@@ -1,79 +1,170 @@
-<div class="flex flex-col items-center my-8">
-    {% if section.settings.title != blank %}
-        <h1 class="text-3xl font-medium my-8 md:my-16">{{ section.settings.title }}</h1>
+<section
+  class="contact-section contact-section--{{ section.settings.width }}"
+  style="
+    --contact-background: {{ section.settings.background_color | default: 'transparent' }};
+    --contact-input-background: {{ section.settings.input_background | default: 'transparent' }};
+    --contact-input-color: {{ section.settings.input_text_color | default: 'inherit' }};
+    --contact-border: {{ section.settings.border_color | default: 'currentColor' }};
+    --contact-button-background: {{ section.settings.button_background | default: '#111111' }};
+    --contact-button-color: {{ section.settings.button_text_color | default: '#ffffff' }};
+    --contact-radius: {{ section.settings.border_radius }}px;
+    --contact-padding-top: {{ section.settings.padding_top }}px;
+    --contact-padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+>
+  <div class="contact-section__inner">
+    {% if section.settings.heading != blank %}
+      <h2>{{ section.settings.heading }}</h2>
     {% endif %}
-    
-    {% form 'contact' %}
+    {% if section.settings.text != blank %}
+      <div>{{ section.settings.text }}</div>
+    {% endif %}
 
-        {% if form.errors %}
-            <div class="border p-5">
-                <div class="flex flex-row items-center w-full my-3">
-                    <div class="text-red-500">
-                        {% render 'icon-failed' %}
-                    </div>
-                    <div class="text-sm font-medium ml-3">
-                        Oh no! Your message is not sent
-                    </div>
-                </div>
-                <ul class="px-4 mb-3 ml-7 list-decimal">
-                    {% for error in form.errors %}
-                        <li>
-                            <span>{{ form.errors.messages[error] }}</span>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% elsif form.posted_successfully? %}
-            <div class="flex flex-row items-center w-full my-3 p-5">
-                <div class="text-green-500">
-                    {% render 'icon-success' %}
-                </div>
-                <div class="text-sm font-medium ml-3">Your message is sent successfully</div>
-            </div>
-        {% endif %}
+    {% form 'contact', class: 'contact-section__form' %}
+      {% if form.posted_successfully? %}
+        <p class="contact-section__success" role="status">{{ section.settings.success_text }}</p>
+      {% endif %}
+      {% if form.errors %}
+        <div class="contact-section__errors" role="alert">{{ form.errors | default_errors }}</div>
+      {% endif %}
 
-        <div class="max-w-6xl mx-auto justify-center flex-1 items-center px-4">
-            <div class="flex px-1 mb-3">
-                <div class="px-3 md:w-1/2">
-                    <label class="uppercase text-xs text-gray-500 font-medium" for="contact_name">Name</label>
-                    <input class="border py-3 px-4 mb-3 text-gray-700 w-full" type="text" name="contact[name]" id="contact_name">
-                </div>
-                <div class="px-3 md:w-1/2">
-                    <label class="uppercase text-xs text-gray-500 font-medium" for="contact_email">Email address</label>
-                    <input class="border py-3 px-4 mb-3 text-gray-700 w-full" type="email" name="contact[email]" id="contact_email">
-                </div>
-            </div>
+      <div class="contact-section__row">
+        <label>
+          <span>Name</span>
+          <input type="text" name="contact[name]" autocomplete="name">
+        </label>
+        <label>
+          <span>E-Mail *</span>
+          <input type="email" name="contact[email]" autocomplete="email" required>
+        </label>
+      </div>
 
-            <div class="flex px-1 mb-3">
-                <div class="w-full px-3">
-                    <label class="uppercase text-xs text-gray-500 font-medium" for="contact_message">Message</label>
-                    <textarea class="border py-3 px-4 mb-3 text-gray-700 w-full" name="contact[body]" id="contact_message"></textarea>
-                </div>
-            </div>
+      {% if section.settings.show_phone %}
+        <label>
+          <span>Telefon</span>
+          <input type="tel" name="contact[phone]" autocomplete="tel">
+        </label>
+      {% endif %}
 
-            <div class="flex px-1 mb-3">
-                <div class="w-full px-3">
-                    <input type="submit" class="w-full cursor-pointer px-4 py-2 border text-base font-medium bg-gray-900 text-white hover:bg-gray-700" value="Submit message">
-                </div>
-            </div>
-        </div>        
+      <label>
+        <span>Nachricht *</span>
+        <textarea name="contact[body]" rows="{{ section.settings.message_rows }}" required></textarea>
+      </label>
+
+      <button type="submit">{{ section.settings.button_label }}</button>
     {% endform %}
-</div>
+  </div>
+</section>
+
+{% stylesheet %}
+  .contact-section {
+    box-sizing: border-box;
+    width: 100%;
+    background: var(--contact-background);
+    padding-block: var(--contact-padding-top) var(--contact-padding-bottom);
+  }
+
+  .contact-section__inner {
+    box-sizing: border-box;
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 24px;
+  }
+
+  .contact-section--page .contact-section__inner {
+    max-width: min(var(--page-width), 900px);
+  }
+
+  .contact-section h2 {
+    margin-top: 0;
+  }
+
+  .contact-section__form {
+    display: grid;
+    gap: 18px;
+    margin-top: 24px;
+  }
+
+  .contact-section__row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .contact-section label {
+    display: grid;
+    gap: 7px;
+  }
+
+  .contact-section :is(input, textarea) {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 46px;
+    padding: 12px;
+    border: 1px solid var(--contact-border);
+    border-radius: var(--contact-radius);
+    background: var(--contact-input-background);
+    color: var(--contact-input-color);
+    font: inherit;
+  }
+
+  .contact-section button {
+    min-height: 46px;
+    padding: 12px 24px;
+    border: 1px solid var(--contact-button-background);
+    border-radius: var(--contact-radius);
+    background: var(--contact-button-background);
+    color: var(--contact-button-color);
+    cursor: pointer;
+  }
+
+  .contact-section__success {
+    color: #16803c;
+  }
+
+  .contact-section__errors {
+    color: #b42318;
+  }
+
+  @media screen and (max-width: 749px) {
+    .contact-section__row {
+      grid-template-columns: 1fr;
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
-    "name": "Contact Form",
-    "settings": [
-        {
-            "type": "text",
-            "id": "title",
-            "label": "Title"
-        }
-    ],
-    "presets": [
-        {
-            "name": "Contact Form"
-        }
-    ]
+  "name": "Kontaktformular",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Überschrift", "default": "Kontakt" },
+    { "type": "richtext", "id": "text", "label": "Text" },
+    { "type": "checkbox", "id": "show_phone", "label": "Telefonfeld anzeigen", "default": true },
+    { "type": "range", "id": "message_rows", "label": "Höhe des Nachrichtenfeldes", "min": 3, "max": 12, "step": 1, "default": 6 },
+    { "type": "text", "id": "button_label", "label": "Button", "default": "Nachricht senden" },
+    { "type": "text", "id": "success_text", "label": "Erfolgsmeldung", "default": "Vielen Dank. Deine Nachricht wurde gesendet." },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Breite",
+      "options": [
+        { "value": "page", "label": "Seite" },
+        { "value": "full", "label": "Vollständig" }
+      ],
+      "default": "page"
+    },
+    { "type": "color", "id": "background_color", "label": "Hintergrundfarbe" },
+    { "type": "color", "id": "input_background", "label": "Feld-Hintergrund" },
+    { "type": "color", "id": "input_text_color", "label": "Feld-Textfarbe" },
+    { "type": "color", "id": "border_color", "label": "Feld-Randfarbe" },
+    { "type": "color", "id": "button_background", "label": "Button-Hintergrund", "default": "#111111" },
+    { "type": "color", "id": "button_text_color", "label": "Button-Textfarbe", "default": "#ffffff" },
+    { "type": "range", "id": "border_radius", "label": "Eckenradius", "min": 0, "max": 40, "step": 1, "unit": "px", "default": 4 },
+    { "type": "range", "id": "padding_top", "label": "Padding oben", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 48 },
+    { "type": "range", "id": "padding_bottom", "label": "Padding unten", "min": 0, "max": 100, "step": 1, "unit": "px", "default": 48 }
+  ],
+  "presets": [
+    { "name": "Kontaktformular" }
+  ]
 }
 {% endschema %}

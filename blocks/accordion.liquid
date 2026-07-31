@@ -1,0 +1,280 @@
+{% liquid
+  assign accordion_border_alpha = block.settings.border_opacity | divided_by: 100.0
+  assign accordion_border_color = block.settings.border_color | default: '#000000'
+  assign accordion_border_color = accordion_border_color | color_modify: 'alpha', accordion_border_alpha
+%}
+
+<div
+  class="
+    accordion-block
+    accordion-block--icon-{{ block.settings.icon }}
+    accordion-block--dividers-{{ block.settings.dividers }}
+    accordion-block--border-{{ block.settings.border }}
+  "
+  style="
+    --accordion-background: {{ block.settings.background_color | default: 'transparent' }};
+    --accordion-text: {{ block.settings.text_color | default: 'inherit' }};
+    --accordion-divider: {{ block.settings.divider_color | default: 'currentColor' }};
+    --accordion-border-width: {{ block.settings.border_width }}px;
+    --accordion-border-color: {{ accordion_border_color }};
+    --accordion-radius: {{ block.settings.border_radius }}px;
+    --accordion-padding-top: {{ block.settings.padding_top }}px;
+    --accordion-padding-bottom: {{ block.settings.padding_bottom }}px;
+    --accordion-padding-left: {{ block.settings.padding_left }}px;
+    --accordion-padding-right: {{ block.settings.padding_right }}px;
+    {% render 'typography-variables', preset: block.settings.type_preset %}
+  "
+  {{ block.shopify_attributes }}
+>
+  {% if block.settings.heading != blank %}
+    <h2 class="accordion-block__heading">
+      {{ block.settings.heading }}
+    </h2>
+  {% endif %}
+
+  <div class="accordion-block__items">
+    {% content_for 'blocks' %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .accordion-block {
+    box-sizing: border-box;
+    width: 100%;
+    color: var(--accordion-text);
+    background: var(--accordion-background);
+    border-radius: var(--accordion-radius);
+    padding:
+      var(--accordion-padding-top)
+      var(--accordion-padding-right)
+      var(--accordion-padding-bottom)
+      var(--accordion-padding-left);
+  }
+
+  .accordion-block--border-solid {
+    border: var(--accordion-border-width) solid var(--accordion-border-color);
+  }
+
+  .accordion-block__heading {
+    margin-top: 0;
+    margin-bottom: 20px;
+  }
+
+  .accordion-block__items {
+    border-top: 1px solid var(--accordion-divider);
+  }
+
+  .accordion-block--dividers-false .accordion-block__items {
+    border-top: 0;
+  }
+
+  .accordion-block--dividers-false .accordion-item {
+    border-bottom: 0;
+  }
+
+  .accordion-block--dividers-true .accordion-item {
+    border-bottom-color: var(--accordion-divider);
+  }
+
+  .accordion-block .accordion-item__summary {
+    font-family: var(--type-family);
+    font-style: var(--type-style);
+    font-weight: var(--type-weight);
+    font-size: var(--type-size);
+    line-height: var(--type-line-height);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Akkordeon",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "accordion-item"
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Überschrift",
+      "default": "Häufig gestellte Fragen"
+    },
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "Symbol",
+      "options": [
+        {
+          "value": "caret",
+          "label": "Pfeil"
+        },
+        {
+          "value": "plus",
+          "label": "Plus"
+        }
+      ],
+      "default": "caret"
+    },
+    {
+      "type": "checkbox",
+      "id": "dividers",
+      "label": "Trennlinien anzeigen",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "divider_color",
+      "label": "Farbe der Trennlinien",
+      "visible_if": "{{ block.settings.dividers }}"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "Überschriften-Voreinstellung",
+      "options": [
+        { "value": "standard", "label": "Standard" },
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "h1", "label": "Überschrift 1" },
+        { "value": "h2", "label": "Überschrift 2" },
+        { "value": "h3", "label": "Überschrift 3" },
+        { "value": "h4", "label": "Überschrift 4" },
+        { "value": "h5", "label": "Überschrift 5" },
+        { "value": "h6", "label": "Überschrift 6" }
+      ],
+      "default": "h6",
+      "info": "Die Schrift wird in den Theme-Einstellungen festgelegt."
+    },
+    {
+      "type": "header",
+      "content": "Erscheinungsbild"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Hintergrundfarbe"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe"
+    },
+    {
+      "type": "header",
+      "content": "Ränder"
+    },
+    {
+      "type": "select",
+      "id": "border",
+      "label": "Stil",
+      "options": [
+        { "value": "none", "label": "Keine" },
+        { "value": "solid", "label": "Einfarbig" }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "border_width",
+      "label": "Stärke",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 1,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_opacity",
+      "label": "Deckkraft",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Farbe",
+      "visible_if": "{{ block.settings.border != 'none' }}"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Akkordeon",
+      "blocks": [
+        {
+          "type": "accordion-item",
+          "settings": {
+            "heading": "Erste Frage"
+          }
+        },
+        {
+          "type": "accordion-item",
+          "settings": {
+            "heading": "Zweite Frage"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

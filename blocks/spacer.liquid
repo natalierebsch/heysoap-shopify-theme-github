@@ -2,7 +2,7 @@
   class="spacer-block"
   style="
     --spacer-desktop: {{ block.settings.height_desktop }}px;
-    --spacer-mobile: {{ block.settings.height_mobile }}px;
+    --spacer-mobile: {% if block.settings.custom_mobile_size %}{{ block.settings.height_mobile }}{% else %}{{ block.settings.height_desktop }}{% endif %}px;
   "
   {{ block.shopify_attributes }}
   aria-hidden="true"
@@ -29,20 +29,27 @@
       "id": "height_desktop",
       "label": "Höhe Desktop",
       "min": 0,
-      "max": 200,
+      "max": 400,
       "step": 4,
       "unit": "px",
       "default": 40
+    },
+    {
+      "type": "checkbox",
+      "id": "custom_mobile_size",
+      "label": "Eigene Höhe für Mobilgeräte",
+      "default": true
     },
     {
       "type": "range",
       "id": "height_mobile",
       "label": "Höhe Mobil",
       "min": 0,
-      "max": 120,
+      "max": 400,
       "step": 4,
       "unit": "px",
-      "default": 24
+      "default": 24,
+      "visible_if": "{{ block.settings.custom_mobile_size }}"
     }
   ],
   "presets": [

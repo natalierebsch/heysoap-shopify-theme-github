@@ -4,20 +4,33 @@
   @param {string} [parent_block_id] - ID des übergeordneten Kartenblocks.
 {% enddoc %}
 
-{% assign card_collection = closest.collection %}
+{% liquid
+  assign card_collection = closest.collection
+  assign image_border_alpha = block.settings.border_opacity | divided_by: 100.0
+  assign image_border_color = block.settings.border_color | default: '#000000'
+  assign image_border_color = image_border_color | color_modify: 'alpha', image_border_alpha
+%}
 
 <div
   class="
     collection-card-image
     {% if block.settings.image_ratio == 'auto' %}collection-card-image--ratio-auto{% endif %}
     collection-card-image--border-{{ block.settings.border }}
+    collection-card-image--desktop-{{ block.settings.desktop_width }}
+    collection-card-image--mobile-{{ block.settings.mobile_width }}
+    collection-card-image--height-{{ block.settings.height }}
   "
   style="
     --collection-image-ratio: {{ block.settings.image_ratio }};
     --collection-image-radius: {{ block.settings.border_radius }}px;
     --collection-image-border-width: {{ block.settings.border_width }}px;
-    --collection-image-border-color: {{ block.settings.border_color | default: 'currentColor' }};
-    --collection-image-border-opacity: {{ block.settings.border_opacity }}%;
+    --collection-image-border-color: {{ image_border_color }};
+    --collection-image-custom-width-desktop: {{ block.settings.custom_width_desktop }}%;
+    --collection-image-custom-width-mobile: {{ block.settings.custom_width_mobile }}%;
+    --collection-image-padding-top: {{ block.settings.padding_top }}px;
+    --collection-image-padding-bottom: {{ block.settings.padding_bottom }}px;
+    --collection-image-padding-left: {{ block.settings.padding_left }}px;
+    --collection-image-padding-right: {{ block.settings.padding_right }}px;
   "
   {{ block.shopify_attributes }}
 >
@@ -50,10 +63,25 @@
 {% stylesheet %}
   .collection-card-image {
     position: relative;
+    box-sizing: border-box;
     width: 100%;
     aspect-ratio: var(--collection-image-ratio);
-    overflow: hidden;
     border-radius: var(--collection-image-radius);
+    padding:
+      var(--collection-image-padding-top)
+      var(--collection-image-padding-right)
+      var(--collection-image-padding-bottom)
+      var(--collection-image-padding-left);
+  }
+
+  .collection-card-image--desktop-fit {
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .collection-card-image--desktop-custom {
+    width: var(--collection-image-custom-width-desktop);
+    max-width: 100%;
   }
 
   .collection-card-image--ratio-auto {
@@ -61,14 +89,7 @@
   }
 
   .collection-card-image--border-solid {
-    border:
-      var(--collection-image-border-width)
-      solid
-      color-mix(
-        in srgb,
-        var(--collection-image-border-color) var(--collection-image-border-opacity),
-        transparent
-      );
+    border: var(--collection-image-border-width) solid var(--collection-image-border-color);
   }
 
   .collection-card-image__link {
@@ -83,11 +104,34 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
+    overflow: hidden;
+    border-radius: var(--collection-image-radius);
   }
 
   .collection-card-image--ratio-auto .collection-card-image__image,
   .collection-card-image--ratio-auto .collection-card-image__placeholder {
     height: auto;
+  }
+
+  .collection-card-image--height-fill,
+  .collection-card-image--height-fill .collection-card-image__link {
+    height: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .collection-card-image--mobile-fit {
+      width: fit-content;
+      max-width: 100%;
+    }
+
+    .collection-card-image--mobile-fill {
+      width: 100%;
+    }
+
+    .collection-card-image--mobile-custom {
+      width: var(--collection-image-custom-width-mobile);
+      max-width: 100%;
+    }
   }
 {% endstylesheet %}
 
@@ -118,6 +162,60 @@
         }
       ],
       "default": "1 / 1"
+    },
+    {
+      "type": "select",
+      "id": "desktop_width",
+      "label": "Desktop-Breite",
+      "options": [
+        { "value": "fit", "label": "Anpassen" },
+        { "value": "fill", "label": "Füllen" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_desktop",
+      "label": "Benutzerdefinierte Desktop-Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.desktop_width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "mobile_width",
+      "label": "Mobile Breite",
+      "options": [
+        { "value": "fit", "label": "Anpassen" },
+        { "value": "fill", "label": "Füllen" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "custom_width_mobile",
+      "label": "Benutzerdefinierte mobile Breite",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "%",
+      "default": 100,
+      "visible_if": "{{ block.settings.mobile_width == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Höhe",
+      "options": [
+        { "value": "adapt", "label": "Anpassen" },
+        { "value": "fill", "label": "Füllen" }
+      ],
+      "default": "adapt"
     },
     {
       "type": "header",
@@ -171,6 +269,50 @@
       "type": "range",
       "id": "border_radius",
       "label": "Eckenradius",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
       "min": 0,
       "max": 100,
       "step": 1,

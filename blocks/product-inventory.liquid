@@ -1,0 +1,213 @@
+{% liquid
+  assign inventory_product = closest.product
+  assign inventory_variant = inventory_product.selected_or_first_available_variant
+  assign inventory_status = 'in-stock'
+  assign inventory_text = block.settings.in_stock_text
+
+  if inventory_variant.inventory_management == 'shopify'
+    if inventory_variant.inventory_quantity <= 0 and inventory_variant.inventory_policy != 'continue'
+      assign inventory_status = 'out-of-stock'
+      assign inventory_text = block.settings.out_of_stock_text
+    elsif inventory_variant.inventory_quantity <= block.settings.inventory_threshold
+      assign inventory_status = 'low'
+      assign inventory_text = block.settings.low_stock_text
+      if block.settings.show_inventory_quantity
+        assign inventory_text = inventory_variant.inventory_quantity | append: ' Stück verfügbar'
+      endif
+    endif
+  endif
+%}
+
+{% if inventory_product != blank %}
+  <div
+    class="product-inventory-block product-inventory-block--{{ block.settings.alignment }}"
+    data-threshold="{{ block.settings.inventory_threshold }}"
+    data-show-quantity="{{ block.settings.show_inventory_quantity }}"
+    data-in-stock-label="{{ block.settings.in_stock_text | escape }}"
+    data-low-label="{{ block.settings.low_stock_text | escape }}"
+    data-low-count-label="Stück verfügbar"
+    data-out-of-stock-label="{{ block.settings.out_of_stock_text | escape }}"
+    style="
+      --inventory-text-color: {{ block.settings.text_color | default: 'inherit' }};
+      --inventory-in-stock: {{ block.settings.in_stock_color }};
+      --inventory-low: {{ block.settings.low_stock_color }};
+      --inventory-out: {{ block.settings.out_of_stock_color }};
+      --inventory-padding-top: {{ block.settings.padding_top }}px;
+      --inventory-padding-bottom: {{ block.settings.padding_bottom }}px;
+      --inventory-padding-left: {{ block.settings.padding_left }}px;
+      --inventory-padding-right: {{ block.settings.padding_right }}px;
+    "
+    {{ block.shopify_attributes }}
+  >
+    <span class="product-inventory-block__status">
+      <span class="product-inventory-block__dot" data-status="{{ inventory_status }}" aria-hidden="true"></span>
+      <span class="product-inventory-block__text" role="status">{{ inventory_text }}</span>
+    </span>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .product-inventory-block {
+    box-sizing: border-box;
+    width: 100%;
+    color: var(--inventory-text-color);
+    padding:
+      var(--inventory-padding-top)
+      var(--inventory-padding-right)
+      var(--inventory-padding-bottom)
+      var(--inventory-padding-left);
+  }
+
+  .product-inventory-block--left {
+    text-align: left;
+  }
+
+  .product-inventory-block--center {
+    text-align: center;
+  }
+
+  .product-inventory-block--right {
+    text-align: right;
+  }
+
+  .product-inventory-block__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .product-inventory-block__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--inventory-in-stock);
+  }
+
+  .product-inventory-block__dot[data-status='low'] {
+    background: var(--inventory-low);
+  }
+
+  .product-inventory-block__dot[data-status='out-of-stock'] {
+    background: var(--inventory-out);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Lagerbestand",
+  "tag": null,
+  "settings": [
+    {
+      "type": "range",
+      "id": "inventory_threshold",
+      "label": "Grenze für niedrigen Bestand",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "default": 10
+    },
+    {
+      "type": "checkbox",
+      "id": "show_inventory_quantity",
+      "label": "Verfügbare Menge anzeigen",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "in_stock_text",
+      "label": "Text bei verfügbar",
+      "default": "Auf Lager"
+    },
+    {
+      "type": "text",
+      "id": "low_stock_text",
+      "label": "Text bei niedrigem Bestand",
+      "default": "Nur noch wenige verfügbar"
+    },
+    {
+      "type": "text",
+      "id": "out_of_stock_text",
+      "label": "Text bei ausverkauft",
+      "default": "Ausverkauft"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "default": "left"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Textfarbe"
+    },
+    {
+      "type": "color",
+      "id": "in_stock_color",
+      "label": "Farbe bei verfügbar",
+      "default": "#16803c"
+    },
+    {
+      "type": "color",
+      "id": "low_stock_color",
+      "label": "Farbe bei niedrigem Bestand",
+      "default": "#d97706"
+    },
+    {
+      "type": "color",
+      "id": "out_of_stock_color",
+      "label": "Farbe bei ausverkauft",
+      "default": "#b42318"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lagerbestand"
+    }
+  ]
+}
+{% endschema %}

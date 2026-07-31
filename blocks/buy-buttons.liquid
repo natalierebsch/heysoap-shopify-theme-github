@@ -1,0 +1,306 @@
+{% liquid
+  assign buy_product = closest.product
+  assign buy_variant = buy_product.selected_or_first_available_variant
+  assign can_add = false
+  if buy_variant != blank and buy_variant.available
+    assign can_add = true
+  endif
+  assign product_form_id = 'buy-buttons-form-' | append: section.id | append: '-' | append: block.id
+%}
+
+<div
+  class="
+    buy-buttons-block
+    buy-buttons-block--{{ block.settings.layout }}
+    buy-buttons-block--width-{{ block.settings.width }}
+  "
+  style="
+    --buy-buttons-gap: {{ block.settings.gap }}px;
+    --buy-buttons-background: {{ block.settings.button_background | default: '#111111' }};
+    --buy-buttons-color: {{ block.settings.button_text_color | default: '#ffffff' }};
+    --buy-buttons-border: {{ block.settings.button_border_color | default: '#111111' }};
+    --buy-buttons-radius: {{ block.settings.button_border_radius }}px;
+    --buy-buttons-padding-top: {{ block.settings.padding_top }}px;
+    --buy-buttons-padding-bottom: {{ block.settings.padding_bottom }}px;
+    --buy-buttons-padding-left: {{ block.settings.padding_left }}px;
+    --buy-buttons-padding-right: {{ block.settings.padding_right }}px;
+  "
+  {{ block.shopify_attributes }}
+>
+  {% if buy_product != blank and buy_variant != blank %}
+    {% form 'product', buy_product, id: product_form_id, class: 'buy-buttons-block__form' %}
+      <input type="hidden" name="id" value="{{ buy_variant.id }}">
+
+      <div class="buy-buttons-block__controls">
+        {% if block.settings.show_quantity %}
+          <label class="buy-buttons-block__quantity">
+            <span class="buy-buttons-block__label">Menge</span>
+            <input
+              type="number"
+              name="quantity"
+              value="{{ buy_variant.quantity_rule.min | default: 1 }}"
+              min="{{ buy_variant.quantity_rule.min | default: 1 }}"
+              step="{{ buy_variant.quantity_rule.increment | default: 1 }}"
+              {% if buy_variant.quantity_rule.max != blank %}
+                max="{{ buy_variant.quantity_rule.max }}"
+              {% endif %}
+            >
+          </label>
+        {% endif %}
+
+        <button
+          type="submit"
+          name="add"
+          class="buy-buttons-block__add"
+          data-available-label="{{ block.settings.button_label | escape }}"
+          data-sold-out-label="Ausverkauft"
+          {% unless can_add %}
+            disabled
+          {% endunless %}
+        >
+          {% if can_add %}
+            {{ block.settings.button_label }}
+          {% elsif buy_variant.available == false %}
+            Ausverkauft
+          {% else %}
+            Nicht verfügbar
+          {% endif %}
+        </button>
+      </div>
+
+      {% if block.settings.show_dynamic_checkout and can_add %}
+        <div class="buy-buttons-block__dynamic">
+          {{ form | payment_button }}
+        </div>
+      {% endif %}
+    {% endform %}
+  {% else %}
+    <button class="buy-buttons-block__add" type="button" disabled>Produkt nicht verfügbar</button>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .buy-buttons-block {
+    box-sizing: border-box;
+    max-width: 100%;
+    padding:
+      var(--buy-buttons-padding-top)
+      var(--buy-buttons-padding-right)
+      var(--buy-buttons-padding-bottom)
+      var(--buy-buttons-padding-left);
+  }
+
+  .buy-buttons-block--width-fit {
+    width: fit-content;
+  }
+
+  .buy-buttons-block--width-fill {
+    width: 100%;
+  }
+
+  .buy-buttons-block__form {
+    display: grid;
+    gap: var(--buy-buttons-gap);
+    margin: 0;
+  }
+
+  .buy-buttons-block__controls {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--buy-buttons-gap);
+  }
+
+  .buy-buttons-block--stacked .buy-buttons-block__controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .buy-buttons-block__quantity {
+    display: grid;
+    flex: 0 0 auto;
+    gap: 6px;
+  }
+
+  .buy-buttons-block__label {
+    font-size: 0.875em;
+  }
+
+  .buy-buttons-block__quantity input {
+    box-sizing: border-box;
+    width: 84px;
+    min-height: 46px;
+    padding: 8px 12px;
+    border: 1px solid currentColor;
+    border-radius: var(--buy-buttons-radius);
+    background: transparent;
+    color: inherit;
+  }
+
+  .buy-buttons-block__add {
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    min-height: 46px;
+    padding: 12px 24px;
+    border: 1px solid var(--buy-buttons-border);
+    border-radius: var(--buy-buttons-radius);
+    background: var(--buy-buttons-background);
+    color: var(--buy-buttons-color);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .buy-buttons-block__add:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .buy-buttons-block__dynamic {
+    width: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .buy-buttons-block__controls {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .buy-buttons-block__quantity input {
+      width: 100%;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Kaufen-Schaltflächen",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Beschriftung",
+      "default": "In den Warenkorb"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quantity",
+      "label": "Mengenauswahl anzeigen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "Dynamischen Checkout anzeigen",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "layout",
+      "label": "Layout",
+      "options": [
+        { "value": "inline", "label": "Nebeneinander" },
+        { "value": "stacked", "label": "Untereinander" }
+      ],
+      "default": "inline"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Breite",
+      "options": [
+        { "value": "fit", "label": "Anpassen" },
+        { "value": "fill", "label": "Füllen" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Abstand",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Schaltfläche"
+    },
+    {
+      "type": "color",
+      "id": "button_background",
+      "label": "Hintergrundfarbe"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Textfarbe"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Randfarbe"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Eckenradius",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 4
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kaufen-Schaltflächen"
+    }
+  ]
+}
+{% endschema %}

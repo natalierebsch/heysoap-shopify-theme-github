@@ -2,36 +2,585 @@
   Rendert den Preis des nächstgelegenen Produkts.
 {% enddoc %}
 
-{% assign price_product = closest.product %}
+{% liquid
+  assign price_product = closest.product
+  assign selected_variant = price_product.selected_or_first_available_variant
+  assign current_price = selected_variant.price
+  assign compare_price = selected_variant.compare_at_price
+  assign on_sale = false
+  assign discount_percentage = 0
+
+  if compare_price > current_price and compare_price > 0
+    assign on_sale = true
+    assign discount_amount = compare_price | minus: current_price
+    assign discount_percentage = discount_amount | times: 100.0 | divided_by: compare_price | round
+  endif
+%}
 
 {% if price_product != blank %}
-  <div class="featured-product-price" {{ block.shopify_attributes }}>
-    {% if price_product.compare_at_price > price_product.price %}
-      <span class="featured-product-price__compare">
-        {{ price_product.compare_at_price | money }}
-      </span>
+  <div
+    class="
+      product-price-block
+      typography-style
+      product-price-block--width-{{ block.settings.width }}
+      product-price-block--alignment-{{ block.settings.alignment }}
+      product-price-block--compare-{{ block.settings.compare_price_position }}
+    "
+    style="
+      --product-price-gap: {{ block.settings.price_gap }}px;
+      --product-price-current-color: {{ block.settings.sale_price_color | default: 'currentColor' }};
+      --product-price-compare-color: {{ block.settings.compare_price_color | default: 'currentColor' }};
+      --product-price-current-size: {{ block.settings.current_price_size }}px;
+      --product-price-current-weight: {{ block.settings.current_price_weight }};
+      --product-price-compare-size: {{ block.settings.compare_price_size }}px;
+      --product-price-compare-weight: {{ block.settings.compare_price_weight }};
+      --product-price-unit-size: {{ block.settings.unit_price_size }}px;
+      --product-price-badge-background: {{ block.settings.badge_background_color }};
+      --product-price-badge-color: {{ block.settings.badge_text_color }};
+      --product-price-badge-radius: {{ block.settings.badge_border_radius }}px;
+      --product-price-padding-top: {{ block.settings.padding_top }}px;
+      --product-price-padding-bottom: {{ block.settings.padding_bottom }}px;
+      --product-price-padding-left: {{ block.settings.padding_left }}px;
+      --product-price-padding-right: {{ block.settings.padding_right }}px;
+      {% render 'typography-variables',
+        preset: block.settings.type_preset,
+        custom_font: block.settings.custom_font,
+        custom_size: block.settings.custom_size,
+        custom_line_height: block.settings.custom_line_height,
+        custom_letter_spacing: block.settings.custom_letter_spacing,
+        custom_case: block.settings.custom_case,
+        custom_wrap: block.settings.custom_wrap
+      %}
+    "
+    {{ block.shopify_attributes }}
+  >
+    <div class="product-price-block__row">
+      {% capture current_price_markup %}
+        <span class="product-price-block__current">
+          {% if price_product.price_varies %}
+            Ab {{ price_product.price_min | money }}
+          {% else %}
+            {{ current_price | money }}
+          {% endif %}
+        </span>
+      {% endcapture %}
+
+      {% capture compare_price_markup %}
+        {% if on_sale %}
+          <span class="product-price-block__compare">{{ compare_price | money }}</span>
+        {% endif %}
+      {% endcapture %}
+
+      {% if block.settings.show_sale_price_first %}
+        {{ current_price_markup }}
+        {{ compare_price_markup }}
+      {% else %}
+        {{ compare_price_markup }}
+        {{ current_price_markup }}
+      {% endif %}
+
+      {% if block.settings.show_discount_badge and on_sale %}
+        <span
+          class="product-price-block__badge"
+          data-content="{{ block.settings.discount_badge_content }}"
+        >
+          {% case block.settings.discount_badge_content %}
+            {% when 'sale' %}
+              Sale
+            {% when 'custom' %}
+              {{ block.settings.discount_badge_text | escape }}
+            {% else %}
+              -{{ discount_percentage }}%
+          {% endcase %}
+        </span>
+      {% endif %}
+    </div>
+
+    {% if block.settings.show_unit_price
+      and selected_variant.unit_price != blank
+      and selected_variant.unit_price_measurement != blank
+    %}
+      <div class="product-price-block__unit">
+        {{ selected_variant.unit_price | money }}
+        /
+        {% if selected_variant.unit_price_measurement.reference_value != 1 %}
+          {{ selected_variant.unit_price_measurement.reference_value }}
+        {% endif %}
+        {{ selected_variant.unit_price_measurement.reference_unit }}
+      </div>
     {% endif %}
 
-    <span>{{ price_product.price | money }}</span>
+    {% if block.settings.show_tax_info %}
+      <div class="product-price-block__tax">
+        {% if cart.taxes_included %}
+          Inkl. Steuern.
+        {% endif %}
+        {% if shop.shipping_policy.body != blank %}
+          <a href="{{ shop.shipping_policy.url }}">Versand</a> wird beim Checkout berechnet.
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_installments and selected_variant != blank %}
+      {% assign installment_form_id = 'product-form-installment-' | append: block.id %}
+      {% form 'product', price_product, id: installment_form_id, class: 'product-price-block__installments' %}
+        <input type="hidden" name="id" value="{{ selected_variant.id }}">
+        {{ form | payment_terms }}
+      {% endform %}
+    {% endif %}
   </div>
 {% endif %}
 
 {% stylesheet %}
-  .featured-product-price {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+  .product-price-block {
+    box-sizing: border-box;
+    color: inherit;
+    padding:
+      var(--product-price-padding-top)
+      var(--product-price-padding-right)
+      var(--product-price-padding-bottom)
+      var(--product-price-padding-left);
   }
 
-  .featured-product-price__compare {
-    opacity: 0.65;
+  .product-price-block--width-fit {
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .product-price-block--width-fill {
+    width: 100%;
+  }
+
+  .product-price-block--alignment-left {
+    text-align: left;
+  }
+
+  .product-price-block--alignment-center {
+    text-align: center;
+  }
+
+  .product-price-block--alignment-right {
+    text-align: right;
+  }
+
+  .product-price-block__row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--product-price-gap);
+  }
+
+  .product-price-block--alignment-center .product-price-block__row {
+    justify-content: center;
+  }
+
+  .product-price-block--alignment-right .product-price-block__row {
+    justify-content: flex-end;
+  }
+
+  .product-price-block__current {
+    color: var(--product-price-current-color);
+    font-size: var(--product-price-current-size);
+    font-weight: var(--product-price-current-weight);
+  }
+
+  .product-price-block__compare {
+    color: var(--product-price-compare-color);
+    font-size: var(--product-price-compare-size);
+    font-weight: var(--product-price-compare-weight);
+    opacity: 0.7;
     text-decoration: line-through;
+  }
+
+  .product-price-block--compare-top .product-price-block__row,
+  .product-price-block--compare-bottom .product-price-block__row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .product-price-block--compare-top .product-price-block__compare {
+    order: -1;
+  }
+
+  .product-price-block--compare-bottom .product-price-block__compare {
+    order: 2;
+  }
+
+  .product-price-block--alignment-center:is(
+      .product-price-block--compare-top,
+      .product-price-block--compare-bottom
+    )
+    .product-price-block__row {
+    align-items: center;
+  }
+
+  .product-price-block--alignment-right:is(
+      .product-price-block--compare-top,
+      .product-price-block--compare-bottom
+    )
+    .product-price-block__row {
+    align-items: flex-end;
+  }
+
+  .product-price-block__badge {
+    display: inline-flex;
+    align-items: center;
+    align-self: center;
+    padding: 0.25em 0.55em;
+    border-radius: var(--product-price-badge-radius);
+    background: var(--product-price-badge-background);
+    color: var(--product-price-badge-color);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .product-price-block__unit {
+    margin-top: 4px;
+    font-size: var(--product-price-unit-size);
+    opacity: 0.75;
+  }
+
+  .product-price-block__tax,
+  .product-price-block__installments {
+    margin-top: 8px;
+    font-size: 0.875em;
+  }
+
+  .product-price-block__tax a {
+    color: inherit;
   }
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "Preis",
-  "settings": []
+  "tag": null,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_sale_price_first",
+      "label": "Angebotspreis zuerst anzeigen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_unit_price",
+      "label": "Grundpreis anzeigen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_tax_info",
+      "label": "Steuer- und Versandhinweis anzeigen",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_installments",
+      "label": "Ratenzahlung anzeigen",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Rabatt-Badge"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_discount_badge",
+      "label": "Rabatt-Badge anzeigen",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "discount_badge_content",
+      "label": "Inhalt",
+      "options": [
+        { "value": "percentage", "label": "Prozentuale Ersparnis" },
+        { "value": "sale", "label": "Sale" },
+        { "value": "custom", "label": "Eigener Text" }
+      ],
+      "default": "percentage",
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "text",
+      "id": "discount_badge_text",
+      "label": "Eigener Badge-Text",
+      "default": "Angebot",
+      "visible_if": "{{ block.settings.show_discount_badge and block.settings.discount_badge_content == 'custom' }}"
+    },
+    {
+      "type": "color",
+      "id": "badge_background_color",
+      "label": "Badge-Hintergrund",
+      "default": "#e9ff70",
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "color",
+      "id": "badge_text_color",
+      "label": "Badge-Textfarbe",
+      "default": "#111111",
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "range",
+      "id": "badge_border_radius",
+      "label": "Badge-Eckenradius",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 4,
+      "visible_if": "{{ block.settings.show_discount_badge }}"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "width",
+      "label": "Breite",
+      "options": [
+        { "value": "fit", "label": "Anpassen" },
+        { "value": "fill", "label": "Füllen" }
+      ],
+      "default": "fill"
+    },
+    {
+      "type": "text_alignment",
+      "id": "alignment",
+      "label": "Ausrichtung",
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "compare_price_position",
+      "label": "Position des Vergleichspreises",
+      "options": [
+        { "value": "left", "label": "Links" },
+        { "value": "right", "label": "Rechts" },
+        { "value": "top", "label": "Oben" },
+        { "value": "bottom", "label": "Unten" }
+      ],
+      "default": "right"
+    },
+    {
+      "type": "range",
+      "id": "price_gap",
+      "label": "Abstand",
+      "min": 0,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 6
+    },
+    {
+      "type": "header",
+      "content": "Typografie"
+    },
+    {
+      "type": "select",
+      "id": "type_preset",
+      "label": "Voreinstellung",
+      "options": [
+        { "value": "standard", "label": "Standard" },
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "h1", "label": "Überschrift 1" },
+        { "value": "h2", "label": "Überschrift 2" },
+        { "value": "h3", "label": "Überschrift 3" },
+        { "value": "h4", "label": "Überschrift 4" },
+        { "value": "h5", "label": "Überschrift 5" },
+        { "value": "h6", "label": "Überschrift 6" },
+        { "value": "custom", "label": "Benutzerdefiniert" }
+      ],
+      "default": "paragraph"
+    },
+    {
+      "type": "select",
+      "id": "custom_font",
+      "label": "Schriftart",
+      "options": [
+        { "value": "paragraph", "label": "Absatz" },
+        { "value": "heading", "label": "Überschrift" },
+        { "value": "heading_1", "label": "Überschrift 1" }
+      ],
+      "default": "paragraph",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "range",
+      "id": "custom_size",
+      "label": "Größe",
+      "min": 8,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 20,
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_line_height",
+      "label": "Zeilenhöhe",
+      "options": [
+        { "value": "1", "label": "Eng" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "1.5", "label": "Weit" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_letter_spacing",
+      "label": "Zeichenabstand",
+      "options": [
+        { "value": "-0.02em", "label": "Eng" },
+        { "value": "normal", "label": "Normal" },
+        { "value": "0.05em", "label": "Weit" }
+      ],
+      "default": "normal",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_case",
+      "label": "Schreibweise",
+      "options": [
+        { "value": "none", "label": "Standard" },
+        { "value": "uppercase", "label": "Großbuchstaben" }
+      ],
+      "default": "none",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "select",
+      "id": "custom_wrap",
+      "label": "Umbruch",
+      "options": [
+        { "value": "wrap", "label": "Standard" },
+        { "value": "pretty", "label": "Hübsch" },
+        { "value": "balance", "label": "Ausgeglichen" },
+        { "value": "nowrap", "label": "Kein Umbruch" }
+      ],
+      "default": "pretty",
+      "visible_if": "{{ block.settings.type_preset == 'custom' }}"
+    },
+    {
+      "type": "header",
+      "content": "Preisdarstellung"
+    },
+    {
+      "type": "color",
+      "id": "sale_price_color",
+      "label": "Aktueller Preis"
+    },
+    {
+      "type": "range",
+      "id": "current_price_size",
+      "label": "Größe des aktuellen Preises",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "select",
+      "id": "current_price_weight",
+      "label": "Stärke des aktuellen Preises",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Halbfett" },
+        { "value": "700", "label": "Fett" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "color",
+      "id": "compare_price_color",
+      "label": "Vergleichspreis"
+    },
+    {
+      "type": "range",
+      "id": "compare_price_size",
+      "label": "Größe des Vergleichspreises",
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "compare_price_weight",
+      "label": "Stärke des Vergleichspreises",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Halbfett" },
+        { "value": "700", "label": "Fett" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "range",
+      "id": "unit_price_size",
+      "label": "Größe des Grundpreises",
+      "min": 10,
+      "max": 30,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Oben",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Unten",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "label": "Links",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "label": "Rechts",
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    }
+  ]
 }
 {% endschema %}
